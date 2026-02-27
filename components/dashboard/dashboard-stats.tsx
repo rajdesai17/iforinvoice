@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
 
 interface DashboardStatsProps {
@@ -32,21 +31,21 @@ export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
       value: formatCurrency(stats.totalRevenue),
       description: `${stats.paidCount} paid invoices`,
       icon: DollarSign,
-      iconClass: "text-emerald-600 bg-emerald-100",
+      iconClass: "text-emerald-400 bg-emerald-400/10",
     },
     {
       title: "Outstanding",
       value: formatCurrency(stats.outstanding),
       description: `${stats.sentCount} pending invoices`,
       icon: Clock,
-      iconClass: "text-blue-600 bg-blue-100",
+      iconClass: "text-blue-400 bg-blue-400/10",
     },
     {
       title: "Overdue",
       value: formatCurrency(stats.overdue),
       description: `${stats.overdueCount} overdue invoices`,
       icon: AlertTriangle,
-      iconClass: "text-amber-600 bg-amber-100",
+      iconClass: "text-amber-400 bg-amber-400/10",
     },
     {
       title: "Active Clients",
@@ -60,22 +59,21 @@ export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {statCards.map((stat) => (
-        <Card key={stat.title}>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+        <div
+          key={stat.title}
+          className="rounded-xl bg-[#111113] border border-[#1e1e21] p-4"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium text-[#9ca3af] uppercase tracking-wider">
               {stat.title}
-            </CardTitle>
+            </span>
             <div className={`p-2 rounded-lg ${stat.iconClass}`}>
               <stat.icon className="h-4 w-4" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stat.description}
-            </p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="text-2xl font-bold text-white">{stat.value}</div>
+          <p className="text-xs text-[#6b7280] mt-1">{stat.description}</p>
+        </div>
       ))}
     </div>
   );

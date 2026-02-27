@@ -21,7 +21,7 @@ export default async function ItemsPage() {
   const itemsData = await getItems(DEMO_USER_ID);
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
+    <div className="p-6 space-y-6">
       <ItemsHeader />
       <ItemsList items={itemsData} />
     </div>

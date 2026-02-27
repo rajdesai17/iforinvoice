@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 interface RevenueChartProps {
@@ -27,14 +26,14 @@ export function RevenueChart({ data }: RevenueChartProps) {
   const hasData = chartData.some((d) => d.revenue > 0);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Revenue Overview</CardTitle>
-        <CardDescription>Monthly revenue from paid invoices</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="rounded-xl bg-[#111113] border border-[#1e1e21] overflow-hidden">
+      <div className="p-4 border-b border-[#1e1e21]">
+        <h3 className="text-sm font-semibold text-primary">Revenue Overview</h3>
+        <p className="text-xs text-[#6b7280] mt-0.5">Monthly revenue from paid invoices</p>
+      </div>
+      <div className="p-4">
         {!hasData ? (
-          <div className="flex items-center justify-center h-[200px] text-muted-foreground">
+          <div className="flex items-center justify-center h-[200px] text-[#6b7280]">
             No revenue data yet
           </div>
         ) : (
@@ -47,6 +46,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   axisLine={false}
                   fontSize={12}
                   tickMargin={8}
+                  tick={{ fill: '#6b7280' }}
                 />
                 <YAxis
                   tickLine={false}
@@ -54,25 +54,29 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   fontSize={12}
                   tickFormatter={(value) => `$${value}`}
                   width={60}
+                  tick={{ fill: '#6b7280' }}
                 />
                 <Tooltip
                   formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
+                    backgroundColor: "#111113",
+                    border: "1px solid #1e1e21",
                     borderRadius: "8px",
+                    color: "#ffffff",
                   }}
+                  labelStyle={{ color: '#9ca3af' }}
+                  cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }}
                 />
                 <Bar
                   dataKey="revenue"
-                  fill="hsl(var(--primary))"
+                  fill="#6366f1"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
