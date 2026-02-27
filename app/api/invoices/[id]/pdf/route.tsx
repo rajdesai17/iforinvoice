@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -14,7 +14,7 @@ export async function GET(
   try {
     const { id } = await params;
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {

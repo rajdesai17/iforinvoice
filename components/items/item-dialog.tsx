@@ -34,8 +34,8 @@ interface ItemDialogProps {
     name: string;
     description: string | null;
     rate: string;
-    unit: string;
-    isTaxable: boolean;
+    unit: string | null;
+    isTaxable: boolean | null;
   };
 }
 

@@ -24,7 +24,7 @@ interface Client {
   email: string | null;
   phone: string | null;
   company: string | null;
-  isArchived: boolean;
+  isArchived: boolean | null;
   createdAt: Date;
   invoiceCount: number;
   totalBilled: string;

@@ -36,7 +36,7 @@ interface Item {
   name: string;
   description: string | null;
   rate: string;
-  unit: string;
+  unit: string | null;
 }
 
 interface LineItem {

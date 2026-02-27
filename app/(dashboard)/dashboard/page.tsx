@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, clients } from "@/lib/db/schema";
@@ -90,7 +90,7 @@ async function getDashboardData(userId: string) {
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
-    headers: await cookies(),
+    headers: await headers(),
   });
 
   if (!session?.user?.id) {

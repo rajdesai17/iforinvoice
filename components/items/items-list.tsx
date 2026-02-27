@@ -22,8 +22,8 @@ interface Item {
   name: string;
   description: string | null;
   rate: string;
-  unit: string;
-  isTaxable: boolean;
+  unit: string | null;
+  isTaxable: boolean | null;
   createdAt: Date;
 }
 
@@ -124,7 +124,7 @@ export function ItemsList({ items }: ItemsListProps) {
                     <p className="text-lg font-semibold mt-2">
                       {formatCurrency(item.rate)}
                       <span className="text-sm font-normal text-muted-foreground">
-                        {formatUnit(item.unit)}
+                        {formatUnit(item.unit || "item")}
                       </span>
                     </p>
                   </div>

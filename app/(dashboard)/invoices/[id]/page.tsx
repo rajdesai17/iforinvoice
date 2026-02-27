@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
@@ -70,7 +70,7 @@ function getStatusBadge(status: string) {
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth.api.getSession({
-    headers: await cookies(),
+    headers: await headers(),
   });
 
   if (!session?.user?.id) {
@@ -98,7 +98,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-semibold">{invoice.invoiceNumber}</h1>
-              {getStatusBadge(invoice.status)}
+              {getStatusBadge(invoice.status || "draft")}
             </div>
             <p className="text-muted-foreground">
               {client?.company || client?.name || "Unknown client"}
@@ -188,8 +188,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <div key={item.id} className="grid grid-cols-12 gap-4 p-4">
                   <div className="col-span-6">{item.description}</div>
                   <div className="col-span-2 text-right">{item.quantity}</div>
-                  <div className="col-span-2 text-right">{formatCurrency(item.unitPrice)}</div>
-                  <div className="col-span-2 text-right">{formatCurrency(item.amount)}</div>
+                  <div className="col-span-2 text-right">{formatCurrency(item.unitPrice || 0)}</div>
+                  <div className="col-span-2 text-right">{formatCurrency(item.amount || 0)}</div>
                 </div>
               ))}
             </div>
@@ -200,24 +200,24 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <div className="w-72 space-y-3">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>{formatCurrency(invoice.subtotal)}</span>
+                <span>{formatCurrency(invoice.subtotal || 0)}</span>
               </div>
-              {parseFloat(invoice.taxRate) > 0 && (
+              {parseFloat(String(invoice.taxRate || 0)) > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tax ({invoice.taxRate}%)</span>
-                  <span>{formatCurrency(invoice.taxAmount)}</span>
+                  <span>{formatCurrency(invoice.taxAmount || 0)}</span>
                 </div>
               )}
-              {parseFloat(invoice.discountAmount) > 0 && (
+              {parseFloat(String(invoice.discountAmount || 0)) > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Discount</span>
-                  <span className="text-destructive">-{formatCurrency(invoice.discountAmount)}</span>
+                  <span className="text-destructive">-{formatCurrency(invoice.discountAmount || 0)}</span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between text-xl font-semibold">
                 <span>Total</span>
-                <span>{formatCurrency(invoice.total)}</span>
+                <span>{formatCurrency(invoice.total || 0)}</span>
               </div>
             </div>
           </div>

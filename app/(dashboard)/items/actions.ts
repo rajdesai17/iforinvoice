@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -18,7 +18,7 @@ interface ItemData {
 export async function createItem(data: ItemData) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {
@@ -49,7 +49,7 @@ export async function createItem(data: ItemData) {
 export async function updateItem(itemId: string, data: ItemData) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {
@@ -85,7 +85,7 @@ export async function updateItem(itemId: string, data: ItemData) {
 export async function deleteItem(itemId: string) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {

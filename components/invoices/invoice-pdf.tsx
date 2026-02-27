@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
 interface Invoice {
   id: string;
   invoiceNumber: string;
-  status: string;
+  status: string | null;
   issueDate: Date;
   dueDate: Date;
-  subtotal: string;
-  taxRate: string;
-  taxAmount: string;
-  discountAmount: string;
-  total: string;
+  subtotal: string | null;
+  taxRate: string | null;
+  taxAmount: string | null;
+  discountAmount: string | null;
+  total: string | null;
   notes: string | null;
   terms: string | null;
 }
@@ -177,9 +177,9 @@ interface Client {
 interface LineItem {
   id: string;
   description: string;
-  quantity: string;
-  unitPrice: string;
-  amount: string;
+  quantity: string | null;
+  unitPrice: string | null;
+  amount: string | null;
 }
 
 interface BusinessProfile {
@@ -282,8 +282,8 @@ export function InvoicePDF({ invoice, client, lineItems, profile }: InvoicePDFPr
             <View key={item.id} style={styles.tableRow}>
               <Text style={styles.tableColDescription}>{item.description}</Text>
               <Text style={styles.tableColQty}>{item.quantity}</Text>
-              <Text style={styles.tableColPrice}>{formatCurrency(item.unitPrice)}</Text>
-              <Text style={styles.tableColAmount}>{formatCurrency(item.amount)}</Text>
+              <Text style={styles.tableColPrice}>{formatCurrency(item.unitPrice || 0)}</Text>
+              <Text style={styles.tableColAmount}>{formatCurrency(item.amount || 0)}</Text>
             </View>
           ))}
         </View>
@@ -292,25 +292,25 @@ export function InvoicePDF({ invoice, client, lineItems, profile }: InvoicePDFPr
         <View style={styles.totals}>
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Subtotal</Text>
-            <Text style={styles.totalValue}>{formatCurrency(invoice.subtotal)}</Text>
+            <Text style={styles.totalValue}>{formatCurrency(invoice.subtotal || 0)}</Text>
           </View>
-          {parseFloat(invoice.taxRate) > 0 && (
+          {parseFloat(String(invoice.taxRate || 0)) > 0 && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Tax ({invoice.taxRate}%)</Text>
-              <Text style={styles.totalValue}>{formatCurrency(invoice.taxAmount)}</Text>
+              <Text style={styles.totalValue}>{formatCurrency(invoice.taxAmount || 0)}</Text>
             </View>
           )}
-          {parseFloat(invoice.discountAmount) > 0 && (
+          {parseFloat(String(invoice.discountAmount || 0)) > 0 && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Discount</Text>
               <Text style={styles.totalValue}>
-                -{formatCurrency(invoice.discountAmount)}
+                -{formatCurrency(invoice.discountAmount || 0)}
               </Text>
             </View>
           )}
           <View style={[styles.totalRow, styles.grandTotal]}>
             <Text style={styles.grandTotalText}>Total</Text>
-            <Text style={styles.grandTotalText}>{formatCurrency(invoice.total)}</Text>
+            <Text style={styles.grandTotalText}>{formatCurrency(invoice.total || 0)}</Text>
           </View>
         </View>
 

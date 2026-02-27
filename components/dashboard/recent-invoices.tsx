@@ -10,8 +10,8 @@ import { ArrowRight, FileText } from "lucide-react";
 interface Invoice {
   id: string;
   invoiceNumber: string;
-  status: string;
-  total: string;
+  status: string | null;
+  total: string | null;
   dueDate: Date;
   clientName: string | null;
   clientCompany: string | null;
@@ -108,12 +108,12 @@ export function RecentInvoices({ invoices }: RecentInvoicesProps) {
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right hidden sm:block">
-                  <p className="font-medium">{formatCurrency(invoice.total)}</p>
+                  <p className="font-medium">{formatCurrency(invoice.total || "0")}</p>
                   <p className="text-sm text-muted-foreground">
                     Due {format(new Date(invoice.dueDate), "MMM d, yyyy")}
                   </p>
                 </div>
-                {getStatusBadge(invoice.status)}
+                {getStatusBadge(invoice.status || "draft")}
               </div>
             </Link>
           ))}

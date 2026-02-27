@@ -38,8 +38,8 @@ import { toast } from "sonner";
 interface Invoice {
   id: string;
   invoiceNumber: string;
-  status: string;
-  total: string;
+  status: string | null;
+  total: string | null;
   issueDate: Date;
   dueDate: Date;
   clientName: string | null;
@@ -86,7 +86,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
       invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
       invoice.clientName?.toLowerCase().includes(search.toLowerCase()) ||
       invoice.clientCompany?.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || (invoice.status || "draft") === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -169,7 +169,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                         >
                           {invoice.invoiceNumber}
                         </Link>
-                        {getStatusBadge(invoice.status)}
+                        {getStatusBadge(invoice.status || "draft")}
                       </div>
                       <p className="text-sm text-muted-foreground truncate">
                         {invoice.clientCompany || invoice.clientName || "No client"}
@@ -179,7 +179,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
 
                   <div className="flex items-center gap-4">
                     <div className="text-right hidden md:block">
-                      <p className="font-medium">{formatCurrency(invoice.total)}</p>
+                      <p className="font-medium">{formatCurrency(invoice.total || "0")}</p>
                       <p className="text-sm text-muted-foreground">
                         Due {format(new Date(invoice.dueDate), "MMM d, yyyy")}
                       </p>

@@ -16,7 +16,7 @@ import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
 
 interface Invoice {
   id: string;
-  status: string;
+  status: string | null;
 }
 
 interface InvoiceStatusActionsProps {

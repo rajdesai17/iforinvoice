@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clients, invoices } from "@/lib/db/schema";
@@ -46,7 +46,7 @@ function ClientsLoading() {
 
 export default async function ClientsPage() {
   const session = await auth.api.getSession({
-    headers: await cookies(),
+    headers: await headers(),
   });
 
   if (!session?.user?.id) {

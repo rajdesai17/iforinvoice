@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -35,7 +35,7 @@ interface CreateInvoiceData {
 export async function createInvoice(data: CreateInvoiceData) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {
@@ -114,7 +114,7 @@ export async function createInvoice(data: CreateInvoiceData) {
 export async function updateInvoiceStatus(invoiceId: string, status: string) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {
@@ -154,7 +154,7 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
 export async function deleteInvoice(invoiceId: string) {
   try {
     const session = await auth.api.getSession({
-      headers: await cookies(),
+      headers: await headers(),
     });
 
     if (!session?.user?.id) {

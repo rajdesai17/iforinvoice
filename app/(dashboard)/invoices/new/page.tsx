@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clients, items, businessProfiles } from "@/lib/db/schema";
@@ -35,7 +35,7 @@ async function getData(userId: string) {
 
 export default async function NewInvoicePage() {
   const session = await auth.api.getSession({
-    headers: await cookies(),
+    headers: await headers(),
   });
 
   if (!session?.user?.id) {
