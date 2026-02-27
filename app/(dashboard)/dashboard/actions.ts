@@ -83,14 +83,14 @@ export async function getMonthlyRevenue(): Promise<{ month: string; revenue: num
 
   const results = await db.execute(sql`
     SELECT 
-      TO_CHAR("paidAt", 'Mon') as month,
+      TO_CHAR(paid_at, 'Mon') as month,
       COALESCE(SUM(total), 0)::numeric as revenue
     FROM invoices
-    WHERE "userId" = ${userId}
+    WHERE user_id = ${userId}
       AND status = 'paid'
-      AND "paidAt" >= ${sixMonthsAgo}
-    GROUP BY TO_CHAR("paidAt", 'Mon'), DATE_TRUNC('month', "paidAt")
-    ORDER BY DATE_TRUNC('month', "paidAt")
+      AND paid_at >= ${sixMonthsAgo}
+    GROUP BY TO_CHAR(paid_at, 'Mon'), DATE_TRUNC('month', paid_at)
+    ORDER BY DATE_TRUNC('month', paid_at)
   `)
 
   return results.rows as { month: string; revenue: number }[]
