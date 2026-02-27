@@ -47,7 +47,7 @@ export default async function ClientsPage() {
   const clientsData = await getClients(DEMO_USER_ID);
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
+    <div className="p-6 space-y-6">
       <ClientsHeader />
       <Suspense fallback={<ClientsLoading />}>
         <ClientsList clients={clientsData} />

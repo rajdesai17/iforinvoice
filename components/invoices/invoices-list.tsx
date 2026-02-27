@@ -3,10 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -34,6 +32,7 @@ import {
 } from "lucide-react";
 import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Invoice {
   id: string;
@@ -60,20 +59,20 @@ function formatCurrency(amount: string | number) {
 
 function getStatusBadge(status: string) {
   const statusConfig: Record<string, { className: string; label: string }> = {
-    draft: { className: "bg-secondary text-secondary-foreground", label: "Draft" },
-    sent: { className: "bg-blue-100 text-blue-700", label: "Sent" },
-    viewed: { className: "bg-amber-100 text-amber-700", label: "Viewed" },
-    paid: { className: "bg-emerald-100 text-emerald-700", label: "Paid" },
-    overdue: { className: "bg-red-100 text-red-700", label: "Overdue" },
-    cancelled: { className: "bg-secondary text-muted-foreground", label: "Cancelled" },
+    draft: { className: "bg-[#1a1a1e] text-[#9ca3af]", label: "Draft" },
+    sent: { className: "bg-blue-500/10 text-blue-400", label: "Sent" },
+    viewed: { className: "bg-purple-500/10 text-purple-400", label: "Viewed" },
+    paid: { className: "bg-emerald-500/10 text-emerald-400", label: "Paid" },
+    overdue: { className: "bg-red-500/10 text-red-400", label: "Overdue" },
+    cancelled: { className: "bg-[#1a1a1e] text-[#6b7280]", label: "Cancelled" },
   };
 
-  const config = statusConfig[status] || { className: "bg-secondary text-secondary-foreground", label: status };
+  const config = statusConfig[status] || { className: "bg-[#1a1a1e] text-[#9ca3af]", label: status };
 
   return (
-    <Badge variant="secondary" className={config.className}>
+    <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium", config.className)}>
       {config.label}
-    </Badge>
+    </span>
   );
 }
 
@@ -99,22 +98,24 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     }
   };
 
+  const inputClassName = "bg-[#1a1a1e] border-0 rounded-xl text-white placeholder:text-[#6b7280] focus:ring-2 focus:ring-primary h-10";
+
   if (invoices.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-16">
-          <div className="rounded-full bg-muted p-4 mb-4">
-            <FileText className="h-8 w-8 text-muted-foreground" />
+      <div className="rounded-xl bg-[#111113] border border-[#1e1e21] p-16">
+        <div className="flex flex-col items-center justify-center">
+          <div className="rounded-full bg-[#1a1a1e] p-4 mb-4">
+            <FileText className="h-8 w-8 text-[#6b7280]" />
           </div>
-          <h3 className="font-medium text-lg mb-1">No invoices yet</h3>
-          <p className="text-muted-foreground text-center mb-4 max-w-sm">
+          <h3 className="font-medium text-lg mb-1 text-white">No invoices yet</h3>
+          <p className="text-[#6b7280] text-center mb-4 max-w-sm">
             Create your first invoice to start getting paid
           </p>
-          <Button asChild>
+          <Button asChild className="bg-primary hover:bg-primary/90 text-white rounded-full px-4">
             <Link href="/invoices/new">Create Invoice</Link>
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
@@ -122,129 +123,134 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7280]" />
           <Input
             placeholder="Search invoices..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className={cn(inputClassName, "pl-9")}
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className={cn(inputClassName, "w-[150px]")}>
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="sent">Sent</SelectItem>
-            <SelectItem value="viewed">Viewed</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
-            <SelectItem value="overdue">Overdue</SelectItem>
+          <SelectContent className="bg-[#111113] border-[#1e1e21]">
+            <SelectItem value="all" className="text-white hover:bg-[#1a1a1e]">All Status</SelectItem>
+            <SelectItem value="draft" className="text-white hover:bg-[#1a1a1e]">Draft</SelectItem>
+            <SelectItem value="sent" className="text-white hover:bg-[#1a1a1e]">Sent</SelectItem>
+            <SelectItem value="viewed" className="text-white hover:bg-[#1a1a1e]">Viewed</SelectItem>
+            <SelectItem value="paid" className="text-white hover:bg-[#1a1a1e]">Paid</SelectItem>
+            <SelectItem value="overdue" className="text-white hover:bg-[#1a1a1e]">Overdue</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {filteredInvoices.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            No invoices found matching your search
-          </CardContent>
-        </Card>
+        <div className="rounded-xl bg-[#111113] border border-[#1e1e21] py-8 text-center text-[#6b7280]">
+          No invoices found matching your search
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="rounded-xl bg-[#111113] border border-[#1e1e21] divide-y divide-[#1e1e21] overflow-hidden">
           {filteredInvoices.map((invoice) => (
-            <Card key={invoice.id} className="hover:bg-muted/30 transition-colors">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4 min-w-0 flex-1">
-                    <div className="hidden sm:flex h-10 w-10 rounded-lg bg-primary/10 items-center justify-center shrink-0">
-                      <FileText className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/invoices/${invoice.id}`}
-                          className="font-medium hover:underline"
-                        >
-                          {invoice.invoiceNumber}
-                        </Link>
-                        {getStatusBadge(invoice.status || "draft")}
-                      </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {invoice.clientCompany || invoice.clientName || "No client"}
-                      </p>
-                    </div>
+            <div
+              key={invoice.id}
+              className="p-4 hover:bg-[#1a1a1e]/50 transition-colors duration-150"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <div className="hidden sm:flex h-10 w-10 rounded-lg bg-primary/10 items-center justify-center shrink-0">
+                    <FileText className="h-5 w-5 text-primary" />
                   </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="text-right hidden md:block">
-                      <p className="font-medium">{formatCurrency(invoice.total || "0")}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Due {format(new Date(invoice.dueDate), "MMM d, yyyy")}
-                      </p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/invoices/${invoice.id}`}
+                        className="font-medium text-white font-mono text-sm hover:text-primary transition-colors"
+                      >
+                        {invoice.invoiceNumber}
+                      </Link>
+                      {getStatusBadge(invoice.status || "draft")}
                     </div>
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="shrink-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Actions</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/invoices/${invoice.id}`}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
-                          </Link>
-                        </DropdownMenuItem>
-                        {invoice.status === "draft" && (
-                          <DropdownMenuItem asChild>
-                            <Link href={`/invoices/${invoice.id}/edit`}>
-                              <Pencil className="mr-2 h-4 w-4" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem asChild>
-                          <Link href={`/api/invoices/${invoice.id}/pdf`}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Download PDF
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {invoice.status === "draft" && (
-                          <DropdownMenuItem
-                            onClick={() => handleStatusChange(invoice.id, "sent")}
-                          >
-                            <Send className="mr-2 h-4 w-4" />
-                            Mark as Sent
-                          </DropdownMenuItem>
-                        )}
-                        {(invoice.status === "sent" || invoice.status === "viewed") && (
-                          <DropdownMenuItem
-                            onClick={() => handleStatusChange(invoice.id, "paid")}
-                          >
-                            <CheckCircle className="mr-2 h-4 w-4" />
-                            Mark as Paid
-                          </DropdownMenuItem>
-                        )}
-                        {invoice.status !== "cancelled" && invoice.status !== "paid" && (
-                          <DropdownMenuItem
-                            onClick={() => handleStatusChange(invoice.id, "cancelled")}
-                            className="text-destructive"
-                          >
-                            <XCircle className="mr-2 h-4 w-4" />
-                            Cancel
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <p className="text-sm text-[#6b7280] truncate mt-0.5">
+                      {invoice.clientCompany || invoice.clientName || "No client"}
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right hidden md:block">
+                    <p className="font-medium text-white">{formatCurrency(invoice.total || "0")}</p>
+                    <p className="text-xs text-[#6b7280]">
+                      Due {format(new Date(invoice.dueDate), "MMM d, yyyy")}
+                    </p>
+                  </div>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="shrink-0 text-[#6b7280] hover:text-white hover:bg-[#1a1a1e]"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Actions</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-[#111113] border-[#1e1e21]">
+                      <DropdownMenuItem asChild className="text-white hover:bg-[#1a1a1e]">
+                        <Link href={`/invoices/${invoice.id}`}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          View
+                        </Link>
+                      </DropdownMenuItem>
+                      {invoice.status === "draft" && (
+                        <DropdownMenuItem asChild className="text-white hover:bg-[#1a1a1e]">
+                          <Link href={`/invoices/${invoice.id}/edit`}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem asChild className="text-white hover:bg-[#1a1a1e]">
+                        <Link href={`/api/invoices/${invoice.id}/pdf`}>
+                          <Download className="mr-2 h-4 w-4" />
+                          Download PDF
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-[#1e1e21]" />
+                      {invoice.status === "draft" && (
+                        <DropdownMenuItem
+                          onClick={() => handleStatusChange(invoice.id, "sent")}
+                          className="text-white hover:bg-[#1a1a1e]"
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Mark as Sent
+                        </DropdownMenuItem>
+                      )}
+                      {(invoice.status === "sent" || invoice.status === "viewed") && (
+                        <DropdownMenuItem
+                          onClick={() => handleStatusChange(invoice.id, "paid")}
+                          className="text-white hover:bg-[#1a1a1e]"
+                        >
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Mark as Paid
+                        </DropdownMenuItem>
+                      )}
+                      {invoice.status !== "cancelled" && invoice.status !== "paid" && (
+                        <DropdownMenuItem
+                          onClick={() => handleStatusChange(invoice.id, "cancelled")}
+                          className="text-red-400 hover:bg-red-500/10"
+                        >
+                          <XCircle className="mr-2 h-4 w-4" />
+                          Cancel
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       )}

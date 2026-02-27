@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { FileText, UserPlus, Package, Settings } from "lucide-react";
 
 const actions = [
@@ -34,31 +32,30 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-        <CardDescription>Common tasks to get you started</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="rounded-xl bg-[#111113] border border-[#1e1e21] overflow-hidden">
+      <div className="p-4 border-b border-[#1e1e21]">
+        <h3 className="text-sm font-semibold text-primary">Quick Actions</h3>
+        <p className="text-xs text-[#6b7280] mt-0.5">Common tasks to get you started</p>
+      </div>
+      <div className="p-4">
         <div className="grid grid-cols-2 gap-3">
           {actions.map((action) => (
-            <Button
+            <Link
               key={action.href}
-              variant="outline"
-              className="h-auto flex-col items-start gap-1 p-4"
-              asChild
+              href={action.href}
+              className="flex flex-col items-start gap-2 p-4 rounded-xl bg-[#1a1a1e] border border-transparent hover:border-[#2a2a30] transition-all duration-150"
             >
-              <Link href={action.href}>
-                <action.icon className="h-5 w-5 mb-1 text-muted-foreground" />
-                <span className="font-medium">{action.title}</span>
-                <span className="text-xs text-muted-foreground font-normal">
-                  {action.description}
-                </span>
-              </Link>
-            </Button>
+              <div className="p-2 rounded-lg bg-[#111113]">
+                <action.icon className="h-4 w-4 text-[#6b7280]" />
+              </div>
+              <div>
+                <span className="font-medium text-white text-sm">{action.title}</span>
+                <p className="text-xs text-[#6b7280]">{action.description}</p>
+              </div>
+            </Link>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

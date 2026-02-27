@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { format, addDays } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,12 +16,16 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, Plus, Trash2, Loader2, Save } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Loader2, Save, ChevronDown, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { createInvoice } from "@/app/(dashboard)/invoices/actions";
 import { InvoicePreview } from "@/components/invoices/invoice-preview";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface Client {
   id: string;
@@ -64,6 +67,38 @@ interface InvoiceBuilderProps {
   businessProfile: BusinessProfile | null;
 }
 
+function SectionCard({ 
+  title, 
+  children, 
+  defaultOpen = true 
+}: { 
+  title: string; 
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="rounded-xl bg-[#111113] border border-[#1e1e21] overflow-hidden">
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left hover:bg-[#1a1a1e]/50 transition-colors duration-150">
+          <h3 className="text-sm font-semibold text-primary">{title}</h3>
+          <ChevronDown className={cn(
+            "h-4 w-4 text-[#6b7280] transition-transform duration-150",
+            isOpen && "rotate-180"
+          )} />
+        </CollapsibleTrigger>
+        <div className="h-px bg-[#1e1e21]" />
+        <CollapsibleContent>
+          <div className="p-4 space-y-4">
+            {children}
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+}
+
 export function InvoiceBuilder({
   clients,
   items,
@@ -89,7 +124,6 @@ export function InvoiceBuilder({
 
   const selectedClient = clients.find((c) => c.id === clientId);
 
-  // Calculations
   const { subtotal, taxAmount, discountAmount, total } = useMemo(() => {
     const subtotal = lineItems.reduce((sum, item) => sum + item.amount, 0);
     const taxAmount = subtotal * (taxRate / 100);
@@ -185,53 +219,68 @@ export function InvoiceBuilder({
     }
   };
 
+  // Custom input styles for dark theme
+  const inputClassName = "bg-[#1a1a1e] border-0 rounded-xl text-white placeholder:text-[#6b7280] focus:ring-2 focus:ring-primary h-10";
+  const labelClassName = "text-xs text-[#9ca3af]";
+
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      {/* Left: Form */}
-      <div className="space-y-6">
+    <div className="min-h-screen">
+      {/* Top Bar */}
+      <header className="sticky top-0 z-30 bg-[#0a0a0b] border-b border-[#1e1e21] px-6 py-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">New Invoice</h1>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-sm bg-primary" />
+            <h1 className="text-lg font-semibold text-white">New Invoice</h1>
+          </div>
+          <div className="flex items-center gap-2">
             <Button
-              variant="outline"
+              variant="ghost"
+              size="sm"
               onClick={() => handleSubmit("draft")}
               disabled={isLoading}
+              className="text-[#9ca3af] hover:text-white hover:bg-[#1a1a1e]"
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Save className="mr-2 h-4 w-4" />
               Save Draft
             </Button>
-            <Button onClick={() => handleSubmit("sent")} disabled={isLoading}>
+            <Button 
+              onClick={() => handleSubmit("sent")} 
+              disabled={isLoading}
+              className="bg-primary hover:bg-primary/90 text-white rounded-full px-4"
+            >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Download className="mr-2 h-4 w-4" />
               Create Invoice
             </Button>
           </div>
         </div>
+      </header>
 
-        {/* Invoice Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Invoice Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      {/* Main Content - Two Columns */}
+      <div className="flex">
+        {/* Left: Form Panel (55%) */}
+        <div className="w-[55%] p-6 space-y-4 overflow-y-auto max-h-[calc(100vh-60px)]">
+          {/* Invoice Details */}
+          <SectionCard title="Invoice Details">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="invoiceNumber">Invoice Number</Label>
+                <Label className={labelClassName}>Invoice Number</Label>
                 <Input
-                  id="invoiceNumber"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
+                  className={cn(inputClassName, "font-mono")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="client">Client *</Label>
+                <Label className={labelClassName}>Client *</Label>
                 <Select value={clientId} onValueChange={setClientId}>
-                  <SelectTrigger id="client">
+                  <SelectTrigger className={inputClassName}>
                     <SelectValue placeholder="Select client" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#111113] border-[#1e1e21]">
                     {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
+                      <SelectItem key={client.id} value={client.id} className="text-white hover:bg-[#1a1a1e]">
                         {client.company || client.name}
                       </SelectItem>
                     ))}
@@ -242,176 +291,182 @@ export function InvoiceBuilder({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Issue Date</Label>
+                <Label className={labelClassName}>Issue Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !issueDate && "text-muted-foreground"
+                        inputClassName,
+                        "w-full justify-start text-left font-normal border-0",
+                        !issueDate && "text-[#6b7280]"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-[#6b7280]" />
                       {issueDate ? format(issueDate, "MMM d, yyyy") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0 bg-[#111113] border-[#1e1e21]">
                     <Calendar
                       mode="single"
                       selected={issueDate}
                       onSelect={(date) => date && setIssueDate(date)}
                       initialFocus
+                      className="bg-[#111113]"
                     />
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Due Date</Label>
+                <Label className={labelClassName}>Due Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !dueDate && "text-muted-foreground"
+                        inputClassName,
+                        "w-full justify-start text-left font-normal border-0",
+                        !dueDate && "text-[#6b7280]"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-[#6b7280]" />
                       {dueDate ? format(dueDate, "MMM d, yyyy") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0 bg-[#111113] border-[#1e1e21]">
                     <Calendar
                       mode="single"
                       selected={dueDate}
                       onSelect={(date) => date && setDueDate(date)}
                       initialFocus
+                      className="bg-[#111113]"
                     />
                   </PopoverContent>
                 </Popover>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </SectionCard>
 
-        {/* Line Items */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Line Items</CardTitle>
+          {/* Line Items */}
+          <SectionCard title="Line Items">
             {items.length > 0 && (
-              <Select onValueChange={(value) => addFromLibrary(items.find((i) => i.id === value)!)}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Add from library" />
-                </SelectTrigger>
-                <SelectContent>
-                  {items.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex justify-end mb-2">
+                <Select onValueChange={(value) => addFromLibrary(items.find((i) => i.id === value)!)}>
+                  <SelectTrigger className="w-[180px] bg-[#1a1a1e] border-0 rounded-lg text-sm text-[#9ca3af]">
+                    <SelectValue placeholder="Add from library" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#111113] border-[#1e1e21]">
+                    {items.map((item) => (
+                      <SelectItem key={item.id} value={item.id} className="text-white hover:bg-[#1a1a1e]">
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {lineItems.map((item, index) => (
-              <div key={item.id} className="space-y-3">
-                {index > 0 && <Separator />}
-                <div className="grid gap-3">
-                  <Input
-                    placeholder="Description"
-                    value={item.description}
-                    onChange={(e) => updateLineItem(item.id, "description", e.target.value)}
-                  />
-                  <div className="grid grid-cols-4 gap-3">
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Qty</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateLineItem(item.id, "quantity", parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Price</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={item.unitPrice}
-                        onChange={(e) =>
-                          updateLineItem(item.id, "unitPrice", parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Amount</Label>
-                      <Input
-                        value={`$${item.amount.toFixed(2)}`}
-                        disabled
-                        className="bg-muted"
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeLineItem(item.id)}
-                        disabled={lineItems.length === 1}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+
+            <div className="space-y-3">
+              {lineItems.map((item, index) => (
+                <div key={item.id} className="space-y-3">
+                  {index > 0 && <div className="h-px bg-[#1e1e21]" />}
+                  <div className="grid gap-3">
+                    <Input
+                      placeholder="Description"
+                      value={item.description}
+                      onChange={(e) => updateLineItem(item.id, "description", e.target.value)}
+                      className={inputClassName}
+                    />
+                    <div className="grid grid-cols-4 gap-3">
+                      <div className="space-y-1">
+                        <Label className={labelClassName}>Qty</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateLineItem(item.id, "quantity", parseFloat(e.target.value) || 0)
+                          }
+                          className={inputClassName}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className={labelClassName}>Price</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={item.unitPrice}
+                          onChange={(e) =>
+                            updateLineItem(item.id, "unitPrice", parseFloat(e.target.value) || 0)
+                          }
+                          className={inputClassName}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className={labelClassName}>Amount</Label>
+                        <Input
+                          value={`$${item.amount.toFixed(2)}`}
+                          disabled
+                          className={cn(inputClassName, "text-[#9ca3af]")}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeLineItem(item.id)}
+                          disabled={lineItems.length === 1}
+                          className="text-[#6b7280] hover:text-red-400 hover:bg-red-400/10 rounded-lg h-10 w-10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
-            <Button variant="outline" onClick={addLineItem} className="w-full">
+            <Button 
+              variant="outline" 
+              onClick={addLineItem} 
+              className="w-full bg-transparent border-dashed border-[#2a2a30] hover:bg-[#1a1a1e] hover:border-[#3a3a40] text-[#9ca3af] rounded-xl h-10"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Line Item
             </Button>
-          </CardContent>
-        </Card>
+          </SectionCard>
 
-        {/* Tax & Discount */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Tax & Discount</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          {/* Tax & Discount */}
+          <SectionCard title="Tax & Discount">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="taxRate">Tax Rate (%)</Label>
+                <Label className={labelClassName}>Tax Rate (%)</Label>
                 <Input
-                  id="taxRate"
                   type="number"
                   min="0"
                   max="100"
                   step="0.01"
                   value={taxRate}
                   onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
+                  className={inputClassName}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Discount</Label>
+                <Label className={labelClassName}>Discount</Label>
                 <div className="flex gap-2">
                   <Select
                     value={discountType}
                     onValueChange={(v) => setDiscountType(v as "percentage" | "fixed")}
                   >
-                    <SelectTrigger className="w-[100px]">
+                    <SelectTrigger className={cn(inputClassName, "w-[80px]")}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="percentage">%</SelectItem>
-                      <SelectItem value="fixed">$</SelectItem>
+                    <SelectContent className="bg-[#111113] border-[#1e1e21]">
+                      <SelectItem value="percentage" className="text-white hover:bg-[#1a1a1e]">%</SelectItem>
+                      <SelectItem value="fixed" className="text-white hover:bg-[#1a1a1e]">$</SelectItem>
                     </SelectContent>
                   </Select>
                   <Input
@@ -420,60 +475,58 @@ export function InvoiceBuilder({
                     step="0.01"
                     value={discountValue}
                     onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)}
+                    className={cn(inputClassName, "flex-1")}
                   />
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </SectionCard>
 
-        {/* Notes */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Notes & Terms</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Any additional notes for your client..."
-                rows={2}
-              />
+          {/* Notes */}
+          <SectionCard title="Notes & Terms" defaultOpen={false}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className={labelClassName}>Notes</Label>
+                <Textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Any additional notes for your client..."
+                  rows={2}
+                  className={cn(inputClassName, "h-auto min-h-[60px] resize-none")}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className={labelClassName}>Terms & Conditions</Label>
+                <Textarea
+                  value={terms}
+                  onChange={(e) => setTerms(e.target.value)}
+                  placeholder="Payment terms, late fees, etc..."
+                  rows={2}
+                  className={cn(inputClassName, "h-auto min-h-[60px] resize-none")}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="terms">Terms & Conditions</Label>
-              <Textarea
-                id="terms"
-                value={terms}
-                onChange={(e) => setTerms(e.target.value)}
-                placeholder="Payment terms, late fees, etc..."
-                rows={2}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </SectionCard>
+        </div>
 
-      {/* Right: Preview */}
-      <div className="hidden lg:block">
-        <div className="sticky top-6">
-          <InvoicePreview
-            invoiceNumber={invoiceNumber}
-            client={selectedClient}
-            businessProfile={businessProfile}
-            issueDate={issueDate}
-            dueDate={dueDate}
-            lineItems={lineItems}
-            subtotal={subtotal}
-            taxRate={taxRate}
-            taxAmount={taxAmount}
-            discountAmount={discountAmount}
-            total={total}
-            notes={notes}
-          />
+        {/* Right: Preview Panel (45%) */}
+        <div className="w-[45%] p-6 bg-[#0a0a0b]">
+          <div className="sticky top-24">
+            <InvoicePreview
+              invoiceNumber={invoiceNumber}
+              client={selectedClient}
+              businessProfile={businessProfile}
+              issueDate={issueDate}
+              dueDate={dueDate}
+              lineItems={lineItems}
+              subtotal={subtotal}
+              taxRate={taxRate}
+              taxAmount={taxAmount}
+              discountAmount={discountAmount}
+              total={total}
+              notes={notes}
+            />
+          </div>
         </div>
       </div>
     </div>

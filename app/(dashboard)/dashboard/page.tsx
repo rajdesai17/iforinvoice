@@ -89,12 +89,16 @@ export default async function DashboardPage() {
   const data = await getDashboardData(DEMO_USER_ID);
 
   return (
-    <div className="p-4 lg:p-6 space-y-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here{"'"}s an overview of your invoicing activity.
-        </p>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-2 rounded-sm bg-primary" />
+        <div>
+          <h1 className="text-xl font-semibold text-white">Dashboard</h1>
+          <p className="text-sm text-[#6b7280]">
+            Welcome back! Here{"'"}s an overview of your invoicing activity.
+          </p>
+        </div>
       </div>
 
       <DashboardStats stats={data.stats} clientCount={data.clientCount} />
