@@ -30,23 +30,16 @@ interface BusinessProfile {
   invoiceFooter: string | null;
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
 interface BusinessProfileFormProps {
   profile: BusinessProfile | null;
-  user: User;
 }
 
-export function BusinessProfileForm({ profile, user }: BusinessProfileFormProps) {
+export function BusinessProfileForm({ profile }: BusinessProfileFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     businessName: profile?.businessName || "",
-    email: profile?.email || user.email || "",
+    email: profile?.email || "",
     phone: profile?.phone || "",
     addressLine1: profile?.addressLine1 || "",
     addressLine2: profile?.addressLine2 || "",

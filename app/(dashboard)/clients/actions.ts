@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { DEMO_USER_ID } from "../layout";
 
 interface ClientData {
   name: string;
@@ -23,18 +22,12 @@ interface ClientData {
 
 export async function createClient(data: ClientData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [client] = await db
       .insert(clients)
       .values({
-        userId: session.user.id,
+        userId,
         name: data.name,
         email: data.email || null,
         phone: data.phone || null,
@@ -61,13 +54,7 @@ export async function createClient(data: ClientData) {
 
 export async function updateClient(clientId: string, data: ClientData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [client] = await db
       .update(clients)
@@ -85,7 +72,7 @@ export async function updateClient(clientId: string, data: ClientData) {
         notes: data.notes || null,
         updatedAt: new Date(),
       })
-      .where(and(eq(clients.id, clientId), eq(clients.userId, session.user.id)))
+      .where(and(eq(clients.id, clientId), eq(clients.userId, userId)))
       .returning();
 
     if (!client) {
@@ -104,13 +91,7 @@ export async function updateClient(clientId: string, data: ClientData) {
 
 export async function archiveClient(clientId: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [client] = await db
       .update(clients)
@@ -118,7 +99,7 @@ export async function archiveClient(clientId: string) {
         isArchived: true,
         updatedAt: new Date(),
       })
-      .where(and(eq(clients.id, clientId), eq(clients.userId, session.user.id)))
+      .where(and(eq(clients.id, clientId), eq(clients.userId, userId)))
       .returning();
 
     if (!client) {

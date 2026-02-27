@@ -1,9 +1,8 @@
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clients, items, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { InvoiceBuilder } from "@/components/invoices/invoice-builder";
+import { DEMO_USER_ID } from "../../layout";
 
 export const metadata = {
   title: "New Invoice",
@@ -34,15 +33,7 @@ async function getData(userId: string) {
 }
 
 export default async function NewInvoicePage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const data = await getData(session.user.id);
+  const data = await getData(DEMO_USER_ID);
 
   // Generate next invoice number
   const prefix = data.profile?.invoicePrefix || "INV";

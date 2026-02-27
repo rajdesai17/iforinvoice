@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { items } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { DEMO_USER_ID } from "../layout";
 
 interface ItemData {
   name: string;
@@ -17,18 +16,12 @@ interface ItemData {
 
 export async function createItem(data: ItemData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [item] = await db
       .insert(items)
       .values({
-        userId: session.user.id,
+        userId,
         name: data.name,
         description: data.description || null,
         rate: data.rate,
@@ -48,13 +41,7 @@ export async function createItem(data: ItemData) {
 
 export async function updateItem(itemId: string, data: ItemData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [item] = await db
       .update(items)
@@ -66,7 +53,7 @@ export async function updateItem(itemId: string, data: ItemData) {
         isTaxable: data.isTaxable,
         updatedAt: new Date(),
       })
-      .where(and(eq(items.id, itemId), eq(items.userId, session.user.id)))
+      .where(and(eq(items.id, itemId), eq(items.userId, userId)))
       .returning();
 
     if (!item) {
@@ -84,17 +71,11 @@ export async function updateItem(itemId: string, data: ItemData) {
 
 export async function deleteItem(itemId: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [item] = await db
       .delete(items)
-      .where(and(eq(items.id, itemId), eq(items.userId, session.user.id)))
+      .where(and(eq(items.id, itemId), eq(items.userId, userId)))
       .returning();
 
     if (!item) {

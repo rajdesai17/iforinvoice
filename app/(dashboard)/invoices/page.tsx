@@ -1,12 +1,11 @@
-import { headers } from "next/headers";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, clients } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { InvoicesList } from "@/components/invoices/invoices-list";
+import { DEMO_USER_ID } from "../layout";
 
 export const metadata = {
   title: "Invoices",
@@ -32,15 +31,7 @@ async function getInvoices(userId: string) {
 }
 
 export default async function InvoicesPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const invoicesData = await getInvoices(session.user.id);
+  const invoicesData = await getInvoices(DEMO_USER_ID);
 
   return (
     <div className="p-4 lg:p-6 space-y-6">

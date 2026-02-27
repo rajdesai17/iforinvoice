@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, invoiceLineItems, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { DEMO_USER_ID } from "../layout";
 
 interface LineItem {
   description: string;
@@ -34,19 +33,13 @@ interface CreateInvoiceData {
 
 export async function createInvoice(data: CreateInvoiceData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     // Create invoice
     const [invoice] = await db
       .insert(invoices)
       .values({
-        userId: session.user.id,
+        userId,
         clientId: data.clientId,
         invoiceNumber: data.invoiceNumber,
         status: data.status,
@@ -82,7 +75,7 @@ export async function createInvoice(data: CreateInvoiceData) {
     const currentProfile = await db
       .select()
       .from(businessProfiles)
-      .where(eq(businessProfiles.userId, session.user.id))
+      .where(eq(businessProfiles.userId, userId))
       .limit(1);
 
     if (currentProfile.length > 0) {
@@ -92,11 +85,11 @@ export async function createInvoice(data: CreateInvoiceData) {
           nextInvoiceNumber: (currentProfile[0].nextInvoiceNumber || 1) + 1,
           updatedAt: new Date(),
         })
-        .where(eq(businessProfiles.userId, session.user.id));
+        .where(eq(businessProfiles.userId, userId));
     } else {
       // Create profile if doesn't exist
       await db.insert(businessProfiles).values({
-        userId: session.user.id,
+        userId,
         nextInvoiceNumber: 2,
       });
     }
@@ -113,13 +106,7 @@ export async function createInvoice(data: CreateInvoiceData) {
 
 export async function updateInvoiceStatus(invoiceId: string, status: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const updateData: Record<string, unknown> = {
       status: status as "draft" | "sent" | "viewed" | "paid" | "overdue" | "cancelled",
@@ -133,7 +120,7 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
     const [invoice] = await db
       .update(invoices)
       .set(updateData)
-      .where(and(eq(invoices.id, invoiceId), eq(invoices.userId, session.user.id)))
+      .where(and(eq(invoices.id, invoiceId), eq(invoices.userId, userId)))
       .returning();
 
     if (!invoice) {
@@ -153,17 +140,11 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
 
 export async function deleteInvoice(invoiceId: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     const [invoice] = await db
       .delete(invoices)
-      .where(and(eq(invoices.id, invoiceId), eq(invoices.userId, session.user.id)))
+      .where(and(eq(invoices.id, invoiceId), eq(invoices.userId, userId)))
       .returning();
 
     if (!invoice) {

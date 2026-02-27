@@ -1,9 +1,8 @@
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { businessProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { BusinessProfileForm } from "@/components/settings/business-profile-form";
+import { DEMO_USER_ID } from "../layout";
 
 export const metadata = {
   title: "Settings",
@@ -18,15 +17,7 @@ async function getProfile(userId: string) {
 }
 
 export default async function SettingsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const profile = await getProfile(session.user.id);
+  const profile = await getProfile(DEMO_USER_ID);
 
   return (
     <div className="p-4 lg:p-6 max-w-2xl">
@@ -36,7 +27,7 @@ export default async function SettingsPage() {
           Manage your business profile and invoice defaults
         </p>
       </div>
-      <BusinessProfileForm profile={profile} user={session.user} />
+      <BusinessProfileForm profile={profile} />
     </div>
   );
 }

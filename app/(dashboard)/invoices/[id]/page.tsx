@@ -1,7 +1,5 @@
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, invoiceLineItems, clients, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -10,8 +8,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Download, Send, CheckCircle } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { InvoiceStatusActions } from "@/components/invoices/invoice-status-actions";
+import { DEMO_USER_ID } from "../../layout";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -69,15 +68,7 @@ function getStatusBadge(status: string) {
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const data = await getInvoice(session.user.id, id);
+  const data = await getInvoice(DEMO_USER_ID, id);
 
   if (!data) {
     notFound();

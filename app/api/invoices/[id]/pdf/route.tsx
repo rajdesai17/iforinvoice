@@ -1,11 +1,12 @@
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, invoiceLineItems, clients, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoicePDF } from "@/components/invoices/invoice-pdf";
+
+// Demo user ID (no auth)
+const DEMO_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export async function GET(
   request: Request,
@@ -13,19 +14,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = DEMO_USER_ID;
 
     // Get invoice data
     const [invoice] = await db
       .select()
       .from(invoices)
-      .where(and(eq(invoices.id, id), eq(invoices.userId, session.user.id)));
+      .where(and(eq(invoices.id, id), eq(invoices.userId, userId)));
 
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
@@ -45,7 +40,7 @@ export async function GET(
     const [profile] = await db
       .select()
       .from(businessProfiles)
-      .where(eq(businessProfiles.userId, session.user.id));
+      .where(eq(businessProfiles.userId, userId));
 
     // Generate PDF
     const pdfBuffer = await renderToBuffer(

@@ -1,21 +1,18 @@
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { invoices, clients } from "@/lib/db/schema";
-import { eq, sql, and, gte, lte } from "drizzle-orm";
+import { eq, sql, and, gte } from "drizzle-orm";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { RecentInvoices } from "@/components/dashboard/recent-invoices";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { QuickActions } from "@/components/dashboard/quick-actions";
+import { DEMO_USER_ID } from "../layout";
 
 export const metadata = {
   title: "Dashboard",
 };
 
 async function getDashboardData(userId: string) {
-  const now = new Date();
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const startOfYear = new Date(new Date().getFullYear(), 0, 1);
 
   // Get invoice stats
   const [stats] = await db
@@ -51,8 +48,8 @@ async function getDashboardData(userId: string) {
   // Get monthly revenue for chart (last 6 months)
   const monthlyRevenue = await db
     .select({
-      month: sql<string>`TO_CHAR(paid_at, 'Mon')`,
-      monthNum: sql<number>`EXTRACT(MONTH FROM paid_at)`,
+      month: sql<string>`TO_CHAR("paidAt", 'Mon')`,
+      monthNum: sql<number>`EXTRACT(MONTH FROM "paidAt")`,
       revenue: sql<string>`COALESCE(SUM(total), 0)`,
     })
     .from(invoices)
@@ -63,8 +60,8 @@ async function getDashboardData(userId: string) {
         gte(invoices.paidAt, startOfYear)
       )
     )
-    .groupBy(sql`TO_CHAR(paid_at, 'Mon'), EXTRACT(MONTH FROM paid_at)`)
-    .orderBy(sql`EXTRACT(MONTH FROM paid_at)`);
+    .groupBy(sql`TO_CHAR("paidAt", 'Mon'), EXTRACT(MONTH FROM "paidAt")`)
+    .orderBy(sql`EXTRACT(MONTH FROM "paidAt")`);
 
   // Get client count
   const [clientCount] = await db
@@ -89,15 +86,7 @@ async function getDashboardData(userId: string) {
 }
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const data = await getDashboardData(session.user.id);
+  const data = await getDashboardData(DEMO_USER_ID);
 
   return (
     <div className="p-4 lg:p-6 space-y-6">

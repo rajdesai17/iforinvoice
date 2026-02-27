@@ -1,12 +1,11 @@
 import { Suspense } from "react";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clients, invoices } from "@/lib/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { ClientsList } from "@/components/clients/clients-list";
 import { ClientsHeader } from "@/components/clients/clients-header";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DEMO_USER_ID } from "../layout";
 
 export const metadata = {
   title: "Clients",
@@ -45,15 +44,7 @@ function ClientsLoading() {
 }
 
 export default async function ClientsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const clientsData = await getClients(session.user.id);
+  const clientsData = await getClients(DEMO_USER_ID);
 
   return (
     <div className="p-4 lg:p-6 space-y-6">

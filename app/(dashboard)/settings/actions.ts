@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { businessProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { DEMO_USER_ID } from "../layout";
 
 interface ProfileData {
   businessName: string;
@@ -26,19 +25,13 @@ interface ProfileData {
 
 export async function updateBusinessProfile(data: ProfileData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = DEMO_USER_ID;
 
     // Check if profile exists
     const [existing] = await db
       .select()
       .from(businessProfiles)
-      .where(eq(businessProfiles.userId, session.user.id));
+      .where(eq(businessProfiles.userId, userId));
 
     const profileData = {
       businessName: data.businessName || null,
@@ -62,10 +55,10 @@ export async function updateBusinessProfile(data: ProfileData) {
       await db
         .update(businessProfiles)
         .set(profileData)
-        .where(eq(businessProfiles.userId, session.user.id));
+        .where(eq(businessProfiles.userId, userId));
     } else {
       await db.insert(businessProfiles).values({
-        userId: session.user.id,
+        userId,
         ...profileData,
       });
     }

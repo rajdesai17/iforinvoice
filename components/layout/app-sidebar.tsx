@@ -1,17 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   FileText,
   Users,
   Package,
   Settings,
-  LogOut,
   Plus,
 } from "lucide-react";
-import { signOut, useSession } from "@/lib/auth-client";
 import {
   Sidebar,
   SidebarContent,
@@ -26,13 +24,6 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const navigation = [
@@ -60,22 +51,6 @@ const navigation = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { data: session } = useSession();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/login");
-  };
-
-  const userInitials = session?.user?.name
-    ? session.user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "U";
 
   return (
     <Sidebar>
@@ -155,38 +130,22 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-sidebar-accent transition-colors">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                  {userInitials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 truncate">
-                <p className="text-sm font-medium truncate">
-                  {session?.user?.name || "User"}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {session?.user?.email}
-                </p>
-              </div>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuItem asChild>
-              <Link href="/settings">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Link 
+          href="/settings" 
+          className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-sidebar-accent transition-colors"
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary/10 text-primary text-sm">
+              IF
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 truncate">
+            <p className="text-sm font-medium truncate">Demo User</p>
+            <p className="text-xs text-muted-foreground truncate">
+              demo@invoiceflow.app
+            </p>
+          </div>
+        </Link>
       </SidebarFooter>
     </Sidebar>
   );

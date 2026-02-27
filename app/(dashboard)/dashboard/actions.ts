@@ -3,23 +3,11 @@
 import { db } from '@/lib/db'
 import { invoices, clients } from '@/lib/db/schema'
 import { eq, and, sql, desc, gte } from 'drizzle-orm'
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
 import type { DashboardStats, InvoiceWithRelations } from '@/lib/types'
-
-async function getSession() {
-  return await auth.api.getSession({
-    headers: await headers(),
-  })
-}
+import { DEMO_USER_ID } from '../layout'
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const session = await getSession()
-  if (!session?.user?.id) {
-    return { totalRevenue: 0, outstanding: 0, invoicesSent: 0, overdueCount: 0 }
-  }
-
-  const userId = session.user.id
+  const userId = DEMO_USER_ID
 
   // Get total revenue (paid invoices)
   const revenueResult = await db
@@ -69,14 +57,13 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 }
 
 export async function getRecentInvoices(limit: number = 5): Promise<InvoiceWithRelations[]> {
-  const session = await getSession()
-  if (!session?.user?.id) return []
+  const userId = DEMO_USER_ID
 
   const results = await db
     .select()
     .from(invoices)
     .innerJoin(clients, eq(invoices.clientId, clients.id))
-    .where(eq(invoices.userId, session.user.id))
+    .where(eq(invoices.userId, userId))
     .orderBy(desc(invoices.createdAt))
     .limit(limit)
 
@@ -88,8 +75,7 @@ export async function getRecentInvoices(limit: number = 5): Promise<InvoiceWithR
 }
 
 export async function getMonthlyRevenue(): Promise<{ month: string; revenue: number }[]> {
-  const session = await getSession()
-  if (!session?.user?.id) return []
+  const userId = DEMO_USER_ID
 
   const sixMonthsAgo = new Date()
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5)
@@ -97,14 +83,14 @@ export async function getMonthlyRevenue(): Promise<{ month: string; revenue: num
 
   const results = await db.execute(sql`
     SELECT 
-      TO_CHAR(paid_at, 'Mon') as month,
+      TO_CHAR("paidAt", 'Mon') as month,
       COALESCE(SUM(total), 0)::numeric as revenue
     FROM invoices
-    WHERE user_id = ${session.user.id}
+    WHERE "userId" = ${userId}
       AND status = 'paid'
-      AND paid_at >= ${sixMonthsAgo}
-    GROUP BY TO_CHAR(paid_at, 'Mon'), DATE_TRUNC('month', paid_at)
-    ORDER BY DATE_TRUNC('month', paid_at)
+      AND "paidAt" >= ${sixMonthsAgo}
+    GROUP BY TO_CHAR("paidAt", 'Mon'), DATE_TRUNC('month', "paidAt")
+    ORDER BY DATE_TRUNC('month', "paidAt")
   `)
 
   return results.rows as { month: string; revenue: number }[]
