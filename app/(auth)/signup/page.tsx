@@ -23,13 +23,17 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const { error } = await signUp.email({
+      console.log("[v0] Attempting signup with email:", email);
+      const result = await signUp.email({
         email,
         password,
         name,
       });
+      console.log("[v0] Signup result:", result);
+      const { error } = result;
 
       if (error) {
+        console.log("[v0] Signup error:", error);
         toast.error(error.message || "Failed to create account");
         return;
       }
