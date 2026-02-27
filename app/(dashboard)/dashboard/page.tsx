@@ -48,8 +48,8 @@ async function getDashboardData(userId: string) {
   // Get monthly revenue for chart (last 6 months)
   const monthlyRevenue = await db
     .select({
-      month: sql<string>`TO_CHAR("paidAt", 'Mon')`,
-      monthNum: sql<number>`EXTRACT(MONTH FROM "paidAt")`,
+      month: sql<string>`TO_CHAR(paid_at, 'Mon')`,
+      monthNum: sql<number>`EXTRACT(MONTH FROM paid_at)`,
       revenue: sql<string>`COALESCE(SUM(total), 0)`,
     })
     .from(invoices)
@@ -60,8 +60,8 @@ async function getDashboardData(userId: string) {
         gte(invoices.paidAt, startOfYear)
       )
     )
-    .groupBy(sql`TO_CHAR("paidAt", 'Mon'), EXTRACT(MONTH FROM "paidAt")`)
-    .orderBy(sql`EXTRACT(MONTH FROM "paidAt")`);
+    .groupBy(sql`TO_CHAR(paid_at, 'Mon'), EXTRACT(MONTH FROM paid_at)`)
+    .orderBy(sql`EXTRACT(MONTH FROM paid_at)`);
 
   // Get client count
   const [clientCount] = await db
