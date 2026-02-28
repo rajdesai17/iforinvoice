@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { clients, items, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { InvoiceBuilder } from "@/components/invoices/invoice-builder";
+import { InvoicePageLayout } from "@/components/invoices/create/invoice-page-layout";
 import { DEMO_USER_ID } from "../../layout";
 
 export const metadata = {
@@ -11,11 +11,26 @@ export const metadata = {
 async function getData(userId: string) {
   const [clientsList, itemsList, profile] = await Promise.all([
     db
-      .select({ id: clients.id, name: clients.name, company: clients.company, email: clients.email })
+      .select({
+        id: clients.id,
+        name: clients.name,
+        company: clients.company,
+        email: clients.email,
+        addressLine1: clients.addressLine1,
+        city: clients.city,
+        state: clients.state,
+        postalCode: clients.postalCode,
+      })
       .from(clients)
       .where(and(eq(clients.userId, userId), eq(clients.isArchived, false))),
     db
-      .select({ id: items.id, name: items.name, description: items.description, rate: items.rate, unit: items.unit })
+      .select({
+        id: items.id,
+        name: items.name,
+        description: items.description,
+        rate: items.rate,
+        unit: items.unit,
+      })
       .from(items)
       .where(eq(items.userId, userId)),
     db
@@ -41,14 +56,12 @@ export default async function NewInvoicePage() {
   const invoiceNumber = `${prefix}-${String(nextNumber).padStart(4, "0")}`;
 
   return (
-    <div className="p-4 lg:p-6">
-      <InvoiceBuilder
-        clients={data.clients}
-        items={data.items}
-        defaultInvoiceNumber={invoiceNumber}
-        defaultPaymentTerms={data.profile?.defaultPaymentTerms || 30}
-        businessProfile={data.profile}
-      />
-    </div>
+    <InvoicePageLayout
+      clients={data.clients}
+      items={data.items}
+      defaultInvoiceNumber={invoiceNumber}
+      defaultPaymentTerms={data.profile?.defaultPaymentTerms || 30}
+      businessProfile={data.profile}
+    />
   );
 }
