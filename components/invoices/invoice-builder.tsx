@@ -510,8 +510,8 @@ export function InvoiceBuilder({
         </div>
 
         {/* Right: Preview Panel (45%) */}
-        <div className="w-[45%] p-6 bg-[#0a0a0b] h-[calc(100vh-6rem)] sticky top-24">
-          <div className="h-full">
+        <div className="w-[45%] p-6 bg-[#0a0a0b]">
+          <div className="sticky top-24">
             <InvoicePreview
               invoiceNumber={invoiceNumber}
               client={selectedClient}

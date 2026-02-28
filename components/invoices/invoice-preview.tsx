@@ -65,11 +65,11 @@ export function InvoicePreview({
   const validLineItems = lineItems.filter((item) => item.description && item.amount > 0);
 
   return (
-    <div className="invoice-paper overflow-hidden h-full flex flex-col" style={{
+    <div className="invoice-paper overflow-hidden min-h-[842px] flex flex-col" style={{
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)'
     }}>
-      <div className="p-6 bg-white text-[#111113] flex-1 flex flex-col">
-        <div className="space-y-4 flex-1 flex flex-col">
+      <div className="p-8 bg-white text-[#111113] flex-1">
+        <div className="space-y-6">
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
@@ -127,7 +127,7 @@ export function InvoicePreview({
           </div>
 
           {/* Line Items Table */}
-          <div className="overflow-hidden border border-[#e5e7eb] flex-1">
+          <div className="overflow-hidden border border-[#e5e7eb]">
             {/* Header Row - Violet Background */}
             <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-primary text-white text-xs font-semibold uppercase tracking-wider">
               <div className="col-span-6">Description</div>
@@ -155,7 +155,7 @@ export function InvoicePreview({
           </div>
 
           {/* Totals */}
-          <div className="flex justify-end mt-auto">
+          <div className="flex justify-end">
             <div className="w-64 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-[#9ca3af]">Subtotal</span>
