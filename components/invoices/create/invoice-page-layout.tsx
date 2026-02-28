@@ -12,11 +12,6 @@ import { useKeyboardShortcuts, INVOICE_SHORTCUTS } from "@/hooks/use-keyboard-sh
 import { useAutoSave } from "@/hooks/use-auto-save";
 import type { InvoiceFormData, LineItemFormData } from "@/lib/validations/invoice";
 
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
 import { InvoiceActionsBar } from "./invoice-actions-bar";
 import { InvoiceForm } from "./invoice-form";
 import { InvoiceLivePreview } from "./invoice-live-preview";
@@ -264,9 +259,9 @@ export function InvoicePageLayout({
         isDirty={form.formState.isDirty}
       />
 
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
-        {/* Form Panel */}
-        <ResizablePanel defaultSize={55} minSize={40} maxSize={70}>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Form Panel - Fixed width */}
+        <div className="w-[600px] flex-shrink-0 border-r border-border">
           <InvoiceForm
             form={form}
             totals={totals}
@@ -277,27 +272,23 @@ export function InvoicePageLayout({
             onUpdateLineItem={updateLineItem}
             onAddFromLibrary={addFromLibrary}
           />
-        </ResizablePanel>
+        </div>
 
-        <ResizableHandle withHandle />
-
-        {/* Preview Panel */}
-        <ResizablePanel defaultSize={45} minSize={30}>
-          <div
-            ref={previewRef}
-            className="h-full p-6 overflow-auto bg-background flex items-start justify-center"
-          >
-            <div className="w-full max-w-md">
-              <InvoiceLivePreview
-                formData={formValues}
-                totals={totals}
-                client={selectedClient}
-                businessProfile={businessProfile}
-              />
-            </div>
+        {/* Preview Panel - Takes remaining space */}
+        <div
+          ref={previewRef}
+          className="flex-1 p-8 overflow-auto bg-muted/30 flex items-start justify-center"
+        >
+          <div className="w-full max-w-md sticky top-0">
+            <InvoiceLivePreview
+              formData={formValues}
+              totals={totals}
+              client={selectedClient}
+              businessProfile={businessProfile}
+            />
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </div>
     </div>
   );
 }
