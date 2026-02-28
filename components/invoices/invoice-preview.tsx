@@ -65,11 +65,11 @@ export function InvoicePreview({
   const validLineItems = lineItems.filter((item) => item.description && item.amount > 0);
 
   return (
-    <div className="invoice-paper overflow-hidden flex flex-col" style={{
+    <div className="invoice-paper overflow-hidden flex flex-col rounded-lg" style={{
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)'
     }}>
-      <div className="p-5 bg-white text-[#111113] flex-1">
-        <div className="space-y-4">
+      <div className="p-4 bg-white text-[#111113] flex-1">
+        <div className="space-y-3">
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
@@ -97,9 +97,9 @@ export function InvoicePreview({
           </div>
 
           {/* Billing Info */}
-          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-[#e5e7eb]">
+          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#e5e7eb]">
             <div>
-              <p className="text-[10px] font-semibold text-[#9ca3af] uppercase tracking-wider mb-1">Bill To</p>
+              <p className="text-[10px] font-semibold text-[#9ca3af] uppercase tracking-wider mb-0.5">Bill To</p>
               {client ? (
                 <>
                   <p className="font-medium text-sm text-[#111113]">{client.company || client.name}</p>
@@ -147,7 +147,7 @@ export function InvoicePreview({
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-4 text-center text-[#9ca3af] text-xs">
+                <div className="px-3 py-3 text-center text-[#9ca3af] text-xs">
                   No line items added
                 </div>
               )}
@@ -156,7 +156,7 @@ export function InvoicePreview({
 
           {/* Totals */}
           <div className="flex justify-end">
-            <div className="w-48 space-y-1">
+            <div className="w-44 space-y-0.5">
               <div className="flex justify-between text-xs">
                 <span className="text-[#9ca3af]">Subtotal</span>
                 <span className="text-[#111113]">{formatCurrency(subtotal)}</span>
@@ -184,8 +184,8 @@ export function InvoicePreview({
 
           {/* Notes */}
           {notes && (
-            <div className="pt-3 border-t border-[#e5e7eb]">
-              <p className="text-[10px] font-semibold text-[#9ca3af] uppercase tracking-wider mb-1">Notes</p>
+            <div className="pt-2 border-t border-[#e5e7eb]">
+              <p className="text-[10px] font-semibold text-[#9ca3af] uppercase tracking-wider mb-0.5">Notes</p>
               <p className="text-xs text-[#6b7280] whitespace-pre-wrap">{notes}</p>
             </div>
           )}
