@@ -258,9 +258,9 @@ export function InvoiceBuilder({
       </header>
 
       {/* Main Content - Two Columns */}
-      <div className="flex">
+      <div className="flex h-[calc(100vh-60px)]">
         {/* Left: Form Panel (55%) */}
-        <div className="w-[55%] p-6 space-y-4 overflow-y-auto max-h-[calc(100vh-60px)]">
+        <div className="w-[55%] p-6 space-y-4 overflow-y-auto h-full">
           {/* Invoice Details */}
           <SectionCard title="Invoice Details">
             <div className="grid grid-cols-2 gap-4">
@@ -510,7 +510,7 @@ export function InvoiceBuilder({
         </div>
 
         {/* Right: Preview Panel (45%) */}
-        <div className="w-[45%] h-[calc(100vh-60px)] bg-white overflow-hidden">
+        <div className="w-[45%] h-full bg-white overflow-hidden">
             <InvoicePreview
               invoiceNumber={invoiceNumber}
               client={selectedClient}
