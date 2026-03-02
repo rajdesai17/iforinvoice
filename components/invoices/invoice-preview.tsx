@@ -65,8 +65,8 @@ export function InvoicePreview({
   const validLineItems = lineItems.filter((item) => item.description && item.amount > 0);
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden aspect-[1/1.414] w-full max-w-[320px]">
-      <div className="p-3 h-full flex flex-col text-[9px]">
+    <div className="bg-white overflow-hidden w-full h-full">
+      <div className="p-4 h-full flex flex-col text-[10px]">
         {/* Header */}
         <div className="flex justify-between items-start mb-2">
           <div>
