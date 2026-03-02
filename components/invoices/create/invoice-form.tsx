@@ -69,7 +69,7 @@ export function InvoiceForm({
   const currency = form.watch("currency");
 
   return (
-    <div className="space-y-4 p-6 overflow-y-auto h-full">
+    <div className="space-y-4 p-6">
       {/* Invoice Template Selector */}
       <div className="flex items-center justify-between">
         <Label className="text-sm text-foreground">Invoice Template</Label>

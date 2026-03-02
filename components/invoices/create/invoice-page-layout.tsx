@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
+import { ImperativePanelHandle } from "react-resizable-panels";
 
 import { useInvoiceForm } from "@/hooks/use-invoice-form";
 import { useInvoiceCalculations } from "@/hooks/use-invoice-calculations";
@@ -12,6 +13,7 @@ import { useKeyboardShortcuts, INVOICE_SHORTCUTS } from "@/hooks/use-keyboard-sh
 import { useAutoSave } from "@/hooks/use-auto-save";
 import type { InvoiceFormData } from "@/lib/validations/invoice";
 
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { InvoiceActionsBar } from "./invoice-actions-bar";
 import { InvoiceForm } from "./invoice-form";
 import { InvoiceLivePreview } from "./invoice-live-preview";
@@ -72,6 +74,8 @@ export function InvoicePageLayout({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("both");
   const previewRef = useRef<HTMLDivElement>(null);
+  const formPanelRef = useRef<ImperativePanelHandle>(null);
+  const previewPanelRef = useRef<ImperativePanelHandle>(null);
   
   // Local company details (can override business profile)
   const [companyName, setCompanyName] = useState(businessProfile?.businessName || "");
@@ -105,6 +109,33 @@ export function InvoicePageLayout({
   });
 
   const selectedClient = clients.find((c) => c.id === formValues.clientId);
+
+  // Handle panel collapse/expand based on viewMode
+  useEffect(() => {
+    const formPanel = formPanelRef.current;
+    const previewPanel = previewPanelRef.current;
+    
+    if (!formPanel || !previewPanel) return;
+
+    switch (viewMode) {
+      case "form":
+        if (formPanel.isCollapsed()) formPanel.expand();
+        previewPanel.collapse();
+        formPanel.resize(100);
+        break;
+      case "preview":
+        if (previewPanel.isCollapsed()) previewPanel.expand();
+        formPanel.collapse();
+        previewPanel.resize(100);
+        break;
+      case "both":
+        if (formPanel.isCollapsed()) formPanel.expand();
+        if (previewPanel.isCollapsed()) previewPanel.expand();
+        formPanel.resize(50);
+        previewPanel.resize(50);
+        break;
+    }
+  }, [viewMode]);
 
   // Auto-save draft functionality
   const handleAutoSave = useCallback(async (data: InvoiceFormData) => {
@@ -260,7 +291,7 @@ export function InvoicePageLayout({
   });
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex flex-col">
+    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden">
       <InvoiceActionsBar
         onSaveDraft={handleSaveDraft}
         onSaveAndSend={handleSaveAndSend}
@@ -272,10 +303,16 @@ export function InvoicePageLayout({
         onViewModeChange={setViewMode}
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Form Panel - fixed width on desktop */}
-        {(viewMode === "both" || viewMode === "form") && (
-          <div className={`${viewMode === "both" ? "w-[480px] min-w-[480px]" : "flex-1"} flex-shrink-0 border-r border-border overflow-hidden bg-background`}>
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        {/* Form Panel */}
+        <ResizablePanel 
+          ref={formPanelRef}
+          collapsible={true} 
+          defaultSize={50}
+          minSize={30}
+          className="bg-background"
+        >
+          <div className="h-full overflow-y-auto">
             <InvoiceForm
               form={form}
               totals={totals}
@@ -291,27 +328,33 @@ export function InvoicePageLayout({
               onCompanyAddressChange={setCompanyAddress}
             />
           </div>
-        )}
+        </ResizablePanel>
 
-        {/* Preview Panel - Fixed A4 preview centered */}
-        {(viewMode === "both" || viewMode === "preview") && (
+        <ResizableHandle withHandle />
+
+        {/* Preview Panel */}
+        <ResizablePanel 
+          ref={previewPanelRef}
+          collapsible={true} 
+          defaultSize={50}
+          minSize={30}
+          className="bg-sidebar"
+        >
           <div
             ref={previewRef}
-            className="flex-1 p-6 overflow-auto bg-muted/30 flex items-start justify-center"
+            className="h-full overflow-y-auto flex items-start justify-center py-6"
           >
-            <div className="sticky top-0">
-              <InvoiceLivePreview
-                formData={formValues}
-                totals={totals}
-                client={selectedClient}
-                businessProfile={businessProfile}
-                companyName={companyName}
-                companyAddress={companyAddress}
-              />
-            </div>
+            <InvoiceLivePreview
+              formData={formValues}
+              totals={totals}
+              client={selectedClient}
+              businessProfile={businessProfile}
+              companyName={companyName}
+              companyAddress={companyAddress}
+            />
           </div>
-        )}
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }
