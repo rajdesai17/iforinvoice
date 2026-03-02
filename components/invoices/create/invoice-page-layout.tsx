@@ -293,13 +293,13 @@ export function InvoicePageLayout({
           </div>
         )}
 
-        {/* Preview Panel - ~60% width, fixed position behavior */}
+        {/* Preview Panel - Fixed A4 preview centered */}
         {(viewMode === "both" || viewMode === "preview") && (
           <div
             ref={previewRef}
-            className="flex-1 p-8 overflow-auto bg-background flex items-start justify-center"
+            className="flex-1 p-6 overflow-auto bg-muted/30 flex items-start justify-center"
           >
-            <div className="w-full max-w-[420px] sticky top-0">
+            <div className="sticky top-0">
               <InvoiceLivePreview
                 formData={formValues}
                 totals={totals}

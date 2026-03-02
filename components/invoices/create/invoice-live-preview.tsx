@@ -57,52 +57,62 @@ export function InvoiceLivePreview({
       .join(", ") || "";
 
   return (
-    <div className="invoice-paper rounded-lg overflow-hidden" id="invoice-preview">
-      <div className="p-6 space-y-5">
+    // Fixed A4 paper size container (scaled down to fit viewport)
+    // A4 aspect ratio is 1:1.414 (210mm x 297mm)
+    // Using 380px width = 537px height for proper A4 ratio
+    <div 
+      className="bg-white rounded-lg shadow-lg overflow-hidden flex-shrink-0"
+      style={{
+        width: "380px",
+        height: "537px", // A4 aspect ratio: 380 * 1.414
+      }}
+      id="invoice-preview"
+    >
+      <div className="h-full flex flex-col p-5 overflow-hidden">
         {/* Header - Invoice Title with Number */}
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-primary font-mono">
+        <div className="flex-shrink-0 mb-3">
+          <h1 className="text-xl font-semibold text-primary font-mono">
             Invoice {formData.invoiceNumber}
           </h1>
         </div>
 
         {/* Metadata Grid - Serial Number, Date, Currency */}
-        <div className="grid grid-cols-3 gap-4 text-sm">
+        <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-xs mb-4">
           <div>
-            <p className="text-gray-400 text-xs">Serial Number</p>
+            <p className="text-gray-400">Serial Number</p>
             <p className="text-gray-600">{formData.invoiceNumber.replace("INV-", "")}</p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs">Date</p>
+            <p className="text-gray-400">Date</p>
             <p className="text-gray-600">{format(formData.issueDate, "dd/MM/yyyy")}</p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs">Currency</p>
+            <p className="text-gray-400">Currency</p>
             <p className="text-gray-600">{currency}</p>
           </div>
         </div>
 
         {/* Billing Cards - Side by Side */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex-shrink-0 grid grid-cols-2 gap-3 mb-4">
           {/* Billed By Card */}
-          <div className="bg-gray-100 rounded-lg p-4">
-            <h3 className="text-primary font-medium text-sm mb-2">Billed By</h3>
-            <p className="font-semibold text-gray-900 text-sm">{displayCompanyName}</p>
+          <div className="bg-gray-50 rounded-md p-3">
+            <h3 className="text-primary font-medium text-xs mb-1">Billed By</h3>
+            <p className="font-semibold text-gray-900 text-xs">{displayCompanyName}</p>
             {displayCompanyAddress && (
-              <p className="text-gray-500 text-xs mt-1">{displayCompanyAddress}</p>
+              <p className="text-gray-500 text-[10px] mt-0.5 line-clamp-2">{displayCompanyAddress}</p>
             )}
           </div>
 
           {/* Billed To Card */}
-          <div className="bg-gray-100 rounded-lg p-4">
-            <h3 className="text-primary font-medium text-sm mb-2">Billed To</h3>
+          <div className="bg-gray-50 rounded-md p-3">
+            <h3 className="text-primary font-medium text-xs mb-1">Billed To</h3>
             {client ? (
               <>
-                <p className="font-semibold text-gray-900 text-sm">
+                <p className="font-semibold text-gray-900 text-xs">
                   {client.company || client.name}
                 </p>
                 {(client.addressLine1 || client.city) && (
-                  <p className="text-gray-500 text-xs mt-1">
+                  <p className="text-gray-500 text-[10px] mt-0.5 line-clamp-2">
                     {[client.addressLine1, client.city, client.state, client.postalCode]
                       .filter(Boolean)
                       .join(", ")}
@@ -110,16 +120,16 @@ export function InvoiceLivePreview({
                 )}
               </>
             ) : (
-              <p className="text-gray-400 text-sm italic">Select a client</p>
+              <p className="text-gray-400 text-xs italic">Select a client</p>
             )}
           </div>
         </div>
 
-        {/* Line Items Table */}
-        <div className="rounded-lg overflow-hidden border border-gray-200">
+        {/* Line Items Table - Takes remaining space */}
+        <div className="flex-1 flex flex-col min-h-0 rounded-md overflow-hidden border border-gray-200">
           {/* Table Header - Purple */}
-          <div className="bg-primary text-white text-xs font-semibold">
-            <div className="grid grid-cols-12 gap-2 px-4 py-3">
+          <div className="flex-shrink-0 bg-primary text-white text-[10px] font-semibold">
+            <div className="grid grid-cols-12 gap-1 px-3 py-2">
               <div className="col-span-5">Item</div>
               <div className="col-span-2 text-center">Qty</div>
               <div className="col-span-2 text-right">Price</div>
@@ -127,47 +137,54 @@ export function InvoiceLivePreview({
             </div>
           </div>
 
-          {/* Table Body */}
-          <div className="divide-y divide-gray-100 bg-white">
+          {/* Table Body - Scrollable if needed */}
+          <div className="flex-1 overflow-y-auto bg-white">
             {validLineItems.length > 0 ? (
-              validLineItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="grid grid-cols-12 gap-2 px-4 py-3 text-sm"
-                >
-                  <div className="col-span-5 text-gray-900 truncate">
-                    {item.description}
+              <div className="divide-y divide-gray-100">
+                {validLineItems.slice(0, 5).map((item) => (
+                  <div
+                    key={item.id}
+                    className="grid grid-cols-12 gap-1 px-3 py-2 text-[10px]"
+                  >
+                    <div className="col-span-5 text-gray-900 truncate">
+                      {item.description}
+                    </div>
+                    <div className="col-span-2 text-center text-gray-600">
+                      {item.quantity}
+                    </div>
+                    <div className="col-span-2 text-right text-gray-600">
+                      {formatCurrency(item.unitPrice, currency)}
+                    </div>
+                    <div className="col-span-3 text-right text-gray-900 font-medium">
+                      {formatCurrency(item.amount, currency)}
+                    </div>
                   </div>
-                  <div className="col-span-2 text-center text-gray-600">
-                    {item.quantity}
+                ))}
+                {validLineItems.length > 5 && (
+                  <div className="px-3 py-1 text-[10px] text-gray-400 text-center">
+                    +{validLineItems.length - 5} more items
                   </div>
-                  <div className="col-span-2 text-right text-gray-600">
-                    {formatCurrency(item.unitPrice, currency)}
-                  </div>
-                  <div className="col-span-3 text-right text-gray-900 font-medium">
-                    {formatCurrency(item.amount, currency)}
-                  </div>
-                </div>
-              ))
+                )}
+              </div>
             ) : (
-              <div className="px-4 py-8 text-center text-gray-400 text-sm">
+              <div className="h-full flex items-center justify-center text-gray-400 text-xs">
                 No line items added yet
               </div>
             )}
           </div>
         </div>
 
-        {/* Totals */}
-        <div className="flex justify-end">
-          <div className="w-48 space-y-2">
-            <div className="flex justify-between text-sm">
+        {/* Totals - Fixed at bottom */}
+        <div className="flex-shrink-0 flex justify-end mt-3">
+          <div className="w-36 space-y-1">
+            <div className="flex justify-between text-[10px]">
               <span className="text-gray-500">Subtotal</span>
               <span className="text-gray-900">
                 {formatCurrency(totals.subtotal, currency)}
               </span>
             </div>
             {formData.taxRate > 0 && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-[10px]">
                 <span className="text-gray-500">Tax ({formData.taxRate}%)</span>
                 <span className="text-gray-900">
                   {formatCurrency(totals.taxAmount, currency)}
@@ -175,14 +192,14 @@ export function InvoiceLivePreview({
               </div>
             )}
             {totals.discountAmount > 0 && (
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-[10px]">
                 <span className="text-gray-500">Discount</span>
                 <span className="text-green-600">
                   -{formatCurrency(totals.discountAmount, currency)}
                 </span>
               </div>
             )}
-            <div className="flex justify-between text-base font-semibold pt-2 border-t border-gray-200">
+            <div className="flex justify-between text-xs font-semibold pt-1 border-t border-gray-200">
               <span className="text-gray-900">Total</span>
               <span className="text-primary">
                 {formatCurrency(totals.total, currency)}
@@ -190,32 +207,6 @@ export function InvoiceLivePreview({
             </div>
           </div>
         </div>
-
-        {/* Notes & Terms */}
-        {(formData.notes || formData.terms) && (
-          <div className="pt-4 border-t border-gray-200 space-y-3">
-            {formData.notes && (
-              <div>
-                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">
-                  Notes
-                </p>
-                <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                  {formData.notes}
-                </p>
-              </div>
-            )}
-            {formData.terms && (
-              <div>
-                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">
-                  Terms
-                </p>
-                <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                  {formData.terms}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
