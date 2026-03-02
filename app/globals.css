@@ -3,157 +3,171 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Navy Blue Palette - Professional Invoice Theme */
-/* True Navy: #28374D - Primary/Deep elements */
-/* Blue Door: #536D82 - Secondary/Active states */
-/* Harper's Blue: #9DB2BF - Muted text/accents */
-/* Alice Blue: #DDE6ED - Light backgrounds/cards */
-/* Terracotta: #E07A5F - Action/Accent color */
+/* Modern SaaS/Fintech Color Palette */
+/* Deep Zinc: #09090B - App background */
+/* Dark Zinc: #18181B - Cards/Sidebar */
+/* Zinc Border: #27272A - Borders */
+/* Muted Gray: #A1A1AA - Muted text */
+/* Off-White: #FAFAFA - Primary text */
+/* Indigo Accent: #6366F1 - CTA/Primary */
+/* Emerald: #10B981 - Success */
 
 /* ========== LIGHT MODE (Default) ========== */
 :root {
   /* Light backgrounds */
-  --background: #DDE6ED;
-  --foreground: #28374D;
+  --background: #F4F4F5;
+  --foreground: #09090B;
   
-  /* Card styling - white paper look */
-  --card: #ffffff;
-  --card-foreground: #28374D;
+  /* Card styling - clean white */
+  --card: #FFFFFF;
+  --card-foreground: #09090B;
   
-  --popover: #ffffff;
-  --popover-foreground: #28374D;
+  --popover: #FFFFFF;
+  --popover-foreground: #09090B;
   
-  /* Primary accent - Terracotta for CTAs */
-  --primary: #E07A5F;
-  --primary-foreground: #ffffff;
+  /* Primary accent - Indigo for CTAs */
+  --primary: #6366F1;
+  --primary-foreground: #FFFFFF;
   
-  /* Secondary - Blue Door */
-  --secondary: #DDE6ED;
-  --secondary-foreground: #536D82;
+  /* Secondary - Zinc tones */
+  --secondary: #F4F4F5;
+  --secondary-foreground: #3F3F46;
   
   /* Muted elements */
-  --muted: #DDE6ED;
-  --muted-foreground: #536D82;
+  --muted: #E4E4E7;
+  --muted-foreground: #71717A;
   
   /* Accent for hover states */
-  --accent: #DDE6ED;
-  --accent-foreground: #28374D;
+  --accent: #E4E4E7;
+  --accent-foreground: #09090B;
   
-  /* Destructive - Muted Red */
-  --destructive: #D96C6C;
-  --destructive-foreground: #ffffff;
+  /* Destructive - Modern red */
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
   
-  /* Borders with navy tones */
-  --border: #9DB2BF;
-  --input: #DDE6ED;
-  --ring: #536D82;
+  /* Borders with zinc tones */
+  --border: #D4D4D8;
+  --input: #E4E4E7;
+  --ring: #6366F1;
   
-  /* Chart colors */
-  --chart-1: #536D82;
-  --chart-2: #81B29A;
-  --chart-3: #F2CC8F;
-  --chart-4: #9DB2BF;
-  --chart-5: #28374D;
+  /* Chart colors - modern palette */
+  --chart-1: #6366F1;
+  --chart-2: #10B981;
+  --chart-3: #F59E0B;
+  --chart-4: #8B5CF6;
+  --chart-5: #EC4899;
   
   --radius: 0.75rem;
   
-  /* Sidebar - True Navy for depth */
-  --sidebar: #28374D;
-  --sidebar-foreground: #DDE6ED;
-  --sidebar-primary: #E07A5F;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #344559;
-  --sidebar-accent-foreground: #9DB2BF;
-  --sidebar-border: #3a4d63;
-  --sidebar-ring: #536D82;
+  /* Sidebar - Dark for contrast */
+  --sidebar: #18181B;
+  --sidebar-foreground: #FAFAFA;
+  --sidebar-primary: #6366F1;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #27272A;
+  --sidebar-accent-foreground: #A1A1AA;
+  --sidebar-border: #27272A;
+  --sidebar-ring: #6366F1;
   
-  /* Status colors - muted for professional look */
-  --success: #81B29A;
-  --success-foreground: #ffffff;
-  --warning: #F2CC8F;
-  --warning-foreground: #28374D;
+  /* Status colors */
+  --success: #10B981;
+  --success-foreground: #FFFFFF;
+  --warning: #F59E0B;
+  --warning-foreground: #09090B;
   
-  /* Custom navy scale for direct use */
-  --navy-deep: #1a2433;
-  --navy-true: #28374D;
-  --navy-door: #536D82;
-  --navy-harper: #9DB2BF;
-  --navy-alice: #DDE6ED;
+  /* Custom zinc scale for direct use */
+  --zinc-950: #09090B;
+  --zinc-900: #18181B;
+  --zinc-800: #27272A;
+  --zinc-700: #3F3F46;
+  --zinc-500: #71717A;
+  --zinc-400: #A1A1AA;
+  --zinc-200: #E4E4E7;
+  --zinc-100: #F4F4F5;
+  --zinc-50: #FAFAFA;
   
   /* Accent color */
-  --terracotta: #E07A5F;
+  --indigo: #6366F1;
+  --indigo-light: #818CF8;
+  --indigo-dark: #4F46E5;
 }
 
 /* ========== DARK MODE ========== */
 .dark {
-  /* Deep navy background */
-  --background: #1a2433;
-  --foreground: #DDE6ED;
+  /* Deep zinc background */
+  --background: #09090B;
+  --foreground: #FAFAFA;
   
-  /* Card styling with navy tones */
-  --card: #28374D;
-  --card-foreground: #DDE6ED;
+  /* Card styling with dark zinc */
+  --card: #18181B;
+  --card-foreground: #FAFAFA;
   
-  --popover: #28374D;
-  --popover-foreground: #DDE6ED;
+  --popover: #18181B;
+  --popover-foreground: #FAFAFA;
   
-  /* Primary accent - Terracotta for CTAs */
-  --primary: #E07A5F;
-  --primary-foreground: #ffffff;
+  /* Primary accent - Indigo for CTAs */
+  --primary: #6366F1;
+  --primary-foreground: #FFFFFF;
   
-  /* Secondary - lighter navy */
-  --secondary: #344559;
-  --secondary-foreground: #9DB2BF;
+  /* Secondary - darker zinc */
+  --secondary: #27272A;
+  --secondary-foreground: #A1A1AA;
   
   /* Muted elements */
-  --muted: #2d3c4f;
-  --muted-foreground: #9DB2BF;
+  --muted: #27272A;
+  --muted-foreground: #A1A1AA;
   
   /* Accent for hover states */
-  --accent: #3a4d63;
-  --accent-foreground: #DDE6ED;
+  --accent: #27272A;
+  --accent-foreground: #FAFAFA;
   
-  /* Destructive - Muted Red */
-  --destructive: #D96C6C;
-  --destructive-foreground: #ffffff;
+  /* Destructive - Modern red */
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
   
-  /* Borders with navy tones */
-  --border: #3a4d63;
-  --input: #2d3c4f;
-  --ring: #536D82;
+  /* Borders with zinc tones */
+  --border: #27272A;
+  --input: #27272A;
+  --ring: #6366F1;
   
-  /* Chart colors */
-  --chart-1: #536D82;
-  --chart-2: #81B29A;
-  --chart-3: #F2CC8F;
-  --chart-4: #9DB2BF;
-  --chart-5: #28374D;
+  /* Chart colors - modern palette */
+  --chart-1: #6366F1;
+  --chart-2: #10B981;
+  --chart-3: #F59E0B;
+  --chart-4: #8B5CF6;
+  --chart-5: #EC4899;
   
-  /* Sidebar - True Navy for depth */
-  --sidebar: #1a2433;
-  --sidebar-foreground: #DDE6ED;
-  --sidebar-primary: #E07A5F;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #28374D;
-  --sidebar-accent-foreground: #9DB2BF;
-  --sidebar-border: #3a4d63;
-  --sidebar-ring: #536D82;
+  /* Sidebar - Even darker */
+  --sidebar: #09090B;
+  --sidebar-foreground: #FAFAFA;
+  --sidebar-primary: #6366F1;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #18181B;
+  --sidebar-accent-foreground: #A1A1AA;
+  --sidebar-border: #27272A;
+  --sidebar-ring: #6366F1;
   
   /* Status colors */
-  --success: #81B29A;
-  --success-foreground: #ffffff;
-  --warning: #F2CC8F;
-  --warning-foreground: #1a2433;
+  --success: #10B981;
+  --success-foreground: #FFFFFF;
+  --warning: #F59E0B;
+  --warning-foreground: #09090B;
   
-  /* Navy scale stays same */
-  --navy-deep: #1a2433;
-  --navy-true: #28374D;
-  --navy-door: #536D82;
-  --navy-harper: #9DB2BF;
-  --navy-alice: #DDE6ED;
+  /* Zinc scale stays same */
+  --zinc-950: #09090B;
+  --zinc-900: #18181B;
+  --zinc-800: #27272A;
+  --zinc-700: #3F3F46;
+  --zinc-500: #71717A;
+  --zinc-400: #A1A1AA;
+  --zinc-200: #E4E4E7;
+  --zinc-100: #F4F4F5;
+  --zinc-50: #FAFAFA;
   
   /* Accent color */
-  --terracotta: #E07A5F;
+  --indigo: #6366F1;
+  --indigo-light: #818CF8;
+  --indigo-dark: #4F46E5;
 }
 
 @theme inline {
@@ -197,15 +211,21 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   
-  /* Navy palette colors for direct use */
-  --color-navy-deep: var(--navy-deep);
-  --color-navy-true: var(--navy-true);
-  --color-navy-door: var(--navy-door);
-  --color-navy-harper: var(--navy-harper);
-  --color-navy-alice: var(--navy-alice);
+  /* Zinc palette colors for direct use */
+  --color-zinc-950: var(--zinc-950);
+  --color-zinc-900: var(--zinc-900);
+  --color-zinc-800: var(--zinc-800);
+  --color-zinc-700: var(--zinc-700);
+  --color-zinc-500: var(--zinc-500);
+  --color-zinc-400: var(--zinc-400);
+  --color-zinc-200: var(--zinc-200);
+  --color-zinc-100: var(--zinc-100);
+  --color-zinc-50: var(--zinc-50);
   
-  /* Accent color */
-  --color-terracotta: var(--terracotta);
+  /* Accent colors */
+  --color-indigo: var(--indigo);
+  --color-indigo-light: var(--indigo-light);
+  --color-indigo-dark: var(--indigo-dark);
 }
 
 @layer base {
@@ -244,6 +264,6 @@
 /* Invoice preview paper effect */
 .invoice-paper {
   background: #ffffff;
-  color: #28374D;
-  box-shadow: 0 25px 50px -12px rgba(26, 36, 51, 0.5);
+  color: #09090B;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }

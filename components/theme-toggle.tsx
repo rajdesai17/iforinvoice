@@ -19,7 +19,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="sm"
-        className="w-full justify-start gap-3 px-3 py-2 text-sm text-navy-harper hover:text-navy-alice hover:bg-navy-true/50"
+        className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50"
       >
         <Sun className="h-4 w-4" />
         <span>Theme</span>
