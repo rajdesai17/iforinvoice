@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Loader2, Check, AlertCircle, AlertTriangle, Upload, SlidersHorizontal, ChevronDown, FileText, FilePlus } from "lucide-react";
+import { Download, Loader2, Check, AlertCircle, AlertTriangle, SlidersHorizontal, ChevronDown, FileText, FilePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Switch } from "@/components/ui/switch";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 type ViewMode = "both" | "form" | "preview";
@@ -36,11 +35,10 @@ export function InvoiceActionsBar({
   onViewModeChange,
 }: InvoiceActionsBarProps) {
   return (
-    <header className="sticky top-0 z-30 bg-background border-b border-border">
-      {/* Main Header Row */}
-      <div className="flex items-center justify-between px-6 py-3">
+    <header className="sticky top-0 z-30 bg-background border-b border-border shrink-0">
+      <div className="flex h-12 items-center justify-between px-4 gap-2">
+        {/* Left: Title + Auto-save */}
         <div className="flex items-center gap-3">
-          {/* Document icons */}
           <div className="flex items-center gap-1">
             <div className="w-7 h-7 rounded bg-secondary flex items-center justify-center">
               <FileText className="h-4 w-4 text-muted-foreground" />
@@ -49,43 +47,22 @@ export function InvoiceActionsBar({
               <FilePlus className="h-4 w-4 text-white" />
             </div>
           </div>
-          <h1 className="text-lg font-semibold">Create Invoice</h1>
-          
-          {/* Auto-save status indicator */}
+          <h1 className="text-sm font-semibold">Create Invoice</h1>
           <AutoSaveIndicator status={autoSaveStatus} />
         </div>
-        
-        {/* Theme Toggle - right side of header */}
-        <Switch className="data-[state=checked]:bg-primary" />
-      </div>
-      
-      {/* Sub-Header / Toolbar Row */}
-      <div className="flex items-center justify-between px-6 py-2 border-t border-border">
-        {/* Left Actions */}
+
+        {/* Right: Actions */}
         <div className="flex items-center gap-2">
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground gap-2"
+            className="gap-1.5"
           >
-            <AlertTriangle className="h-4 w-4" />
+            <AlertTriangle className="h-3.5 w-3.5" />
             Errors
           </Button>
-          
-          <Button
-            type="button"
-            variant="default"
-            size="sm"
-            className="bg-primary hover:bg-primary/90 gap-2"
-          >
-            <Upload className="h-4 w-4" />
-            Import
-          </Button>
-        </div>
-        
-        {/* Right Actions */}
-        <div className="flex items-center gap-2">
+
           {/* View Mode Selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -93,11 +70,11 @@ export function InvoiceActionsBar({
                 type="button"
                 variant="secondary"
                 size="sm"
-                className="bg-secondary hover:bg-secondary/80 gap-2"
+                className="gap-1.5"
               >
-                <SlidersHorizontal className="h-4 w-4" />
-                {viewMode === "both" ? "Both" : viewMode === "form" ? "Form Only" : "Preview Only"}
-                <ChevronDown className="h-4 w-4" />
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                {viewMode === "both" ? "Both" : viewMode === "form" ? "Form" : "Preview"}
+                <ChevronDown className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -118,9 +95,10 @@ export function InvoiceActionsBar({
             type="button"
             onClick={onDownloadPdf}
             disabled={isSubmitting}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+            size="sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-3.5 w-3.5" />
             Download
           </Button>
         </div>
