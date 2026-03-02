@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Collapsible,
@@ -24,19 +24,18 @@ export function SectionCard({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="rounded-xl bg-card border border-border overflow-hidden">
-        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left hover:bg-secondary/50 transition-colors duration-150">
-          <h3 className="text-sm font-semibold text-primary">{title}</h3>
-          <ChevronDown
+      <div className="rounded-xl bg-card overflow-hidden">
+        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-secondary/30 transition-colors duration-150">
+          <h3 className="text-sm font-medium text-primary">{title}</h3>
+          <ChevronUp
             className={cn(
-              "h-4 w-4 text-muted-foreground transition-transform duration-150",
-              isOpen && "rotate-180"
+              "h-4 w-4 text-primary transition-transform duration-150",
+              !isOpen && "rotate-180"
             )}
           />
         </CollapsibleTrigger>
-        <div className="h-px bg-border" />
         <CollapsibleContent>
-          <div className="p-4 space-y-4">{children}</div>
+          <div className="px-4 pb-4 space-y-4">{children}</div>
         </CollapsibleContent>
       </div>
     </Collapsible>

@@ -10,12 +10,14 @@ import { useInvoiceForm } from "@/hooks/use-invoice-form";
 import { useInvoiceCalculations } from "@/hooks/use-invoice-calculations";
 import { useKeyboardShortcuts, INVOICE_SHORTCUTS } from "@/hooks/use-keyboard-shortcuts";
 import { useAutoSave } from "@/hooks/use-auto-save";
-import type { InvoiceFormData, LineItemFormData } from "@/lib/validations/invoice";
+import type { InvoiceFormData } from "@/lib/validations/invoice";
 
 import { InvoiceActionsBar } from "./invoice-actions-bar";
 import { InvoiceForm } from "./invoice-form";
 import { InvoiceLivePreview } from "./invoice-live-preview";
 import { createInvoice, saveDraft } from "@/app/(dashboard)/invoices/actions";
+
+type ViewMode = "both" | "form" | "preview";
 
 interface Client {
   id: string;
@@ -68,7 +70,16 @@ export function InvoicePageLayout({
 }: InvoicePageLayoutProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("both");
   const previewRef = useRef<HTMLDivElement>(null);
+  
+  // Local company details (can override business profile)
+  const [companyName, setCompanyName] = useState(businessProfile?.businessName || "");
+  const [companyAddress, setCompanyAddress] = useState(
+    [businessProfile?.addressLine1, businessProfile?.city, businessProfile?.state, businessProfile?.postalCode]
+      .filter(Boolean)
+      .join(", ") || ""
+  );
 
   const {
     form,
@@ -97,7 +108,7 @@ export function InvoicePageLayout({
 
   // Auto-save draft functionality
   const handleAutoSave = useCallback(async (data: InvoiceFormData) => {
-    if (!data.clientId) return; // Don't save without a client
+    if (!data.clientId) return;
     try {
       await saveDraft({
         ...data,
@@ -111,7 +122,7 @@ export function InvoicePageLayout({
     }
   }, [totals]);
 
-  const { status: autoSaveStatus, saveNow } = useAutoSave({
+  const { status: autoSaveStatus } = useAutoSave({
     data: formValues,
     onSave: handleAutoSave,
     debounceMs: 3000,
@@ -257,37 +268,49 @@ export function InvoicePageLayout({
         isSubmitting={isSubmitting}
         autoSaveStatus={autoSaveStatus}
         isDirty={form.formState.isDirty}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Form Panel - Fixed width */}
-        <div className="w-[600px] flex-shrink-0 border-r border-border">
-          <InvoiceForm
-            form={form}
-            totals={totals}
-            clients={clients}
-            items={items}
-            onAddLineItem={addLineItem}
-            onRemoveLineItem={removeLineItem}
-            onUpdateLineItem={updateLineItem}
-            onAddFromLibrary={addFromLibrary}
-          />
-        </div>
-
-        {/* Preview Panel - Takes remaining space */}
-        <div
-          ref={previewRef}
-          className="flex-1 p-8 overflow-auto bg-muted/30 flex items-start justify-center"
-        >
-          <div className="w-full max-w-md sticky top-0">
-            <InvoiceLivePreview
-              formData={formValues}
+        {/* Form Panel - ~40% width */}
+        {(viewMode === "both" || viewMode === "form") && (
+          <div className={`${viewMode === "both" ? "w-[500px]" : "flex-1"} flex-shrink-0 border-r border-border overflow-hidden`}>
+            <InvoiceForm
+              form={form}
               totals={totals}
-              client={selectedClient}
-              businessProfile={businessProfile}
+              clients={clients}
+              items={items}
+              onAddLineItem={addLineItem}
+              onRemoveLineItem={removeLineItem}
+              onUpdateLineItem={updateLineItem}
+              onAddFromLibrary={addFromLibrary}
+              companyName={companyName}
+              companyAddress={companyAddress}
+              onCompanyNameChange={setCompanyName}
+              onCompanyAddressChange={setCompanyAddress}
             />
           </div>
-        </div>
+        )}
+
+        {/* Preview Panel - ~60% width, fixed position behavior */}
+        {(viewMode === "both" || viewMode === "preview") && (
+          <div
+            ref={previewRef}
+            className="flex-1 p-8 overflow-auto bg-background flex items-start justify-center"
+          >
+            <div className="w-full max-w-[420px] sticky top-0">
+              <InvoiceLivePreview
+                formData={formValues}
+                totals={totals}
+                client={selectedClient}
+                businessProfile={businessProfile}
+                companyName={companyName}
+                companyAddress={companyAddress}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

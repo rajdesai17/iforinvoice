@@ -1,6 +1,6 @@
 "use client";
 
-import { Save, Send, Download, Loader2, Check, AlertCircle } from "lucide-react";
+import { Save, Send, Download, Loader2, Check, AlertCircle, AlertTriangle, Upload, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +9,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
+type ViewMode = "both" | "form" | "preview";
 
 interface InvoiceActionsBarProps {
   onSaveDraft: () => void;
@@ -19,6 +26,8 @@ interface InvoiceActionsBarProps {
   isSubmitting: boolean;
   autoSaveStatus: AutoSaveStatus;
   isDirty: boolean;
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
 }
 
 export function InvoiceActionsBar({
@@ -28,65 +37,88 @@ export function InvoiceActionsBar({
   isSubmitting,
   autoSaveStatus,
   isDirty,
+  viewMode = "both",
+  onViewModeChange,
 }: InvoiceActionsBarProps) {
   return (
-    <header className="sticky top-0 z-30 bg-background border-b border-border px-6 py-3">
-      <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-30 bg-background border-b border-border">
+      {/* Main Header Row */}
+      <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-sm bg-primary" />
-          <h1 className="text-lg font-semibold">New Invoice</h1>
+          <h1 className="text-lg font-semibold">Create Invoice</h1>
           
           {/* Auto-save status indicator */}
           <AutoSaveIndicator status={autoSaveStatus} />
         </div>
         
+        {/* Theme Toggle placeholder - right side of header */}
+        <div className="w-6 h-6 rounded-full bg-secondary" />
+      </div>
+      
+      {/* Sub-Header / Toolbar Row */}
+      <div className="flex items-center justify-between px-6 py-2 border-t border-border">
+        {/* Left Actions */}
         <div className="flex items-center gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={onDownloadPdf}
-                  disabled={isSubmitting}
-                  className="text-muted-foreground hover:text-foreground hover:bg-secondary"
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Download PDF</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
           <Button
             type="button"
-            variant="ghost"
+            variant="secondary"
             size="sm"
-            onClick={onSaveDraft}
-            disabled={isSubmitting || (!isDirty && autoSaveStatus !== "error")}
-            className="text-muted-foreground hover:text-foreground hover:bg-secondary"
+            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground"
           >
-            {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="mr-2 h-4 w-4" />
-            )}
-            Save Draft
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Errors
           </Button>
-
+          
           <Button
             type="button"
-            onClick={onSaveAndSend}
-            disabled={isSubmitting}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4"
+            variant="default"
+            size="sm"
+            className="bg-primary hover:bg-primary/90"
           >
-            {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="mr-2 h-4 w-4" />
-            )}
-            Create Invoice
+            <Upload className="h-4 w-4 mr-2" />
+            Import
+          </Button>
+        </div>
+        
+        {/* Right Actions */}
+        <div className="flex items-center gap-2">
+          {/* View Mode Selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="bg-secondary hover:bg-secondary/80"
+              >
+                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                {viewMode === "both" ? "Both" : viewMode === "form" ? "Form Only" : "Preview Only"}
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onViewModeChange?.("both")}>
+                Both
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onViewModeChange?.("form")}>
+                Form Only
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onViewModeChange?.("preview")}>
+                Preview Only
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Download Button */}
+          <Button
+            type="button"
+            onClick={onDownloadPdf}
+            disabled={isSubmitting}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download
           </Button>
         </div>
       </div>
