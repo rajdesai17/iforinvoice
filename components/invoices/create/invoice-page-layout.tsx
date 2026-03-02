@@ -347,18 +347,19 @@ export function InvoicePageLayout({
           </div>
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle />
 
         {/* Preview Panel */}
         <ResizablePanel
           ref={previewPanelRef}
           collapsible
-          defaultSize={50}
+          defaultSize={40}
           minSize={25}
+          maxSize={45}
         >
           <div
             ref={previewRef}
-            className="h-full overflow-y-auto bg-sidebar flex items-start justify-center py-6 px-4"
+            className="h-full overflow-y-auto bg-sidebar flex items-start justify-center p-4"
           >
             <InvoiceLivePreview
               formData={formValues}
