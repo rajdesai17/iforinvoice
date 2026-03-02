@@ -273,9 +273,9 @@ export function InvoicePageLayout({
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Form Panel - ~40% width */}
+        {/* Form Panel - fixed width on desktop */}
         {(viewMode === "both" || viewMode === "form") && (
-          <div className={`${viewMode === "both" ? "w-[500px]" : "flex-1"} flex-shrink-0 border-r border-border overflow-hidden`}>
+          <div className={`${viewMode === "both" ? "w-[480px] min-w-[480px]" : "flex-1"} flex-shrink-0 border-r border-border overflow-hidden bg-background`}>
             <InvoiceForm
               form={form}
               totals={totals}

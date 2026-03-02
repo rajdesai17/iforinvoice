@@ -1,7 +1,7 @@
 "use client";
 
 import { UseFormReturn } from "react-hook-form";
-import { ImagePlus, FileSignature, Plus } from "lucide-react";
+import { ImagePlus, FileSignature, Plus, Info, FileText } from "lucide-react";
 import type { InvoiceFormData, InvoiceTotals, LineItemFormData } from "@/lib/validations/invoice";
 import { SectionCard } from "./section-card";
 import { InvoiceDetailsSection } from "./invoice-details-section";
@@ -74,8 +74,11 @@ export function InvoiceForm({
       <div className="flex items-center justify-between">
         <Label className="text-sm text-foreground">Invoice Template</Label>
         <Select defaultValue="default">
-          <SelectTrigger className="w-[140px] bg-card border-border">
-            <SelectValue placeholder="Select template" />
+          <SelectTrigger className="w-[160px] bg-card border-border">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <SelectValue placeholder="Select template" />
+            </div>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="default">Default</SelectItem>
@@ -92,13 +95,13 @@ export function InvoiceForm({
           {/* Company Logo Uploader */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Company Logo</Label>
-            <div className="aspect-square rounded-lg border-2 border-dashed border-border bg-card hover:bg-secondary/50 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+            <div className="aspect-[4/3] rounded-lg border border-dashed border-border bg-card hover:bg-secondary/30 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
                 <ImagePlus className="w-5 h-5 text-muted-foreground" />
               </div>
               <div className="text-center">
                 <p className="text-sm text-foreground">Select Image From Assets</p>
-                <p className="text-xs text-muted-foreground">Type: logo</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Type: logo</p>
               </div>
             </div>
           </div>
@@ -106,13 +109,13 @@ export function InvoiceForm({
           {/* Company Signature Uploader */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Company Signature</Label>
-            <div className="aspect-square rounded-lg border-2 border-dashed border-border bg-card hover:bg-secondary/50 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+            <div className="aspect-[4/3] rounded-lg border border-dashed border-border bg-card hover:bg-secondary/30 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
                 <FileSignature className="w-5 h-5 text-muted-foreground" />
               </div>
               <div className="text-center">
                 <p className="text-sm text-foreground">Select Image From Assets</p>
-                <p className="text-xs text-muted-foreground">Type: signature</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Type: signature</p>
               </div>
             </div>
           </div>
@@ -124,11 +127,11 @@ export function InvoiceForm({
           <Input
             value={companyName}
             onChange={(e) => onCompanyNameChange?.(e.target.value)}
-            placeholder="Your Company Name"
+            placeholder="Invoicely Ltd"
             className="bg-card border-border"
           />
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-full border border-muted-foreground flex items-center justify-center text-[8px]">i</span>
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Info className="w-3 h-3" />
             Name of your company
           </p>
         </div>
@@ -150,9 +153,8 @@ export function InvoiceForm({
           <Button
             type="button"
             variant="outline"
-            className="w-full border-dashed border-border hover:bg-secondary/50"
+            className="w-full border-dashed border-border hover:bg-secondary/30 text-muted-foreground"
           >
-            <Plus className="w-4 h-4 mr-2" />
             Add New Field
           </Button>
         </div>
