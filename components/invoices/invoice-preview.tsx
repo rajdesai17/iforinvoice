@@ -110,7 +110,7 @@ export function InvoicePreview({
         {/* Items Table */}
         <div className="border border-[#E4E4E7] rounded overflow-hidden mb-4">
           {/* Table Header */}
-          <div className="bg-[#18181B] text-[#FAFAFA] text-[10px] font-semibold uppercase tracking-wider">
+          <div className="bg-[#F97316] text-white text-[10px] font-semibold uppercase tracking-wider">
             <div className="flex px-3 py-2">
               <div className="flex-1">Description</div>
               <div className="w-12 text-right">Qty</div>
@@ -158,7 +158,7 @@ export function InvoicePreview({
             )}
             <div className="flex justify-between text-sm font-semibold pt-1 border-t border-[#E4E4E7]">
               <span className="text-[#09090B]">Total</span>
-              <span className="text-[#6366F1]">{formatCurrency(total)}</span>
+              <span className="text-[#F97316]">{formatCurrency(total)}</span>
             </div>
           </div>
         </div>

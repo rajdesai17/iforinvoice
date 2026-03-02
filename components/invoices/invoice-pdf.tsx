@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#6366F1",
+    color: "#F97316",
   },
   invoiceNumber: {
     fontSize: 12,
@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: "#18181B",
+    backgroundColor: "#F97316",
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#27272A",
+    borderBottomColor: "#EA580C",
   },
   tableRow: {
     flexDirection: "row",
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   grandTotalAmount: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#6366F1",
+    color: "#F97316",
   },
   notes: {
     marginTop: 40,
