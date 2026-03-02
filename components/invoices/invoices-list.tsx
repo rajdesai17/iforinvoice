@@ -59,15 +59,15 @@ function formatCurrency(amount: string | number) {
 
 function getStatusBadge(status: string) {
   const statusConfig: Record<string, { className: string; label: string }> = {
-    draft: { className: "bg-secondary text-navy-harper", label: "Draft" },
-    sent: { className: "bg-navy-door/20 text-navy-alice", label: "Sent" },
-    viewed: { className: "bg-navy-harper/20 text-navy-alice", label: "Viewed" },
-    paid: { className: "bg-emerald-500/10 text-emerald-400", label: "Paid" },
-    overdue: { className: "bg-red-500/10 text-red-400", label: "Overdue" },
-    cancelled: { className: "bg-secondary text-navy-harper", label: "Cancelled" },
+    draft: { className: "bg-secondary text-muted-foreground", label: "Draft" },
+    sent: { className: "bg-primary/20 text-primary", label: "Sent" },
+    viewed: { className: "bg-muted text-foreground", label: "Viewed" },
+    paid: { className: "bg-emerald-500/10 text-emerald-500", label: "Paid" },
+    overdue: { className: "bg-red-500/10 text-red-500", label: "Overdue" },
+    cancelled: { className: "bg-secondary text-muted-foreground", label: "Cancelled" },
   };
 
-  const config = statusConfig[status] || { className: "bg-secondary text-navy-harper", label: status };
+  const config = statusConfig[status] || { className: "bg-secondary text-muted-foreground", label: status };
 
   return (
     <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium", config.className)}>
@@ -98,20 +98,20 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     }
   };
 
-  const inputClassName = "bg-secondary border-0 rounded-xl text-navy-alice placeholder:text-navy-harper focus:ring-2 focus:ring-navy-door h-10";
+  const inputClassName = "bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
 
   if (invoices.length === 0) {
     return (
       <div className="rounded-xl bg-card border border-border p-16">
         <div className="flex flex-col items-center justify-center">
           <div className="rounded-full bg-secondary p-4 mb-4">
-            <FileText className="h-8 w-8 text-navy-harper" />
+            <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="font-medium text-lg mb-1 text-navy-alice">No invoices yet</h3>
-          <p className="text-navy-harper text-center mb-4 max-w-sm">
+          <h3 className="font-medium text-lg mb-1 text-foreground">No invoices yet</h3>
+          <p className="text-muted-foreground text-center mb-4 max-w-sm">
             Create your first invoice to start getting paid
           </p>
-          <Button asChild className="bg-navy-door hover:bg-navy-door/90 text-navy-alice rounded-full px-4">
+          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4">
             <Link href="/invoices/new">Create Invoice</Link>
           </Button>
         </div>
@@ -123,7 +123,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-navy-harper" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search invoices..."
             value={search}
@@ -136,18 +136,18 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="bg-card border-border">
-            <SelectItem value="all" className="text-navy-alice hover:bg-secondary">All Status</SelectItem>
-            <SelectItem value="draft" className="text-navy-alice hover:bg-secondary">Draft</SelectItem>
-            <SelectItem value="sent" className="text-navy-alice hover:bg-secondary">Sent</SelectItem>
-            <SelectItem value="viewed" className="text-navy-alice hover:bg-secondary">Viewed</SelectItem>
-            <SelectItem value="paid" className="text-navy-alice hover:bg-secondary">Paid</SelectItem>
-            <SelectItem value="overdue" className="text-navy-alice hover:bg-secondary">Overdue</SelectItem>
+            <SelectItem value="all" className="text-foreground hover:bg-secondary">All Status</SelectItem>
+            <SelectItem value="draft" className="text-foreground hover:bg-secondary">Draft</SelectItem>
+            <SelectItem value="sent" className="text-foreground hover:bg-secondary">Sent</SelectItem>
+            <SelectItem value="viewed" className="text-foreground hover:bg-secondary">Viewed</SelectItem>
+            <SelectItem value="paid" className="text-foreground hover:bg-secondary">Paid</SelectItem>
+            <SelectItem value="overdue" className="text-foreground hover:bg-secondary">Overdue</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {filteredInvoices.length === 0 ? (
-        <div className="rounded-xl bg-card border border-border py-8 text-center text-navy-harper">
+        <div className="rounded-xl bg-card border border-border py-8 text-center text-muted-foreground">
           No invoices found matching your search
         </div>
       ) : (
@@ -159,20 +159,20 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="hidden sm:flex h-10 w-10 rounded-lg bg-navy-door/10 items-center justify-center shrink-0">
-                    <FileText className="h-5 w-5 text-navy-door" />
+                  <div className="hidden sm:flex h-10 w-10 rounded-lg bg-primary/10 items-center justify-center shrink-0">
+                    <FileText className="h-5 w-5 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3">
                       <Link
                         href={`/invoices/${invoice.id}`}
-                        className="font-medium text-navy-alice font-mono text-sm hover:text-navy-door transition-colors"
+                        className="font-medium text-foreground font-mono text-sm hover:text-primary transition-colors"
                       >
                         {invoice.invoiceNumber}
                       </Link>
                       {getStatusBadge(invoice.status || "draft")}
                     </div>
-                    <p className="text-sm text-navy-harper truncate mt-0.5">
+                    <p className="text-sm text-muted-foreground truncate mt-0.5">
                       {invoice.clientCompany || invoice.clientName || "No client"}
                     </p>
                   </div>
@@ -180,8 +180,8 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
 
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden md:block">
-                    <p className="font-medium text-navy-alice">{formatCurrency(invoice.total || "0")}</p>
-                    <p className="text-xs text-navy-harper">
+                    <p className="font-medium text-foreground">{formatCurrency(invoice.total || "0")}</p>
+                    <p className="text-xs text-muted-foreground">
                       Due {format(new Date(invoice.dueDate), "MMM d, yyyy")}
                     </p>
                   </div>
@@ -191,28 +191,28 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="shrink-0 text-navy-harper hover:text-navy-alice hover:bg-secondary"
+                        className="shrink-0 text-muted-foreground hover:text-foreground hover:bg-secondary"
                       >
                         <MoreHorizontal className="h-4 w-4" />
                         <span className="sr-only">Actions</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-card border-border">
-                      <DropdownMenuItem asChild className="text-navy-alice hover:bg-secondary">
+                      <DropdownMenuItem asChild className="text-foreground hover:bg-secondary">
                         <Link href={`/invoices/${invoice.id}`}>
                           <Eye className="mr-2 h-4 w-4" />
                           View
                         </Link>
                       </DropdownMenuItem>
                       {invoice.status === "draft" && (
-                        <DropdownMenuItem asChild className="text-navy-alice hover:bg-secondary">
+                        <DropdownMenuItem asChild className="text-foreground hover:bg-secondary">
                           <Link href={`/invoices/${invoice.id}/edit`}>
                             <Pencil className="mr-2 h-4 w-4" />
                             Edit
                           </Link>
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem asChild className="text-navy-alice hover:bg-secondary">
+                      <DropdownMenuItem asChild className="text-foreground hover:bg-secondary">
                         <Link href={`/api/invoices/${invoice.id}/pdf`}>
                           <Download className="mr-2 h-4 w-4" />
                           Download PDF
@@ -222,7 +222,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                       {invoice.status === "draft" && (
                         <DropdownMenuItem
                           onClick={() => handleStatusChange(invoice.id, "sent")}
-                          className="text-navy-alice hover:bg-secondary"
+                          className="text-foreground hover:bg-secondary"
                         >
                           <Send className="mr-2 h-4 w-4" />
                           Mark as Sent
@@ -231,7 +231,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                       {(invoice.status === "sent" || invoice.status === "viewed") && (
                         <DropdownMenuItem
                           onClick={() => handleStatusChange(invoice.id, "paid")}
-                          className="text-navy-alice hover:bg-secondary"
+                          className="text-foreground hover:bg-secondary"
                         >
                           <CheckCircle className="mr-2 h-4 w-4" />
                           Mark as Paid
@@ -240,7 +240,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                       {invoice.status !== "cancelled" && invoice.status !== "paid" && (
                         <DropdownMenuItem
                           onClick={() => handleStatusChange(invoice.id, "cancelled")}
-                          className="text-red-400 hover:bg-red-500/10"
+                          className="text-red-500 hover:bg-red-500/10"
                         >
                           <XCircle className="mr-2 h-4 w-4" />
                           Cancel

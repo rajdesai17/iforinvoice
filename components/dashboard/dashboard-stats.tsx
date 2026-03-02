@@ -52,7 +52,7 @@ export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
       value: clientCount.toString(),
       description: `${stats.totalInvoices} total invoices`,
       icon: Users,
-      iconClass: "text-navy-door bg-navy-door/10",
+      iconClass: "text-primary bg-primary/10",
     },
   ];
 
@@ -64,15 +64,15 @@ export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
           className="rounded-xl bg-card border border-border p-4"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-navy-harper uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {stat.title}
             </span>
             <div className={`p-2 rounded-lg ${stat.iconClass}`}>
               <stat.icon className="h-4 w-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-navy-alice">{stat.value}</div>
-          <p className="text-xs text-navy-harper mt-1">{stat.description}</p>
+          <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+          <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
         </div>
       ))}
     </div>

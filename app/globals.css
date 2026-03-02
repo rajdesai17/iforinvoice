@@ -8,9 +8,85 @@
 /* Blue Door: #536D82 - Secondary/Active states */
 /* Harper's Blue: #9DB2BF - Muted text/accents */
 /* Alice Blue: #DDE6ED - Light backgrounds/cards */
+/* Terracotta: #E07A5F - Action/Accent color */
 
+/* ========== LIGHT MODE (Default) ========== */
 :root {
-  /* True Navy base - deep, professional background */
+  /* Light backgrounds */
+  --background: #DDE6ED;
+  --foreground: #28374D;
+  
+  /* Card styling - white paper look */
+  --card: #ffffff;
+  --card-foreground: #28374D;
+  
+  --popover: #ffffff;
+  --popover-foreground: #28374D;
+  
+  /* Primary accent - Terracotta for CTAs */
+  --primary: #E07A5F;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary - Blue Door */
+  --secondary: #DDE6ED;
+  --secondary-foreground: #536D82;
+  
+  /* Muted elements */
+  --muted: #DDE6ED;
+  --muted-foreground: #536D82;
+  
+  /* Accent for hover states */
+  --accent: #DDE6ED;
+  --accent-foreground: #28374D;
+  
+  /* Destructive - Muted Red */
+  --destructive: #D96C6C;
+  --destructive-foreground: #ffffff;
+  
+  /* Borders with navy tones */
+  --border: #9DB2BF;
+  --input: #DDE6ED;
+  --ring: #536D82;
+  
+  /* Chart colors */
+  --chart-1: #536D82;
+  --chart-2: #81B29A;
+  --chart-3: #F2CC8F;
+  --chart-4: #9DB2BF;
+  --chart-5: #28374D;
+  
+  --radius: 0.75rem;
+  
+  /* Sidebar - True Navy for depth */
+  --sidebar: #28374D;
+  --sidebar-foreground: #DDE6ED;
+  --sidebar-primary: #E07A5F;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #344559;
+  --sidebar-accent-foreground: #9DB2BF;
+  --sidebar-border: #3a4d63;
+  --sidebar-ring: #536D82;
+  
+  /* Status colors - muted for professional look */
+  --success: #81B29A;
+  --success-foreground: #ffffff;
+  --warning: #F2CC8F;
+  --warning-foreground: #28374D;
+  
+  /* Custom navy scale for direct use */
+  --navy-deep: #1a2433;
+  --navy-true: #28374D;
+  --navy-door: #536D82;
+  --navy-harper: #9DB2BF;
+  --navy-alice: #DDE6ED;
+  
+  /* Accent color */
+  --terracotta: #E07A5F;
+}
+
+/* ========== DARK MODE ========== */
+.dark {
+  /* Deep navy background */
   --background: #1a2433;
   --foreground: #DDE6ED;
   
@@ -21,8 +97,8 @@
   --popover: #28374D;
   --popover-foreground: #DDE6ED;
   
-  /* Primary accent - Blue Door for CTAs */
-  --primary: #536D82;
+  /* Primary accent - Terracotta for CTAs */
+  --primary: #E07A5F;
   --primary-foreground: #ffffff;
   
   /* Secondary - lighter navy */
@@ -37,8 +113,8 @@
   --accent: #3a4d63;
   --accent-foreground: #DDE6ED;
   
-  /* Destructive stays red for clarity */
-  --destructive: #ef4444;
+  /* Destructive - Muted Red */
+  --destructive: #D96C6C;
   --destructive-foreground: #ffffff;
   
   /* Borders with navy tones */
@@ -46,49 +122,38 @@
   --input: #2d3c4f;
   --ring: #536D82;
   
-  /* Chart colors - navy-harmonized palette */
+  /* Chart colors */
   --chart-1: #536D82;
-  --chart-2: #22c55e;
-  --chart-3: #f59e0b;
+  --chart-2: #81B29A;
+  --chart-3: #F2CC8F;
   --chart-4: #9DB2BF;
   --chart-5: #28374D;
-  
-  --radius: 0.75rem;
   
   /* Sidebar - True Navy for depth */
   --sidebar: #1a2433;
   --sidebar-foreground: #DDE6ED;
-  --sidebar-primary: #536D82;
+  --sidebar-primary: #E07A5F;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #28374D;
   --sidebar-accent-foreground: #9DB2BF;
   --sidebar-border: #3a4d63;
   --sidebar-ring: #536D82;
   
-  /* Status colors - keep semantic meaning */
-  --success: #22c55e;
+  /* Status colors */
+  --success: #81B29A;
   --success-foreground: #ffffff;
-  --warning: #f59e0b;
+  --warning: #F2CC8F;
   --warning-foreground: #1a2433;
   
-  /* Custom navy scale for direct use */
+  /* Navy scale stays same */
   --navy-deep: #1a2433;
   --navy-true: #28374D;
   --navy-door: #536D82;
   --navy-harper: #9DB2BF;
   --navy-alice: #DDE6ED;
-}
-
-/* Light mode override - for invoice preview paper */
-.light, [data-theme="light"] {
-  --background: #ffffff;
-  --foreground: #28374D;
-  --card: #ffffff;
-  --card-foreground: #28374D;
-  --muted: #DDE6ED;
-  --muted-foreground: #536D82;
-  --border: #9DB2BF;
-  --input: #DDE6ED;
+  
+  /* Accent color */
+  --terracotta: #E07A5F;
 }
 
 @theme inline {
@@ -138,6 +203,9 @@
   --color-navy-door: var(--navy-door);
   --color-navy-harper: var(--navy-harper);
   --color-navy-alice: var(--navy-alice);
+  
+  /* Accent color */
+  --color-terracotta: var(--terracotta);
 }
 
 @layer base {
@@ -149,23 +217,23 @@
   }
 }
 
-/* Custom scrollbar for navy theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a2433;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3a4d63;
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #536D82;
+  background: var(--muted-foreground);
 }
 
 /* Smooth transitions */

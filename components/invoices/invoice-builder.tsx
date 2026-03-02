@@ -82,9 +82,9 @@ function SectionCard({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="rounded-xl bg-card border border-border overflow-hidden">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 text-left hover:bg-secondary/50 transition-colors duration-150">
-          <h3 className="text-sm font-semibold text-navy-door">{title}</h3>
+          <h3 className="text-sm font-semibold text-primary">{title}</h3>
           <ChevronDown className={cn(
-            "h-4 w-4 text-navy-harper transition-transform duration-150",
+            "h-4 w-4 text-muted-foreground transition-transform duration-150",
             isOpen && "rotate-180"
           )} />
         </CollapsibleTrigger>
@@ -219,9 +219,9 @@ export function InvoiceBuilder({
     }
   };
 
-  // Custom input styles for navy theme
-  const inputClassName = "bg-secondary border-0 rounded-xl text-navy-alice placeholder:text-navy-harper focus:ring-2 focus:ring-navy-door h-10";
-  const labelClassName = "text-xs text-navy-harper";
+  // Custom input styles for theme
+  const inputClassName = "bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
+  const labelClassName = "text-xs text-muted-foreground";
 
   return (
     <div className="min-h-screen">
@@ -229,8 +229,8 @@ export function InvoiceBuilder({
       <header className="sticky top-0 z-30 bg-background border-b border-border px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-sm bg-navy-door" />
-            <h1 className="text-lg font-semibold text-navy-alice">New Invoice</h1>
+            <div className="w-2 h-2 rounded-sm bg-primary" />
+            <h1 className="text-lg font-semibold text-foreground">New Invoice</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -238,7 +238,7 @@ export function InvoiceBuilder({
               size="sm"
               onClick={() => handleSubmit("draft")}
               disabled={isLoading}
-              className="text-navy-harper hover:text-navy-alice hover:bg-secondary"
+              className="text-muted-foreground hover:text-foreground hover:bg-secondary"
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Save className="mr-2 h-4 w-4" />
@@ -247,7 +247,7 @@ export function InvoiceBuilder({
             <Button 
               onClick={() => handleSubmit("sent")} 
               disabled={isLoading}
-              className="bg-navy-door hover:bg-navy-door/90 text-navy-alice rounded-full px-4"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4"
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Download className="mr-2 h-4 w-4" />
@@ -280,7 +280,7 @@ export function InvoiceBuilder({
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
                     {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id} className="text-navy-alice hover:bg-secondary">
+                      <SelectItem key={client.id} value={client.id} className="text-foreground hover:bg-secondary">
                         {client.company || client.name}
                       </SelectItem>
                     ))}
@@ -299,10 +299,10 @@ export function InvoiceBuilder({
                       className={cn(
                         inputClassName,
                         "w-full justify-start text-left font-normal border-0",
-                        !issueDate && "text-navy-harper"
+                        !issueDate && "text-muted-foreground"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4 text-navy-harper" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                       {issueDate ? format(issueDate, "MMM d, yyyy") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
@@ -326,10 +326,10 @@ export function InvoiceBuilder({
                       className={cn(
                         inputClassName,
                         "w-full justify-start text-left font-normal border-0",
-                        !dueDate && "text-navy-harper"
+                        !dueDate && "text-muted-foreground"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4 text-navy-harper" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                       {dueDate ? format(dueDate, "MMM d, yyyy") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
@@ -352,12 +352,12 @@ export function InvoiceBuilder({
             {items.length > 0 && (
               <div className="flex justify-end mb-2">
                 <Select onValueChange={(value) => addFromLibrary(items.find((i) => i.id === value)!)}>
-                  <SelectTrigger className="w-[180px] bg-secondary border-0 rounded-lg text-sm text-navy-harper">
+                  <SelectTrigger className="w-[180px] bg-secondary border-0 rounded-lg text-sm text-muted-foreground">
                     <SelectValue placeholder="Add from library" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
                     {items.map((item) => (
-                      <SelectItem key={item.id} value={item.id} className="text-navy-alice hover:bg-secondary">
+                      <SelectItem key={item.id} value={item.id} className="text-foreground hover:bg-secondary">
                         {item.name}
                       </SelectItem>
                     ))}
@@ -418,7 +418,7 @@ export function InvoiceBuilder({
                           size="icon"
                           onClick={() => removeLineItem(item.id)}
                           disabled={lineItems.length === 1}
-                          className="text-navy-harper hover:text-red-400 hover:bg-red-400/10 rounded-lg h-10 w-10"
+                          className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg h-10 w-10"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -432,7 +432,7 @@ export function InvoiceBuilder({
             <Button 
               variant="outline" 
               onClick={addLineItem} 
-              className="w-full bg-transparent border-dashed border-navy-door/30 hover:bg-secondary hover:border-navy-door/50 text-navy-harper rounded-xl h-10"
+              className="w-full bg-transparent border-dashed border-primary/30 hover:bg-secondary hover:border-primary/50 text-muted-foreground rounded-xl h-10"
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Line Item
@@ -465,8 +465,8 @@ export function InvoiceBuilder({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border">
-                      <SelectItem value="percentage" className="text-navy-alice hover:bg-secondary">%</SelectItem>
-                      <SelectItem value="fixed" className="text-navy-alice hover:bg-secondary">$</SelectItem>
+                      <SelectItem value="percentage" className="text-foreground hover:bg-secondary">%</SelectItem>
+                      <SelectItem value="fixed" className="text-foreground hover:bg-secondary">$</SelectItem>
                     </SelectContent>
                   </Select>
                   <Input

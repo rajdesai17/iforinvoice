@@ -28,12 +28,12 @@ export function RevenueChart({ data }: RevenueChartProps) {
   return (
     <div className="rounded-xl bg-card border border-border overflow-hidden">
       <div className="p-4 border-b border-border">
-        <h3 className="text-sm font-semibold text-navy-door">Revenue Overview</h3>
-        <p className="text-xs text-navy-harper mt-0.5">Monthly revenue from paid invoices</p>
+        <h3 className="text-sm font-semibold text-primary">Revenue Overview</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">Monthly revenue from paid invoices</p>
       </div>
       <div className="p-4">
         {!hasData ? (
-          <div className="flex items-center justify-center h-[200px] text-navy-harper">
+          <div className="flex items-center justify-center h-[200px] text-muted-foreground">
             No revenue data yet
           </div>
         ) : (
@@ -59,17 +59,17 @@ export function RevenueChart({ data }: RevenueChartProps) {
                 <Tooltip
                   formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
                   contentStyle={{
-                    backgroundColor: "#28374D",
-                    border: "1px solid #3a4d63",
+                    backgroundColor: "var(--card)",
+                    border: "1px solid var(--border)",
                     borderRadius: "8px",
-                    color: "#DDE6ED",
+                    color: "var(--foreground)",
                   }}
-                  labelStyle={{ color: '#9DB2BF' }}
-                  cursor={{ fill: 'rgba(83, 109, 130, 0.1)' }}
+                  labelStyle={{ color: 'var(--muted-foreground)' }}
+                  cursor={{ fill: 'var(--muted)', opacity: 0.3 }}
                 />
                 <Bar
                   dataKey="revenue"
-                  fill="#536D82"
+                  fill="var(--primary)"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

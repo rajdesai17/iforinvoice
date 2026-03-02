@@ -37,15 +37,15 @@ export default async function InvoicesPage() {
     <div className="p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-sm bg-navy-door" />
+          <div className="w-2 h-2 rounded-sm bg-primary" />
           <div>
-            <h1 className="text-xl font-semibold text-navy-alice">Invoices</h1>
-            <p className="text-sm text-navy-harper">
+            <h1 className="text-xl font-semibold text-foreground">Invoices</h1>
+            <p className="text-sm text-muted-foreground">
               Create and manage your invoices
             </p>
           </div>
         </div>
-        <Button asChild className="gap-2 bg-navy-door hover:bg-navy-door/90 text-navy-alice rounded-full px-4">
+        <Button asChild className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4">
           <Link href="/invoices/new">
             <Plus className="h-4 w-4" />
             New Invoice

@@ -22,10 +22,10 @@ export default async function SettingsPage() {
   return (
     <div className="p-6 max-w-2xl">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-2 h-2 rounded-sm bg-navy-door" />
+        <div className="w-2 h-2 rounded-sm bg-primary" />
         <div>
-          <h1 className="text-xl font-semibold text-navy-alice">Settings</h1>
-          <p className="text-sm text-navy-harper">
+          <h1 className="text-xl font-semibold text-foreground">Settings</h1>
+          <p className="text-sm text-muted-foreground">
             Manage your business profile and invoice defaults
           </p>
         </div>
