@@ -59,10 +59,10 @@ export function InvoiceLivePreview({
   return (
     // Invoice preview container - fits content naturally
     <div 
-      className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md"
+      className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-[600px]"
       id="invoice-preview"
     >
-      <div className="flex flex-col p-6">
+      <div className="flex flex-col p-8">
         {/* Header - Invoice Title with Number */}
         <div className="flex-shrink-0 mb-4">
           <h1 className="text-2xl font-semibold text-primary font-mono tracking-tight">
@@ -122,7 +122,7 @@ export function InvoiceLivePreview({
         {/* Line Items Table */}
         <div className="flex flex-col rounded-lg overflow-hidden border border-gray-200">
           {/* Table Header - Purple */}
-          <div className="flex-shrink-0 bg-primary text-white text-[11px] font-semibold">
+          <div className="flex-shrink-0 bg-primary text-white text-xs font-semibold">
             <div className="grid grid-cols-12 gap-2 px-4 py-2.5">
               <div className="col-span-5">Item</div>
               <div className="col-span-2 text-center">Qty</div>
@@ -138,7 +138,7 @@ export function InvoiceLivePreview({
                 {validLineItems.slice(0, 6).map((item) => (
                   <div
                     key={item.id}
-                    className="grid grid-cols-12 gap-2 px-4 py-2.5 text-[11px]"
+                    className="grid grid-cols-12 gap-2 px-4 py-2.5 text-xs"
                   >
                     <div className="col-span-5 text-gray-900 truncate">
                       {item.description}
@@ -155,7 +155,7 @@ export function InvoiceLivePreview({
                   </div>
                 ))}
                 {validLineItems.length > 6 && (
-                  <div className="px-4 py-2 text-[11px] text-gray-400 text-center">
+                  <div className="px-4 py-2 text-xs text-gray-400 text-center">
                     +{validLineItems.length - 6} more items
                   </div>
                 )}
@@ -170,7 +170,7 @@ export function InvoiceLivePreview({
 
         {/* Totals - Fixed at bottom */}
         <div className="flex-shrink-0 flex justify-end mt-4">
-          <div className="w-44 space-y-1.5">
+          <div className="w-52 space-y-1.5">
             <div className="flex justify-between text-xs">
               <span className="text-gray-500">Subtotal</span>
               <span className="text-gray-900">

@@ -511,7 +511,7 @@ export function InvoiceBuilder({
 
         {/* Right: Preview Panel (45%) */}
         <div className="w-[45%] p-4 bg-[#0a0a0b] h-[calc(100vh-60px)] flex items-start justify-center overflow-hidden">
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-[600px]">
             <InvoicePreview
               invoiceNumber={invoiceNumber}
               client={selectedClient}
