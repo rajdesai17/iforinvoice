@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Dark mode first design - inspired by invoicely.gg */
+/* Dark mode first design - inspired by iforinvoice */
 :root {
   /* Near-black background */
   --background: #0a0a0b;
