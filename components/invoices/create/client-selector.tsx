@@ -53,7 +53,7 @@ export function ClientSelector({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-full justify-between bg-[#1a1a1e] border-0 rounded-xl h-10 text-left font-normal",
+              "w-full justify-between bg-secondary border-0 rounded-xl h-10 text-left font-normal",
               !selectedClient && "text-muted-foreground",
               error && "ring-2 ring-destructive"
             )}
@@ -75,7 +75,7 @@ export function ClientSelector({
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-[#111113] border-[#1e1e21]">
+        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-card border-border">
           <Command className="bg-transparent">
             <CommandInput 
               placeholder="Search clients..." 

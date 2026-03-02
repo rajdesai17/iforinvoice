@@ -3,76 +3,157 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Dark mode first design - inspired by iforinvoice */
+/* Navy Blue Palette - Professional Invoice Theme */
+/* True Navy: #28374D - Primary/Deep elements */
+/* Blue Door: #536D82 - Secondary/Active states */
+/* Harper's Blue: #9DB2BF - Muted text/accents */
+/* Alice Blue: #DDE6ED - Light backgrounds/cards */
+/* Terracotta: #E07A5F - Action/Accent color */
+
+/* ========== LIGHT MODE (Default) ========== */
 :root {
-  /* Near-black background */
-  --background: #0a0a0b;
-  --foreground: #ffffff;
+  /* Light backgrounds */
+  --background: #DDE6ED;
+  --foreground: #28374D;
   
-  /* Dark cards with subtle borders */
-  --card: #111113;
-  --card-foreground: #ffffff;
+  /* Card styling - white paper look */
+  --card: #ffffff;
+  --card-foreground: #28374D;
   
-  --popover: #111113;
-  --popover-foreground: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #28374D;
   
-  /* Bold violet/indigo accent */
-  --primary: #6366f1;
+  /* Primary accent - Terracotta for CTAs */
+  --primary: #E07A5F;
   --primary-foreground: #ffffff;
   
-  --secondary: #1a1a1e;
-  --secondary-foreground: #9ca3af;
+  /* Secondary - Blue Door */
+  --secondary: #DDE6ED;
+  --secondary-foreground: #536D82;
   
-  --muted: #1a1a1e;
-  --muted-foreground: #6b7280;
+  /* Muted elements */
+  --muted: #DDE6ED;
+  --muted-foreground: #536D82;
   
-  --accent: #1e1e24;
-  --accent-foreground: #9ca3af;
+  /* Accent for hover states */
+  --accent: #DDE6ED;
+  --accent-foreground: #28374D;
   
-  --destructive: #ef4444;
+  /* Destructive - Muted Red */
+  --destructive: #D96C6C;
   --destructive-foreground: #ffffff;
   
-  /* Subtle borders */
-  --border: #1e1e21;
-  --input: #1a1a1e;
-  --ring: #6366f1;
+  /* Borders with navy tones */
+  --border: #9DB2BF;
+  --input: #DDE6ED;
+  --ring: #536D82;
   
   /* Chart colors */
-  --chart-1: #6366f1;
-  --chart-2: #22c55e;
-  --chart-3: #f59e0b;
-  --chart-4: #ec4899;
-  --chart-5: #06b6d4;
+  --chart-1: #536D82;
+  --chart-2: #81B29A;
+  --chart-3: #F2CC8F;
+  --chart-4: #9DB2BF;
+  --chart-5: #28374D;
   
   --radius: 0.75rem;
   
-  /* Sidebar - slightly different dark */
-  --sidebar: #0a0a0b;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #6366f1;
+  /* Sidebar - True Navy for depth */
+  --sidebar: #28374D;
+  --sidebar-foreground: #DDE6ED;
+  --sidebar-primary: #E07A5F;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a1e;
-  --sidebar-accent-foreground: #9ca3af;
-  --sidebar-border: #1e1e21;
-  --sidebar-ring: #6366f1;
+  --sidebar-accent: #344559;
+  --sidebar-accent-foreground: #9DB2BF;
+  --sidebar-border: #3a4d63;
+  --sidebar-ring: #536D82;
   
-  /* Status colors */
-  --success: #22c55e;
+  /* Status colors - muted for professional look */
+  --success: #81B29A;
   --success-foreground: #ffffff;
-  --warning: #f59e0b;
-  --warning-foreground: #000000;
+  --warning: #F2CC8F;
+  --warning-foreground: #28374D;
+  
+  /* Custom navy scale for direct use */
+  --navy-deep: #1a2433;
+  --navy-true: #28374D;
+  --navy-door: #536D82;
+  --navy-harper: #9DB2BF;
+  --navy-alice: #DDE6ED;
+  
+  /* Accent color */
+  --terracotta: #E07A5F;
 }
 
-/* Light mode override - for invoice preview paper */
-.light, [data-theme="light"] {
-  --background: #ffffff;
-  --foreground: #111113;
-  --card: #ffffff;
-  --card-foreground: #111113;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --border: #e4e4e7;
-  --input: #f4f4f5;
+/* ========== DARK MODE ========== */
+.dark {
+  /* Deep navy background */
+  --background: #1a2433;
+  --foreground: #DDE6ED;
+  
+  /* Card styling with navy tones */
+  --card: #28374D;
+  --card-foreground: #DDE6ED;
+  
+  --popover: #28374D;
+  --popover-foreground: #DDE6ED;
+  
+  /* Primary accent - Terracotta for CTAs */
+  --primary: #E07A5F;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary - lighter navy */
+  --secondary: #344559;
+  --secondary-foreground: #9DB2BF;
+  
+  /* Muted elements */
+  --muted: #2d3c4f;
+  --muted-foreground: #9DB2BF;
+  
+  /* Accent for hover states */
+  --accent: #3a4d63;
+  --accent-foreground: #DDE6ED;
+  
+  /* Destructive - Muted Red */
+  --destructive: #D96C6C;
+  --destructive-foreground: #ffffff;
+  
+  /* Borders with navy tones */
+  --border: #3a4d63;
+  --input: #2d3c4f;
+  --ring: #536D82;
+  
+  /* Chart colors */
+  --chart-1: #536D82;
+  --chart-2: #81B29A;
+  --chart-3: #F2CC8F;
+  --chart-4: #9DB2BF;
+  --chart-5: #28374D;
+  
+  /* Sidebar - True Navy for depth */
+  --sidebar: #1a2433;
+  --sidebar-foreground: #DDE6ED;
+  --sidebar-primary: #E07A5F;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #28374D;
+  --sidebar-accent-foreground: #9DB2BF;
+  --sidebar-border: #3a4d63;
+  --sidebar-ring: #536D82;
+  
+  /* Status colors */
+  --success: #81B29A;
+  --success-foreground: #ffffff;
+  --warning: #F2CC8F;
+  --warning-foreground: #1a2433;
+  
+  /* Navy scale stays same */
+  --navy-deep: #1a2433;
+  --navy-true: #28374D;
+  --navy-door: #536D82;
+  --navy-harper: #9DB2BF;
+  --navy-alice: #DDE6ED;
+  
+  /* Accent color */
+  --terracotta: #E07A5F;
 }
 
 @theme inline {
@@ -115,6 +196,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Navy palette colors for direct use */
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-true: var(--navy-true);
+  --color-navy-door: var(--navy-door);
+  --color-navy-harper: var(--navy-harper);
+  --color-navy-alice: var(--navy-alice);
+  
+  /* Accent color */
+  --color-terracotta: var(--terracotta);
 }
 
 @layer base {
@@ -126,23 +217,23 @@
   }
 }
 
-/* Custom scrollbar for dark theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0b;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a30;
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a40;
+  background: var(--muted-foreground);
 }
 
 /* Smooth transitions */
@@ -153,6 +244,6 @@
 /* Invoice preview paper effect */
 .invoice-paper {
   background: #ffffff;
-  color: #111113;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  color: #28374D;
+  box-shadow: 0 25px 50px -12px rgba(26, 36, 51, 0.5);
 }

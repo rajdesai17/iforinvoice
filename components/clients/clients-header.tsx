@@ -14,15 +14,15 @@ export function ClientsHeader() {
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-sm bg-primary" />
           <div>
-            <h1 className="text-xl font-semibold text-white">Clients</h1>
-            <p className="text-sm text-[#6b7280]">
+            <h1 className="text-xl font-semibold text-foreground">Clients</h1>
+            <p className="text-sm text-muted-foreground">
               Manage your clients and their contact information
             </p>
           </div>
         </div>
         <Button 
           onClick={() => setOpen(true)} 
-          className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-full px-4"
+          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4"
         >
           <Plus className="h-4 w-4" />
           Add Client

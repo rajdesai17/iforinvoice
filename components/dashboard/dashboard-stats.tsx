@@ -61,18 +61,18 @@ export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
       {statCards.map((stat) => (
         <div
           key={stat.title}
-          className="rounded-xl bg-[#111113] border border-[#1e1e21] p-4"
+          className="rounded-xl bg-card border border-border p-4"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-[#9ca3af] uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {stat.title}
             </span>
             <div className={`p-2 rounded-lg ${stat.iconClass}`}>
               <stat.icon className="h-4 w-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white">{stat.value}</div>
-          <p className="text-xs text-[#6b7280] mt-1">{stat.description}</p>
+          <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+          <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
         </div>
       ))}
     </div>
