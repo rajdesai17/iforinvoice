@@ -46,7 +46,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   axisLine={false}
                   fontSize={12}
                   tickMargin={8}
-                  tick={{ fill: '#9DB2BF' }}
+                  tick={{ fill: '#A1A1AA' }}
                 />
                 <YAxis
                   tickLine={false}
@@ -54,7 +54,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   fontSize={12}
                   tickFormatter={(value) => `$${value}`}
                   width={60}
-                  tick={{ fill: '#9DB2BF' }}
+                  tick={{ fill: '#A1A1AA' }}
                 />
                 <Tooltip
                   formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
