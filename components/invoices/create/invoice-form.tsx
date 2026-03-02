@@ -96,7 +96,7 @@ export function InvoiceForm({
           <Input
             value={companyName}
             onChange={(e) => onCompanyNameChange?.(e.target.value)}
-            placeholder="Invoicely Ltd"
+            placeholder="iforinvoice"
             className="bg-card border-border"
           />
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">

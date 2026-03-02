@@ -15,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'InvoiceFlow - Simple Invoicing for Freelancers',
-    template: '%s | InvoiceFlow',
+    default: 'iforinvoice - Simple Invoicing for Freelancers',
+    template: '%s | iforinvoice',
   },
   description: 'Fast, beautiful invoicing for freelancers. Create professional invoices, manage clients, and get paid faster.',
 }

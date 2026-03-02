@@ -50,7 +50,7 @@ export function InvoiceLivePreview({
   const currency = formData.currency;
   
   // Use local company name/address or fall back to business profile
-  const displayCompanyName = companyName || businessProfile?.businessName || "Invoicely Ltd";
+  const displayCompanyName = companyName || businessProfile?.businessName || "iforinvoice";
   const displayCompanyAddress = companyAddress || 
     [businessProfile?.addressLine1, businessProfile?.city, businessProfile?.state, businessProfile?.postalCode]
       .filter(Boolean)
