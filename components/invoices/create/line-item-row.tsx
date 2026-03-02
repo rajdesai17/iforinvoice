@@ -18,7 +18,7 @@ interface LineItemRowProps {
   dragHandleProps?: Record<string, unknown>;
 }
 
-const inputClassName = "bg-[#1a1a1e] border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
+const inputClassName = "bg-secondary border-0 rounded-xl text-navy-alice placeholder:text-navy-harper focus:ring-2 focus:ring-navy-door h-10";
 const labelClassName = "text-xs text-muted-foreground";
 
 export function LineItemRow({

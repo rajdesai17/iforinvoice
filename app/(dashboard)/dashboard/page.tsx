@@ -92,10 +92,10 @@ export default async function DashboardPage() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-2 h-2 rounded-sm bg-primary" />
+        <div className="w-2 h-2 rounded-sm bg-navy-door" />
         <div>
-          <h1 className="text-xl font-semibold text-white">Dashboard</h1>
-          <p className="text-sm text-[#6b7280]">
+          <h1 className="text-xl font-semibold text-navy-alice">Dashboard</h1>
+          <p className="text-sm text-navy-harper">
             Welcome back! Here{"'"}s an overview of your invoicing activity.
           </p>
         </div>

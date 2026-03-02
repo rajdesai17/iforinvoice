@@ -26,14 +26,14 @@ export function RevenueChart({ data }: RevenueChartProps) {
   const hasData = chartData.some((d) => d.revenue > 0);
 
   return (
-    <div className="rounded-xl bg-[#111113] border border-[#1e1e21] overflow-hidden">
-      <div className="p-4 border-b border-[#1e1e21]">
-        <h3 className="text-sm font-semibold text-primary">Revenue Overview</h3>
-        <p className="text-xs text-[#6b7280] mt-0.5">Monthly revenue from paid invoices</p>
+    <div className="rounded-xl bg-card border border-border overflow-hidden">
+      <div className="p-4 border-b border-border">
+        <h3 className="text-sm font-semibold text-navy-door">Revenue Overview</h3>
+        <p className="text-xs text-navy-harper mt-0.5">Monthly revenue from paid invoices</p>
       </div>
       <div className="p-4">
         {!hasData ? (
-          <div className="flex items-center justify-center h-[200px] text-[#6b7280]">
+          <div className="flex items-center justify-center h-[200px] text-navy-harper">
             No revenue data yet
           </div>
         ) : (
@@ -46,7 +46,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   axisLine={false}
                   fontSize={12}
                   tickMargin={8}
-                  tick={{ fill: '#6b7280' }}
+                  tick={{ fill: '#9DB2BF' }}
                 />
                 <YAxis
                   tickLine={false}
@@ -54,22 +54,22 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   fontSize={12}
                   tickFormatter={(value) => `$${value}`}
                   width={60}
-                  tick={{ fill: '#6b7280' }}
+                  tick={{ fill: '#9DB2BF' }}
                 />
                 <Tooltip
                   formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
                   contentStyle={{
-                    backgroundColor: "#111113",
-                    border: "1px solid #1e1e21",
+                    backgroundColor: "#28374D",
+                    border: "1px solid #3a4d63",
                     borderRadius: "8px",
-                    color: "#ffffff",
+                    color: "#DDE6ED",
                   }}
-                  labelStyle={{ color: '#9ca3af' }}
-                  cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }}
+                  labelStyle={{ color: '#9DB2BF' }}
+                  cursor={{ fill: 'rgba(83, 109, 130, 0.1)' }}
                 />
                 <Bar
                   dataKey="revenue"
-                  fill="#6366f1"
+                  fill="#536D82"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
