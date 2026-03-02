@@ -308,7 +308,7 @@ export function InvoicePageLayout({
         {(viewMode === "both" || viewMode === "preview") && (
           <div
             ref={previewRef}
-            className="w-[420px] flex-shrink-0 h-full overflow-y-auto bg-sidebar flex items-start justify-center p-4"
+            className="w-[420px] shrink-0 h-full overflow-hidden bg-white"
           >
             <InvoiceLivePreview
               formData={formValues}
