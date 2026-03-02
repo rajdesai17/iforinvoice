@@ -510,8 +510,7 @@ export function InvoiceBuilder({
         </div>
 
         {/* Right: Preview Panel (45%) */}
-        <div className="w-[45%] h-[calc(100vh-60px)] overflow-hidden">
-          <div className="w-full h-full">
+        <div className="w-[45%] h-[calc(100vh-60px)]">
             <InvoicePreview
               invoiceNumber={invoiceNumber}
               client={selectedClient}
@@ -526,7 +525,6 @@ export function InvoiceBuilder({
               total={total}
               notes={notes}
             />
-          </div>
         </div>
       </div>
     </div>
