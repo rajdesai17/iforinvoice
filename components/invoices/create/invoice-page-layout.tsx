@@ -260,7 +260,7 @@ export function InvoicePageLayout({
   });
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex flex-col">
+    <div className="h-[calc(100vh-3.5rem)] flex flex-col overflow-hidden">
       <InvoiceActionsBar
         onSaveDraft={handleSaveDraft}
         onSaveAndSend={handleSaveAndSend}
@@ -273,9 +273,9 @@ export function InvoicePageLayout({
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Form Panel - ~40% width */}
+        {/* Form Panel */}
         {(viewMode === "both" || viewMode === "form") && (
-          <div className={`${viewMode === "both" ? "w-[500px]" : "flex-1"} flex-shrink-0 border-r border-border overflow-hidden`}>
+          <div className={`${viewMode === "both" ? "w-1/2" : "flex-1"} h-full overflow-y-auto bg-background border-r border-border`}>
             <InvoiceForm
               form={form}
               totals={totals}
@@ -293,22 +293,20 @@ export function InvoicePageLayout({
           </div>
         )}
 
-        {/* Preview Panel - Fixed A4 preview centered */}
+        {/* Preview Panel */}
         {(viewMode === "both" || viewMode === "preview") && (
           <div
             ref={previewRef}
-            className="flex-1 p-6 overflow-auto bg-muted/30 flex items-start justify-center"
+            className={`${viewMode === "both" ? "w-1/2" : "flex-1"} h-full overflow-y-auto bg-sidebar flex items-start justify-center py-6 px-4`}
           >
-            <div className="sticky top-0">
-              <InvoiceLivePreview
-                formData={formValues}
-                totals={totals}
-                client={selectedClient}
-                businessProfile={businessProfile}
-                companyName={companyName}
-                companyAddress={companyAddress}
-              />
-            </div>
+            <InvoiceLivePreview
+              formData={formValues}
+              totals={totals}
+              client={selectedClient}
+              businessProfile={businessProfile}
+              companyName={companyName}
+              companyAddress={companyAddress}
+            />
           </div>
         )}
       </div>

@@ -1,20 +1,15 @@
 "use client";
 
-import { Save, Send, Download, Loader2, Check, AlertCircle, AlertTriangle, Upload, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { Download, Loader2, Check, AlertCircle, AlertTriangle, Upload, SlidersHorizontal, ChevronDown, FileText, FilePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 type ViewMode = "both" | "form" | "preview";
@@ -45,15 +40,23 @@ export function InvoiceActionsBar({
       {/* Main Header Row */}
       <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-sm bg-primary" />
+          {/* Document icons */}
+          <div className="flex items-center gap-1">
+            <div className="w-7 h-7 rounded bg-secondary flex items-center justify-center">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
+              <FilePlus className="h-4 w-4 text-white" />
+            </div>
+          </div>
           <h1 className="text-lg font-semibold">Create Invoice</h1>
           
           {/* Auto-save status indicator */}
           <AutoSaveIndicator status={autoSaveStatus} />
         </div>
         
-        {/* Theme Toggle placeholder - right side of header */}
-        <div className="w-6 h-6 rounded-full bg-secondary" />
+        {/* Theme Toggle - right side of header */}
+        <Switch className="data-[state=checked]:bg-primary" />
       </div>
       
       {/* Sub-Header / Toolbar Row */}
@@ -64,9 +67,9 @@ export function InvoiceActionsBar({
             type="button"
             variant="secondary"
             size="sm"
-            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground gap-2"
           >
-            <AlertTriangle className="h-4 w-4 mr-2" />
+            <AlertTriangle className="h-4 w-4" />
             Errors
           </Button>
           
@@ -74,9 +77,9 @@ export function InvoiceActionsBar({
             type="button"
             variant="default"
             size="sm"
-            className="bg-primary hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 gap-2"
           >
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="h-4 w-4" />
             Import
           </Button>
         </div>
@@ -90,11 +93,11 @@ export function InvoiceActionsBar({
                 type="button"
                 variant="secondary"
                 size="sm"
-                className="bg-secondary hover:bg-secondary/80"
+                className="bg-secondary hover:bg-secondary/80 gap-2"
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                <SlidersHorizontal className="h-4 w-4" />
                 {viewMode === "both" ? "Both" : viewMode === "form" ? "Form Only" : "Preview Only"}
-                <ChevronDown className="h-4 w-4 ml-2" />
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -115,9 +118,9 @@ export function InvoiceActionsBar({
             type="button"
             onClick={onDownloadPdf}
             disabled={isSubmitting}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
           >
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4" />
             Download
           </Button>
         </div>
