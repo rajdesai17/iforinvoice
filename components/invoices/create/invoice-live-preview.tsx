@@ -57,18 +57,12 @@ export function InvoiceLivePreview({
       .join(", ") || "123 Main St, Anytown, USA";
 
   return (
-    // Fixed A4 paper size container (scaled down to fit viewport)
-    // A4 aspect ratio is 1:1.414 (210mm x 297mm)
-    // Using 420px width = 594px height for proper A4 ratio
+    // Invoice preview container - fits content naturally
     <div 
-      className="bg-white rounded-lg shadow-xl overflow-hidden flex-shrink-0 border border-gray-100"
-      style={{
-        width: "420px",
-        minHeight: "580px",
-      }}
+      className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md"
       id="invoice-preview"
     >
-      <div className="h-full flex flex-col p-6 overflow-hidden">
+      <div className="flex flex-col p-6">
         {/* Header - Invoice Title with Number */}
         <div className="flex-shrink-0 mb-4">
           <h1 className="text-2xl font-semibold text-primary font-mono tracking-tight">
@@ -125,8 +119,8 @@ export function InvoiceLivePreview({
           </div>
         </div>
 
-        {/* Line Items Table - Takes remaining space */}
-        <div className="flex-1 flex flex-col min-h-0 rounded-lg overflow-hidden border border-gray-200">
+        {/* Line Items Table */}
+        <div className="flex flex-col rounded-lg overflow-hidden border border-gray-200">
           {/* Table Header - Purple */}
           <div className="flex-shrink-0 bg-primary text-white text-[11px] font-semibold">
             <div className="grid grid-cols-12 gap-2 px-4 py-2.5">
@@ -137,8 +131,8 @@ export function InvoiceLivePreview({
             </div>
           </div>
 
-          {/* Table Body - Scrollable if needed */}
-          <div className="flex-1 overflow-y-auto bg-white min-h-[120px]">
+          {/* Table Body */}
+          <div className="bg-white min-h-[100px]">
             {validLineItems.length > 0 ? (
               <div className="divide-y divide-gray-100">
                 {validLineItems.slice(0, 6).map((item) => (

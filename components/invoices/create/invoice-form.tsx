@@ -1,7 +1,7 @@
 "use client";
 
 import { UseFormReturn } from "react-hook-form";
-import { ImagePlus, FileSignature, Plus, Info, FileText } from "lucide-react";
+import { Info, FileText } from "lucide-react";
 import type { InvoiceFormData, InvoiceTotals, LineItemFormData } from "@/lib/validations/invoice";
 import { SectionCard } from "./section-card";
 import { InvoiceDetailsSection } from "./invoice-details-section";
@@ -90,37 +90,6 @@ export function InvoiceForm({
 
       {/* Company Details Section */}
       <SectionCard title="Company Details" defaultOpen={true}>
-        {/* Logo and Signature Uploaders */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Company Logo Uploader */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Company Logo</Label>
-            <div className="aspect-[4/3] rounded-lg border border-dashed border-border bg-card hover:bg-secondary/30 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
-                <ImagePlus className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm text-foreground">Select Image From Assets</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Type: logo</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Company Signature Uploader */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Company Signature</Label>
-            <div className="aspect-[4/3] rounded-lg border border-dashed border-border bg-card hover:bg-secondary/30 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
-                <FileSignature className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm text-foreground">Select Image From Assets</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Type: signature</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Company Name */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">Company Name</Label>
