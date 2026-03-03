@@ -6,23 +6,18 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // Avoid hydration mismatch
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="w-full justify-start gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50"
-      >
+      <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground">
         <Sun className="h-4 w-4" />
-        <span>Theme</span>
+        <span className="sr-only">Toggle theme</span>
       </Button>
     );
   }
@@ -30,21 +25,18 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="sm"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-full justify-start gap-3 px-3 py-2 text-sm text-sidebar-accent-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-150"
+      size="icon"
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className="h-9 w-9 text-muted-foreground hover:text-foreground"
     >
-      {theme === "dark" ? (
-        <>
-          <Sun className="h-4 w-4" />
-          <span>Light Mode</span>
-        </>
+      {resolvedTheme === "dark" ? (
+        <Sun className="h-4 w-4" />
       ) : (
-        <>
-          <Moon className="h-4 w-4" />
-          <span>Dark Mode</span>
-        </>
+        <Moon className="h-4 w-4" />
       )}
+      <span className="sr-only">
+        {resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      </span>
     </Button>
   );
 }
