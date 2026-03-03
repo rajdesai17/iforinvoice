@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { invoices, clients } from "@/lib/db/schema";
 import { eq, sql, and, gte } from "drizzle-orm";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
+import { DashboardUnavailable } from "@/components/dashboard/dashboard-unavailable";
 import { RecentInvoices } from "@/components/dashboard/recent-invoices";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { QuickActions } from "@/components/dashboard/quick-actions";
@@ -85,9 +86,24 @@ async function getDashboardData(userId: string) {
   };
 }
 
+function isDbConnectionError(err: unknown): boolean {
+  if (err && typeof err === "object" && "name" in err && (err as { name: string }).name === "NeonDbError") return true;
+  const cause = err && typeof err === "object" && "cause" in err ? (err as { cause: unknown }).cause : null;
+  if (cause && typeof cause === "object" && "code" in cause && (cause as { code: string }).code === "ETIMEDOUT") return true;
+  return false;
+}
+
 export default async function DashboardPage() {
   const userId = await requireCurrentUserId();
-  const data = await getDashboardData(userId);
+  let data;
+  try {
+    data = await getDashboardData(userId);
+  } catch (err) {
+    if (isDbConnectionError(err)) {
+      return <DashboardUnavailable />;
+    }
+    throw err;
+  }
 
   return (
     <div className="p-6 space-y-6">
