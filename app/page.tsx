@@ -122,7 +122,7 @@ export default function LandingPage() {
               {
                 icon: TrendingUp,
                 title: "Track Everything",
-                description: "Monitor payments, overdue invoices, and revenue trends with beautiful dashboards.",
+                description: "Monitor payments, outstanding invoices, and revenue trends with beautiful dashboards.",
               },
               {
                 icon: FileText,
@@ -132,7 +132,7 @@ export default function LandingPage() {
               {
                 icon: Clock,
                 title: "Status Tracking",
-                description: "Know exactly where each invoice stands. Draft, sent, viewed, paid, or overdue at a glance.",
+                description: "Know exactly where each invoice stands. Draft, sent, paid, or void — you control every status change.",
               },
               {
                 icon: CheckCircle2,

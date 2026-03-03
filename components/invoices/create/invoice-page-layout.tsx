@@ -274,7 +274,7 @@ export function InvoicePageLayout({
   }, [isMobile, viewMode]);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
       <InvoiceActionsBar
         onSaveDraft={handleSaveDraft}
         onSaveAndSend={handleSaveAndSend}
@@ -289,7 +289,7 @@ export function InvoicePageLayout({
       <div className="flex-1 flex overflow-hidden">
         {/* Form Panel */}
         {(viewMode === "both" || viewMode === "form") && (
-          <div className="flex-1 h-full overflow-y-auto bg-background">
+          <div className="flex-1 h-full overflow-y-auto">
             <InvoiceForm
               form={form}
               totals={totals}
@@ -311,7 +311,7 @@ export function InvoicePageLayout({
         {(viewMode === "both" || viewMode === "preview") && (
           <div
             ref={previewRef}
-            className="w-[420px] shrink-0 h-full overflow-hidden bg-white"
+            className="w-[420px] shrink-0 h-full overflow-hidden bg-white border-l border-border"
           >
             <InvoiceLivePreview
               formData={formValues}

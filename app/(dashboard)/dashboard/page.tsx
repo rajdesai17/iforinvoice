@@ -19,12 +19,12 @@ async function getDashboardData(userId: string) {
   const [stats] = await db
     .select({
       totalRevenue: sql<string>`COALESCE(SUM(CASE WHEN status = 'paid' THEN total ELSE 0 END), 0)`,
-      outstanding: sql<string>`COALESCE(SUM(CASE WHEN status IN ('sent', 'viewed') THEN total ELSE 0 END), 0)`,
-      overdue: sql<string>`COALESCE(SUM(CASE WHEN status = 'overdue' THEN total ELSE 0 END), 0)`,
+      outstanding: sql<string>`COALESCE(SUM(CASE WHEN status = 'sent' THEN total ELSE 0 END), 0)`,
+      collectedThisMonth: sql<string>`COALESCE(SUM(CASE WHEN status = 'paid' AND paid_at >= date_trunc('month', CURRENT_DATE) THEN total ELSE 0 END), 0)`,
       totalInvoices: sql<number>`COUNT(*)`,
       paidCount: sql<number>`COUNT(CASE WHEN status = 'paid' THEN 1 END)`,
       sentCount: sql<number>`COUNT(CASE WHEN status = 'sent' THEN 1 END)`,
-      overdueCount: sql<number>`COUNT(CASE WHEN status = 'overdue' THEN 1 END)`,
+      draftCount: sql<number>`COUNT(CASE WHEN status = 'draft' THEN 1 END)`,
     })
     .from(invoices)
     .where(eq(invoices.userId, userId));
@@ -74,11 +74,11 @@ async function getDashboardData(userId: string) {
     stats: {
       totalRevenue: parseFloat(stats?.totalRevenue || "0"),
       outstanding: parseFloat(stats?.outstanding || "0"),
-      overdue: parseFloat(stats?.overdue || "0"),
+      collectedThisMonth: parseFloat(stats?.collectedThisMonth || "0"),
       totalInvoices: stats?.totalInvoices || 0,
       paidCount: stats?.paidCount || 0,
       sentCount: stats?.sentCount || 0,
-      overdueCount: stats?.overdueCount || 0,
+      draftCount: stats?.draftCount || 0,
     },
     recentInvoices,
     monthlyRevenue,

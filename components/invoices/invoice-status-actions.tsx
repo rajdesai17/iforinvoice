@@ -44,7 +44,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
     }
   };
 
-  if (invoice.status === "paid" || invoice.status === "cancelled") {
+  if (invoice.status === "paid" || invoice.status === "void") {
     return null;
   }
 
@@ -67,7 +67,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
             Mark as Sent
           </DropdownMenuItem>
         )}
-        {(invoice.status === "sent" || invoice.status === "viewed" || invoice.status === "overdue") && (
+        {invoice.status === "sent" && (
           <DropdownMenuItem onClick={() => handleStatusChange("paid")}>
             <CheckCircle className="mr-2 h-4 w-4" />
             Mark as Paid
@@ -75,11 +75,11 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => handleStatusChange("cancelled")}
+          onClick={() => handleStatusChange("void")}
           className="text-destructive"
         >
           <XCircle className="mr-2 h-4 w-4" />
-          Cancel Invoice
+          Void Invoice
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

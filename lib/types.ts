@@ -1,16 +1,6 @@
-export type InvoiceStatus = 'draft' | 'sent' | 'viewed' | 'paid' | 'overdue' | 'cancelled'
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'void'
 export type DiscountType = 'percentage' | 'fixed'
 export type ItemUnit = 'hour' | 'day' | 'item' | 'project'
-
-export interface User {
-  id: string
-  email: string
-  name: string | null
-  emailVerified: boolean
-  image: string | null
-  createdAt: Date
-  updatedAt: Date
-}
 
 export interface BusinessProfile {
   id: string
@@ -28,10 +18,13 @@ export interface BusinessProfile {
   taxId: string | null
   defaultCurrency: string
   defaultPaymentTerms: number
+  defaultTaxRate: string | null
   invoicePrefix: string
+  invoiceNumberFormat: string | null
   nextInvoiceNumber: number
   invoiceNotes: string | null
   invoiceFooter: string | null
+  paymentInstructions: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -49,6 +42,7 @@ export interface Client {
   state: string | null
   postalCode: string | null
   country: string | null
+  taxId: string | null
   notes: string | null
   isArchived: boolean | null
   createdAt: Date
@@ -62,6 +56,7 @@ export interface Item {
   description: string | null
   rate: number | string
   unit: ItemUnit | null
+  defaultTaxRate: string | null
   isTaxable: boolean | null
   createdAt: Date
   updatedAt: Date
@@ -85,6 +80,7 @@ export interface Invoice {
   total: number | string | null
   notes: string | null
   terms: string | null
+  paymentInstructions: string | null
   paidAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -101,6 +97,15 @@ export interface InvoiceLineItem {
   createdAt: Date
 }
 
+export interface InvoiceActivity {
+  id: string
+  invoiceId: string
+  userId: string
+  action: string
+  details: Record<string, unknown> | null
+  createdAt: Date
+}
+
 export interface InvoiceWithRelations extends Invoice {
   client: Client
   lineItems: InvoiceLineItem[]
@@ -109,6 +114,6 @@ export interface InvoiceWithRelations extends Invoice {
 export interface DashboardStats {
   totalRevenue: number
   outstanding: number
-  invoicesSent: number
-  overdueCount: number
+  collectedThisMonth: number
+  draftCount: number
 }

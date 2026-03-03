@@ -42,10 +42,14 @@ export const profileInputSchema = z.object({
   postalCode: optionalText,
   country: optionalText,
   taxId: optionalText,
+  defaultCurrency: z.string().trim().max(3).default("USD"),
   defaultPaymentTerms: z.coerce.number().int().min(0).max(365).default(30),
+  defaultTaxRate: z.coerce.number().min(0).max(100).default(0),
   invoicePrefix: z.string().trim().min(1).max(20).default("INV"),
+  invoiceNumberFormat: z.string().trim().max(100).default("{PREFIX}-{YYYY}-{NUM:4}"),
   invoiceNotes: optionalLongText,
   invoiceFooter: optionalLongText,
+  paymentInstructions: optionalLongText,
 });
 
 const lineItemInputSchema = z.object({
@@ -66,6 +70,7 @@ const createInvoiceInputBaseSchema = z.object({
   discountValue: z.coerce.number().min(0),
   notes: optionalLongText,
   terms: optionalLongText,
+  paymentInstructions: optionalLongText,
   currency: z.enum(CURRENCY_CODES),
   subtotal: z.coerce.number().min(0),
   taxAmount: z.coerce.number().min(0),
@@ -85,10 +90,8 @@ export const createInvoiceInputSchema = createInvoiceInputBaseSchema
 export const invoiceStatusSchema = z.enum([
   "draft",
   "sent",
-  "viewed",
   "paid",
-  "overdue",
-  "cancelled",
+  "void",
 ]);
 
 const draftLineItemSchema = z.object({

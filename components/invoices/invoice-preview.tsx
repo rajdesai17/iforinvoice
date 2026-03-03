@@ -71,7 +71,7 @@ export function InvoicePreview({
         <div className="flex justify-between items-start mb-2">
           <div>
             <p className="text-[8px] font-semibold text-[#71717A] uppercase tracking-wide">Invoice</p>
-            <p className="text-sm font-bold text-[#F97316] font-mono">{invoiceNumber}</p>
+            <p className="text-sm font-bold text-[#18181B] font-mono">{invoiceNumber}</p>
           </div>
           <div className="text-right">
             <p className="font-semibold text-[9px] text-[#09090B]">
@@ -106,14 +106,14 @@ export function InvoicePreview({
         {/* Billed By / Billed To */}
         <div className="grid grid-cols-2 gap-2 mb-2">
           <div className="bg-[#FAFAFA] rounded p-2">
-            <p className="text-[7px] text-[#F97316] uppercase font-semibold mb-0.5">Billed By</p>
+            <p className="text-[7px] text-[#18181B] uppercase font-semibold mb-0.5">Billed By</p>
             <p className="text-[#09090B] font-medium">{businessProfile?.businessName || "My Business"}</p>
             <p className="text-[#71717A] text-[8px]">
               {businessProfile?.addressLine1 || "123 Main St, Anytown, USA"}
             </p>
           </div>
           <div className="bg-[#FAFAFA] rounded p-2">
-            <p className="text-[7px] text-[#F97316] uppercase font-semibold mb-0.5">Billed To</p>
+            <p className="text-[7px] text-[#18181B] uppercase font-semibold mb-0.5">Billed To</p>
             {client ? (
               <>
                 <p className="text-[#09090B] font-medium">{client.company || client.name}</p>
@@ -128,7 +128,7 @@ export function InvoicePreview({
         {/* Items Table */}
         <div className="border border-[#E4E4E7] rounded overflow-hidden flex-1 flex flex-col min-h-0 mb-2">
           {/* Table Header */}
-          <div className="bg-[#F97316] text-white text-[8px] font-semibold uppercase tracking-wider flex-shrink-0">
+          <div className="bg-[#18181B] text-white text-[8px] font-semibold uppercase tracking-wider flex-shrink-0">
             <div className="flex px-2 py-1.5">
               <div className="flex-1">Item</div>
               <div className="w-8 text-right">Qty</div>
@@ -176,7 +176,7 @@ export function InvoicePreview({
             )}
             <div className="flex justify-between text-[10px] font-semibold pt-1 border-t border-[#E4E4E7]">
               <span className="text-[#09090B]">Total</span>
-              <span className="text-[#F97316]">{formatCurrency(total)}</span>
+              <span className="text-[#18181B]">{formatCurrency(total)}</span>
             </div>
           </div>
         </div>

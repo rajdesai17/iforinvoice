@@ -224,9 +224,9 @@ export function InvoiceBuilder({
   const labelClassName = "text-xs text-muted-foreground";
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-full">
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 bg-background border-b border-border px-6 py-3">
+      <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-sm bg-primary" />

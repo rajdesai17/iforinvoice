@@ -57,10 +57,8 @@ function getStatusBadge(status: string) {
   const statusConfig: Record<string, { className: string; label: string }> = {
     draft: { className: "bg-secondary text-secondary-foreground", label: "Draft" },
     sent: { className: "bg-blue-100 text-blue-700", label: "Sent" },
-    viewed: { className: "bg-amber-100 text-amber-700", label: "Viewed" },
     paid: { className: "bg-emerald-100 text-emerald-700", label: "Paid" },
-    overdue: { className: "bg-red-100 text-red-700", label: "Overdue" },
-    cancelled: { className: "bg-secondary text-muted-foreground", label: "Cancelled" },
+    void: { className: "bg-secondary text-muted-foreground line-through", label: "Void" },
   };
   const config = statusConfig[status] || { className: "bg-secondary", label: status };
   return <Badge variant="secondary" className={config.className}>{config.label}</Badge>;

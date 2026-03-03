@@ -25,16 +25,54 @@ export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
     draft: 'bg-muted text-muted-foreground',
     sent: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    viewed: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
     paid: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    overdue: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-    cancelled: 'bg-muted text-muted-foreground line-through',
+    void: 'bg-muted text-muted-foreground line-through',
   }
   return colors[status] || colors.draft
 }
 
-export function generateInvoiceNumber(prefix: string, nextNumber: number): string {
-  return `${prefix}-${String(nextNumber).padStart(4, '0')}`
+/**
+ * Generate an invoice number from a format pattern.
+ *
+ * Supported tokens:
+ *   {PREFIX}  — the invoice prefix (e.g. "INV")
+ *   {YYYY}   — four-digit year
+ *   {YY}     — two-digit year
+ *   {MM}     — zero-padded month
+ *   {NUM}    — next number (no padding)
+ *   {NUM:N}  — next number zero-padded to N digits (e.g. {NUM:4} → 0001)
+ *
+ * Examples:
+ *   "{PREFIX}-{YYYY}-{NUM:4}" + prefix="INV", num=1  → "INV-2026-0001"
+ *   "{PREFIX}{NUM:3}"         + prefix="F",   num=42 → "F042"
+ *   "{YYYY}/{MM}/{NUM:3}"    + prefix="",     num=7  → "2026/03/007"
+ */
+export function generateInvoiceNumber(
+  format: string,
+  prefix: string,
+  nextNumber: number,
+  date: Date = new Date()
+): string {
+  const yyyy = date.getFullYear().toString()
+  const yy = yyyy.slice(-2)
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+
+  let result = format
+  result = result.replace(/\{PREFIX\}/g, prefix)
+  result = result.replace(/\{YYYY\}/g, yyyy)
+  result = result.replace(/\{YY\}/g, yy)
+  result = result.replace(/\{MM\}/g, mm)
+  result = result.replace(/\{NUM:(\d+)\}/g, (_match, digits) =>
+    String(nextNumber).padStart(parseInt(digits, 10), '0')
+  )
+  result = result.replace(/\{NUM\}/g, String(nextNumber))
+
+  return result
+}
+
+/** Backwards-compatible simple generator */
+export function generateSimpleInvoiceNumber(prefix: string, nextNumber: number): string {
+  return generateInvoiceNumber('{PREFIX}-{YYYY}-{NUM:4}', prefix, nextNumber)
 }
 
 export function addDays(date: Date, days: number): Date {

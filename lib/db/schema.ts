@@ -7,84 +7,29 @@ import {
   decimal,
   integer,
   pgEnum,
+  jsonb,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-// Enums
+// ─── Enums ───────────────────────────────────────────────
+
 export const invoiceStatusEnum = pgEnum("invoice_status", [
   "draft",
   "sent",
-  "viewed",
   "paid",
-  "overdue",
-  "cancelled",
+  "void",
 ]);
 
 export const discountTypeEnum = pgEnum("discount_type", ["percentage", "fixed"]);
 
 export const itemUnitEnum = pgEnum("item_unit", ["hour", "day", "item", "project"]);
 
-// Users table (for Better Auth)
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  email: text("email").notNull().unique(),
-  name: text("name"),
-  emailVerified: boolean("email_verified").default(false),
-  image: text("image"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+// ─── Business Profiles ───────────────────────────────────
 
-// Sessions table (for Better Auth)
-export const sessions = pgTable("sessions", {
-  id: text("id").primaryKey(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expiresAt: timestamp("expires_at").notNull(),
-  token: text("token").notNull().unique(),
-  ipAddress: text("ip_address"),
-  userAgent: text("user_agent"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Accounts table (for OAuth - Better Auth)
-export const accounts = pgTable("accounts", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  accountId: text("account_id").notNull(),
-  providerId: text("provider_id").notNull(),
-  accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at"),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-  scope: text("scope"),
-  idToken: text("id_token"),
-  password: text("password"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Verification tokens (for email verification - Better Auth)
-export const verifications = pgTable("verifications", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Business profiles
 export const businessProfiles = pgTable("business_profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" })
-    .unique(),
+  userId: uuid("user_id").notNull().unique(),
   businessName: text("business_name"),
   email: text("email"),
   phone: text("phone"),
@@ -98,20 +43,22 @@ export const businessProfiles = pgTable("business_profiles", {
   taxId: text("tax_id"),
   defaultCurrency: text("default_currency").default("USD"),
   defaultPaymentTerms: integer("default_payment_terms").default(30),
+  defaultTaxRate: decimal("default_tax_rate", { precision: 5, scale: 2 }).default("0"),
   invoicePrefix: text("invoice_prefix").default("INV"),
+  invoiceNumberFormat: text("invoice_number_format").default("{PREFIX}-{YYYY}-{NUM:4}"),
   nextInvoiceNumber: integer("next_invoice_number").default(1),
   invoiceNotes: text("invoice_notes"),
   invoiceFooter: text("invoice_footer"),
+  paymentInstructions: text("payment_instructions"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Clients
+// ─── Clients ─────────────────────────────────────────────
+
 export const clients = pgTable("clients", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull(),
   name: text("name").notNull(),
   email: text("email"),
   phone: text("phone"),
@@ -122,33 +69,33 @@ export const clients = pgTable("clients", {
   state: text("state"),
   postalCode: text("postal_code"),
   country: text("country"),
+  taxId: text("tax_id"),
   notes: text("notes"),
   isArchived: boolean("is_archived").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Items (saved services/products)
+// ─── Items Library ───────────────────────────────────────
+
 export const items = pgTable("items", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
   rate: decimal("rate", { precision: 12, scale: 2 }).notNull(),
   unit: itemUnitEnum("unit").default("hour"),
+  defaultTaxRate: decimal("default_tax_rate", { precision: 5, scale: 2 }),
   isTaxable: boolean("is_taxable").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Invoices
+// ─── Invoices ────────────────────────────────────────────
+
 export const invoices = pgTable("invoices", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").notNull(),
   clientId: uuid("client_id")
     .notNull()
     .references(() => clients.id, { onDelete: "restrict" }),
@@ -166,12 +113,14 @@ export const invoices = pgTable("invoices", {
   total: decimal("total", { precision: 12, scale: 2 }).default("0"),
   notes: text("notes"),
   terms: text("terms"),
+  paymentInstructions: text("payment_instructions"),
   paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Invoice line items
+// ─── Invoice Line Items ──────────────────────────────────
+
 export const invoiceLineItems = pgTable("invoice_line_items", {
   id: uuid("id").primaryKey().defaultRandom(),
   invoiceId: uuid("invoice_id")
@@ -185,65 +134,40 @@ export const invoiceLineItems = pgTable("invoice_line_items", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Relations
-export const usersRelations = relations(users, ({ one, many }) => ({
-  businessProfile: one(businessProfiles, {
-    fields: [users.id],
-    references: [businessProfiles.userId],
-  }),
-  sessions: many(sessions),
-  accounts: many(accounts),
-  clients: many(clients),
-  items: many(items),
+// ─── Invoice Activities (Timeline) ──────────────────────
+
+export const invoiceActivities = pgTable(
+  "invoice_activities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    invoiceId: uuid("invoice_id")
+      .notNull()
+      .references(() => invoices.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull(),
+    action: text("action").notNull(), // 'created', 'updated', 'status_changed', 'duplicated', 'downloaded'
+    details: jsonb("details"), // e.g. { "from": "draft", "to": "sent" }
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_invoice_activities_invoice").on(table.invoiceId),
+  ],
+);
+
+// ─── Relations ───────────────────────────────────────────
+
+export const clientsRelations = relations(clients, ({ many }) => ({
   invoices: many(invoices),
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
-  }),
-}));
-
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, {
-    fields: [accounts.userId],
-    references: [users.id],
-  }),
-}));
-
-export const businessProfilesRelations = relations(businessProfiles, ({ one }) => ({
-  user: one(users, {
-    fields: [businessProfiles.userId],
-    references: [users.id],
-  }),
-}));
-
-export const clientsRelations = relations(clients, ({ one, many }) => ({
-  user: one(users, {
-    fields: [clients.userId],
-    references: [users.id],
-  }),
-  invoices: many(invoices),
-}));
-
-export const itemsRelations = relations(items, ({ one }) => ({
-  user: one(users, {
-    fields: [items.userId],
-    references: [users.id],
-  }),
-}));
+export const itemsRelations = relations(items, ({}) => ({}));
 
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
-  user: one(users, {
-    fields: [invoices.userId],
-    references: [users.id],
-  }),
   client: one(clients, {
     fields: [invoices.clientId],
     references: [clients.id],
   }),
   lineItems: many(invoiceLineItems),
+  activities: many(invoiceActivities),
 }));
 
 export const invoiceLineItemsRelations = relations(invoiceLineItems, ({ one }) => ({
@@ -253,13 +177,15 @@ export const invoiceLineItemsRelations = relations(invoiceLineItems, ({ one }) =
   }),
 }));
 
-// Types
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Session = typeof sessions.$inferSelect;
-export type NewSession = typeof sessions.$inferInsert;
-export type Account = typeof accounts.$inferSelect;
-export type NewAccount = typeof accounts.$inferInsert;
+export const invoiceActivitiesRelations = relations(invoiceActivities, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceActivities.invoiceId],
+    references: [invoices.id],
+  }),
+}));
+
+// ─── Types ───────────────────────────────────────────────
+
 export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type NewBusinessProfile = typeof businessProfiles.$inferInsert;
 export type Client = typeof clients.$inferSelect;
@@ -270,3 +196,5 @@ export type Invoice = typeof invoices.$inferSelect;
 export type NewInvoice = typeof invoices.$inferInsert;
 export type InvoiceLineItem = typeof invoiceLineItems.$inferSelect;
 export type NewInvoiceLineItem = typeof invoiceLineItems.$inferInsert;
+export type InvoiceActivity = typeof invoiceActivities.$inferSelect;
+export type NewInvoiceActivity = typeof invoiceActivities.$inferInsert;

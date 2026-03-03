@@ -35,7 +35,7 @@ export function InvoiceActionsBar({
   onViewModeChange,
 }: InvoiceActionsBarProps) {
   return (
-    <header className="sticky top-0 z-30 bg-background border-b border-border shrink-0">
+    <header className="sticky top-0 z-30 bg-card border-b border-border shrink-0">
       <div className="flex h-12 items-center justify-between px-4 gap-2">
         {/* Left: Title + Auto-save */}
         <div className="flex items-center gap-3">
@@ -128,7 +128,7 @@ export function InvoiceActionsBar({
             onClick={onDownloadPdf}
             disabled={isSubmitting}
             size="sm"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 shadow-sm"
           >
             <Download className="h-3.5 w-3.5" />
             Download

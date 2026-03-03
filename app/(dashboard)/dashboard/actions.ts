@@ -15,44 +15,39 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     .from(invoices)
     .where(and(eq(invoices.userId, userId), eq(invoices.status, 'paid')))
 
-  // Get outstanding amount (sent + viewed + overdue)
+  // Get outstanding amount (sent invoices)
   const outstandingResult = await db
+    .select({ total: sql<number>`COALESCE(SUM(${invoices.total}), 0)::numeric` })
+    .from(invoices)
+    .where(and(eq(invoices.userId, userId), eq(invoices.status, 'sent')))
+
+  // Get collected this month
+  const startOfMonth = new Date()
+  startOfMonth.setDate(1)
+  startOfMonth.setHours(0, 0, 0, 0)
+
+  const collectedResult = await db
     .select({ total: sql<number>`COALESCE(SUM(${invoices.total}), 0)::numeric` })
     .from(invoices)
     .where(
       and(
         eq(invoices.userId, userId),
-        sql`${invoices.status} IN ('sent', 'viewed', 'overdue')`
+        eq(invoices.status, 'paid'),
+        gte(invoices.paidAt, startOfMonth)
       )
     )
 
-  // Get invoices sent this month
-  const startOfMonth = new Date()
-  startOfMonth.setDate(1)
-  startOfMonth.setHours(0, 0, 0, 0)
-
-  const sentResult = await db
+  // Get draft count
+  const draftResult = await db
     .select({ count: sql<number>`COUNT(*)::int` })
     .from(invoices)
-    .where(
-      and(
-        eq(invoices.userId, userId),
-        sql`${invoices.status} != 'draft'`,
-        gte(invoices.createdAt, startOfMonth)
-      )
-    )
-
-  // Get overdue count
-  const overdueResult = await db
-    .select({ count: sql<number>`COUNT(*)::int` })
-    .from(invoices)
-    .where(and(eq(invoices.userId, userId), eq(invoices.status, 'overdue')))
+    .where(and(eq(invoices.userId, userId), eq(invoices.status, 'draft')))
 
   return {
     totalRevenue: Number(revenueResult[0]?.total) || 0,
     outstanding: Number(outstandingResult[0]?.total) || 0,
-    invoicesSent: Number(sentResult[0]?.count) || 0,
-    overdueCount: Number(overdueResult[0]?.count) || 0,
+    collectedThisMonth: Number(collectedResult[0]?.total) || 0,
+    draftCount: Number(draftResult[0]?.count) || 0,
   }
 }
 
@@ -82,7 +77,7 @@ export async function getMonthlyRevenue(): Promise<{ month: string; revenue: num
   sixMonthsAgo.setDate(1)
 
   const results = await db.execute(sql`
-    SELECT 
+    SELECT
       TO_CHAR(paid_at, 'Mon') as month,
       COALESCE(SUM(total), 0)::numeric as revenue
     FROM invoices

@@ -1,172 +1,138 @@
 @import 'tailwindcss';
+@import '@neondatabase/auth/ui/tailwind';
 
 @custom-variant dark (&:is(.dark *));
 
-/* Modern SaaS/Fintech Color Palette */
-/* Deep Zinc: #09090B - App background */
-/* Dark Zinc: #18181B - Cards/Sidebar */
-/* Zinc Border: #27272A - Borders */
-/* Muted Gray: #A1A1AA - Muted text */
-/* Off-White: #FAFAFA - Primary text */
-/* Orange Accent: #F97316 - CTA/Primary */
-/* Emerald: #10B981 - Success */
+/* iforinvoice — Zinc Monochrome Palette
+   Hierarchy through shade, not hue.
+   Dark = emphasis, light = recessive. */
 
-/* ========== LIGHT MODE (Default) ========== */
+/* ========== LIGHT MODE ========== */
 :root {
-  /* Light backgrounds */
   --background: #F4F4F5;
   --foreground: #09090B;
-  
-  /* Card styling - clean white */
+
   --card: #FFFFFF;
   --card-foreground: #09090B;
-  
+
   --popover: #FFFFFF;
   --popover-foreground: #09090B;
-  
-  /* Primary accent - Orange for CTAs */
-  --primary: #F97316;
-  --primary-foreground: #FFFFFF;
-  
-  /* Secondary - Zinc tones */
+
+  /* Primary — near-black for authority */
+  --primary: #18181B;
+  --primary-foreground: #FAFAFA;
+
   --secondary: #F4F4F5;
   --secondary-foreground: #3F3F46;
-  
-  /* Muted elements */
+
   --muted: #E4E4E7;
   --muted-foreground: #71717A;
-  
-  /* Accent for hover states */
-  --accent: #E4E4E7;
+
+  --accent: #F4F4F5;
   --accent-foreground: #09090B;
-  
-  /* Destructive - Modern red */
+
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  
-  /* Borders with zinc tones */
-  --border: #D4D4D8;
+
+  --border: #E4E4E7;
   --input: #E4E4E7;
-  --ring: #F97316;
-  
-  /* Chart colors - modern palette */
-  --chart-1: #F97316;
-  --chart-2: #10B981;
-  --chart-3: #3B82F6;
-  --chart-4: #EAB308;
-  --chart-5: #EC4899;
-  
+  --ring: #A1A1AA;
+
+  --chart-1: #18181B;
+  --chart-2: #71717A;
+  --chart-3: #A1A1AA;
+  --chart-4: #D4D4D8;
+  --chart-5: #3F3F46;
+
   --radius: 0.75rem;
-  
-  /* Sidebar - Dark for contrast */
-  --sidebar: #18181B;
-  --sidebar-foreground: #FAFAFA;
-  --sidebar-primary: #F97316;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #27272A;
-  --sidebar-accent-foreground: #A1A1AA;
-  --sidebar-border: #27272A;
-  --sidebar-ring: #F97316;
-  
-  /* Status colors */
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #09090B;
+  --sidebar-primary: #18181B;
+  --sidebar-primary-foreground: #FAFAFA;
+  --sidebar-accent: #F4F4F5;
+  --sidebar-accent-foreground: #71717A;
+  --sidebar-border: #E4E4E7;
+  --sidebar-ring: #A1A1AA;
+
   --success: #10B981;
   --success-foreground: #FFFFFF;
   --warning: #F59E0B;
   --warning-foreground: #09090B;
-  
-  /* Custom zinc scale for direct use */
+
   --zinc-950: #09090B;
   --zinc-900: #18181B;
   --zinc-800: #27272A;
   --zinc-700: #3F3F46;
   --zinc-500: #71717A;
   --zinc-400: #A1A1AA;
+  --zinc-300: #D4D4D8;
   --zinc-200: #E4E4E7;
   --zinc-100: #F4F4F5;
   --zinc-50: #FAFAFA;
-  
-  /* Accent color - Orange */
-  --accent-orange: #F97316;
-  --accent-orange-light: #FB923C;
-  --accent-orange-dark: #EA580C;
 }
 
 /* ========== DARK MODE ========== */
 .dark {
-  /* Deep zinc background */
   --background: #09090B;
   --foreground: #FAFAFA;
-  
-  /* Card styling with dark zinc */
+
   --card: #18181B;
   --card-foreground: #FAFAFA;
-  
+
   --popover: #18181B;
   --popover-foreground: #FAFAFA;
-  
-  /* Primary accent - Orange for CTAs */
-  --primary: #F97316;
-  --primary-foreground: #FFFFFF;
-  
-  /* Secondary - darker zinc */
+
+  /* Primary — near-white for dark bg */
+  --primary: #FAFAFA;
+  --primary-foreground: #09090B;
+
   --secondary: #27272A;
   --secondary-foreground: #A1A1AA;
-  
-  /* Muted elements */
+
   --muted: #27272A;
   --muted-foreground: #A1A1AA;
-  
-  /* Accent for hover states */
+
   --accent: #27272A;
   --accent-foreground: #FAFAFA;
-  
-  /* Destructive - Modern red */
+
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  
-  /* Borders with zinc tones */
+
   --border: #27272A;
   --input: #27272A;
-  --ring: #F97316;
-  
-  /* Chart colors - modern palette */
-  --chart-1: #F97316;
-  --chart-2: #10B981;
-  --chart-3: #3B82F6;
-  --chart-4: #EAB308;
-  --chart-5: #EC4899;
-  
-  /* Sidebar - Even darker */
+  --ring: #71717A;
+
+  --chart-1: #FAFAFA;
+  --chart-2: #A1A1AA;
+  --chart-3: #71717A;
+  --chart-4: #3F3F46;
+  --chart-5: #D4D4D8;
+
   --sidebar: #09090B;
   --sidebar-foreground: #FAFAFA;
-  --sidebar-primary: #F97316;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary: #FAFAFA;
+  --sidebar-primary-foreground: #09090B;
   --sidebar-accent: #18181B;
   --sidebar-accent-foreground: #A1A1AA;
   --sidebar-border: #27272A;
-  --sidebar-ring: #F97316;
-  
-  /* Status colors */
+  --sidebar-ring: #71717A;
+
   --success: #10B981;
   --success-foreground: #FFFFFF;
   --warning: #F59E0B;
   --warning-foreground: #09090B;
-  
-  /* Zinc scale stays same */
+
   --zinc-950: #09090B;
   --zinc-900: #18181B;
   --zinc-800: #27272A;
   --zinc-700: #3F3F46;
   --zinc-500: #71717A;
   --zinc-400: #A1A1AA;
+  --zinc-300: #D4D4D8;
   --zinc-200: #E4E4E7;
   --zinc-100: #F4F4F5;
   --zinc-50: #FAFAFA;
-  
-  /* Accent color - Orange */
-  --accent-orange: #F97316;
-  --accent-orange-light: #FB923C;
-  --accent-orange-dark: #EA580C;
 }
 
 @theme inline {
@@ -209,22 +175,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  
-  /* Zinc palette colors for direct use */
   --color-zinc-950: var(--zinc-950);
   --color-zinc-900: var(--zinc-900);
   --color-zinc-800: var(--zinc-800);
   --color-zinc-700: var(--zinc-700);
   --color-zinc-500: var(--zinc-500);
   --color-zinc-400: var(--zinc-400);
+  --color-zinc-300: var(--zinc-300);
   --color-zinc-200: var(--zinc-200);
   --color-zinc-100: var(--zinc-100);
   --color-zinc-50: var(--zinc-50);
-  
-  /* Accent colors - Orange */
-  --color-accent-orange: var(--accent-orange);
-  --color-accent-orange-light: var(--accent-orange-light);
-  --color-accent-orange-dark: var(--accent-orange-dark);
 }
 
 @layer base {
@@ -236,33 +196,25 @@
   }
 }
 
-/* Custom scrollbar - Light mode */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
 
-/* Smooth transitions */
-.transition-all-150 {
-  transition: all 150ms ease;
-}
-
-/* Invoice preview paper effect - Always white regardless of theme */
+/* Invoice paper — always white regardless of theme */
 .invoice-paper {
   background: #ffffff;
   color: #09090B;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
