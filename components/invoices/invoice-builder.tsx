@@ -20,6 +20,7 @@ import { CalendarIcon, Plus, Trash2, Loader2, Save, ChevronDown, Download } from
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { createInvoice } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 import { InvoicePreview } from "@/components/invoices/invoice-preview";
 import {
   Collapsible,
@@ -57,6 +58,7 @@ interface BusinessProfile {
   city: string | null;
   state: string | null;
   postalCode: string | null;
+  defaultCurrency?: string | null;
 }
 
 interface InvoiceBuilderProps {
@@ -121,6 +123,7 @@ export function InvoiceBuilder({
   const [discountValue, setDiscountValue] = useState<number>(0);
   const [notes, setNotes] = useState("");
   const [terms, setTerms] = useState("");
+  const [currency, setCurrency] = useState<string>(businessProfile?.defaultCurrency ?? "USD");
 
   const selectedClient = clients.find((c) => c.id === clientId);
 
@@ -194,6 +197,7 @@ export function InvoiceBuilder({
         issueDate: issueDate.toISOString(),
         dueDate: dueDate.toISOString(),
         status,
+        currency,
         lineItems: lineItems.filter((item) => item.description && item.amount > 0),
         taxRate,
         discountType,
@@ -210,6 +214,7 @@ export function InvoiceBuilder({
         toast.success(status === "draft" ? "Invoice saved as draft" : "Invoice created and ready to send");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to create invoice");
       }
     } catch {
@@ -224,9 +229,9 @@ export function InvoiceBuilder({
   const labelClassName = "text-xs text-muted-foreground";
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-full">
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 bg-background border-b border-border px-6 py-3">
+      <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-sm bg-primary" />

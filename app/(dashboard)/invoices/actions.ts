@@ -36,63 +36,63 @@ export async function createInvoice(
     const userId = await requireCurrentUserId();
     const payload = parsedInput.data;
 
-    const createdInvoice = await db.transaction(async (tx) => {
-      const [client] = await tx
-        .select({ id: clients.id })
-        .from(clients)
-        .where(
-          and(
-            eq(clients.id, payload.clientId),
-            eq(clients.userId, userId),
-            eq(clients.isArchived, false),
-          ),
-        )
-        .limit(1);
+    const [client] = await db
+      .select({ id: clients.id })
+      .from(clients)
+      .where(
+        and(
+          eq(clients.id, payload.clientId),
+          eq(clients.userId, userId),
+          eq(clients.isArchived, false),
+        ),
+      )
+      .limit(1);
 
-      if (!client) {
-        throw new Error("CLIENT_NOT_FOUND");
-      }
+    if (!client) {
+      throw new Error("CLIENT_NOT_FOUND");
+    }
 
-      const [existingInvoice] = await tx
-        .select({ id: invoices.id })
-        .from(invoices)
-        .where(
-          and(
-            eq(invoices.userId, userId),
-            eq(invoices.invoiceNumber, payload.invoiceNumber),
-          ),
-        )
-        .limit(1);
+    const [existingInvoice] = await db
+      .select({ id: invoices.id })
+      .from(invoices)
+      .where(
+        and(
+          eq(invoices.userId, userId),
+          eq(invoices.invoiceNumber, payload.invoiceNumber),
+        ),
+      )
+      .limit(1);
 
-      if (existingInvoice) {
-        throw new Error("INVOICE_NUMBER_EXISTS");
-      }
+    if (existingInvoice) {
+      throw new Error("INVOICE_NUMBER_EXISTS");
+    }
 
-      const [invoice] = await tx
-        .insert(invoices)
-        .values({
-          userId,
-          clientId: payload.clientId,
-          invoiceNumber: payload.invoiceNumber,
-          status: payload.status,
-          issueDate: payload.issueDate,
-          dueDate: payload.dueDate,
-          currency: payload.currency,
-          subtotal: payload.subtotal.toString(),
-          taxRate: payload.taxRate.toString(),
-          taxAmount: payload.taxAmount.toString(),
-          discountType: payload.discountType,
-          discountValue: payload.discountValue.toString(),
-          discountAmount: payload.discountAmount.toString(),
-          total: payload.total.toString(),
-          notes: payload.notes || null,
-          terms: payload.terms || null,
-        })
-        .returning();
+    const [createdInvoice] = await db
+      .insert(invoices)
+      .values({
+        userId,
+        clientId: payload.clientId,
+        invoiceNumber: payload.invoiceNumber,
+        status: payload.status,
+        issueDate: payload.issueDate,
+        dueDate: payload.dueDate,
+        currency: payload.currency,
+        subtotal: payload.subtotal.toString(),
+        taxRate: payload.taxRate.toString(),
+        taxAmount: payload.taxAmount.toString(),
+        discountType: payload.discountType,
+        discountValue: payload.discountValue.toString(),
+        discountAmount: payload.discountAmount.toString(),
+        total: payload.total.toString(),
+        notes: payload.notes || null,
+        terms: payload.terms || null,
+      })
+      .returning();
 
-      await tx.insert(invoiceLineItems).values(
+    try {
+      await db.insert(invoiceLineItems).values(
         payload.lineItems.map((item, index) => ({
-          invoiceId: invoice.id,
+          invoiceId: createdInvoice.id,
           description: item.description,
           quantity: item.quantity.toString(),
           unitPrice: item.unitPrice.toString(),
@@ -100,33 +100,39 @@ export async function createInvoice(
           sortOrder: index,
         })),
       );
+    } catch (lineItemsError) {
+      // Best-effort rollback when running on drivers without transaction support.
+      await db
+        .delete(invoices)
+        .where(
+          and(eq(invoices.id, createdInvoice.id), eq(invoices.userId, userId)),
+        );
+      throw lineItemsError;
+    }
 
-      const [profile] = await tx
-        .select({
-          id: businessProfiles.id,
-          nextInvoiceNumber: businessProfiles.nextInvoiceNumber,
+    const [profile] = await db
+      .select({
+        id: businessProfiles.id,
+        nextInvoiceNumber: businessProfiles.nextInvoiceNumber,
+      })
+      .from(businessProfiles)
+      .where(eq(businessProfiles.userId, userId))
+      .limit(1);
+
+    if (profile) {
+      await db
+        .update(businessProfiles)
+        .set({
+          nextInvoiceNumber: (profile.nextInvoiceNumber || 1) + 1,
+          updatedAt: new Date(),
         })
-        .from(businessProfiles)
-        .where(eq(businessProfiles.userId, userId))
-        .limit(1);
-
-      if (profile) {
-        await tx
-          .update(businessProfiles)
-          .set({
-            nextInvoiceNumber: (profile.nextInvoiceNumber || 1) + 1,
-            updatedAt: new Date(),
-          })
-          .where(eq(businessProfiles.id, profile.id));
-      } else {
-        await tx.insert(businessProfiles).values({
-          userId,
-          nextInvoiceNumber: 2,
-        });
-      }
-
-      return invoice;
-    });
+        .where(eq(businessProfiles.id, profile.id));
+    } else {
+      await db.insert(businessProfiles).values({
+        userId,
+        nextInvoiceNumber: 2,
+      });
+    }
 
     revalidatePath("/invoices");
     revalidatePath("/dashboard");

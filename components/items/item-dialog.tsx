@@ -25,6 +25,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createItem, updateItem } from "@/app/(dashboard)/items/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface ItemDialogProps {
   open: boolean;
@@ -84,6 +85,7 @@ export function ItemDialog({ open, onOpenChange, item }: ItemDialogProps) {
         onOpenChange(false);
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Something went wrong");
       }
     } catch {

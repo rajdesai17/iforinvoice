@@ -16,6 +16,7 @@ import { Package, Search, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { ItemDialog } from "@/components/items/item-dialog";
 import { deleteItem } from "@/app/(dashboard)/items/actions";
 import { toast } from "sonner";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface Item {
   id: string;
@@ -63,6 +64,7 @@ export function ItemsList({ items }: ItemsListProps) {
     if (result.success) {
       toast.success("Item deleted");
     } else {
+      if (isSessionExpired(result)) return;
       toast.error(result.error || "Failed to delete item");
     }
   };

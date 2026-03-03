@@ -17,6 +17,7 @@ import { Users, Search, MoreHorizontal, Mail, Phone, FileText, Pencil, Archive }
 import { ClientDialog } from "@/components/clients/client-dialog";
 import { archiveClient } from "@/app/(dashboard)/clients/actions";
 import { toast } from "sonner";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface Client {
   id: string;
@@ -24,6 +25,13 @@ interface Client {
   email: string | null;
   phone: string | null;
   company: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+  notes?: string | null;
   isArchived: boolean | null;
   createdAt: Date;
   invoiceCount: number;
@@ -59,6 +67,7 @@ export function ClientsList({ clients }: ClientsListProps) {
     if (result.success) {
       toast.success("Client archived");
     } else {
+      if (isSessionExpired(result)) return;
       toast.error(result.error || "Failed to archive client");
     }
   };

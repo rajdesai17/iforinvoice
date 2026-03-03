@@ -18,6 +18,7 @@ import { InvoiceActionsBar } from "./invoice-actions-bar";
 import { InvoiceForm } from "./invoice-form";
 import { InvoiceLivePreview } from "./invoice-live-preview";
 import { createInvoice, saveDraft } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 
 type ViewMode = "both" | "form" | "preview";
@@ -121,6 +122,7 @@ export function InvoicePageLayout({
         dueDate: data.dueDate.toISOString(),
       });
       if (!result.success) {
+        if (isSessionExpired(result)) return;
         throw new Error(result.error);
       }
     } catch (error) {
@@ -168,6 +170,7 @@ export function InvoicePageLayout({
         toast.success("Invoice saved as draft");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to save invoice");
       }
     } catch {
@@ -214,6 +217,7 @@ export function InvoicePageLayout({
         toast.success("Invoice created and ready to send");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to create invoice");
       }
     } catch {
@@ -274,7 +278,7 @@ export function InvoicePageLayout({
   }, [isMobile, viewMode]);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
       <InvoiceActionsBar
         onSaveDraft={handleSaveDraft}
         onSaveAndSend={handleSaveAndSend}
@@ -289,7 +293,7 @@ export function InvoicePageLayout({
       <div className="flex-1 flex overflow-hidden">
         {/* Form Panel */}
         {(viewMode === "both" || viewMode === "form") && (
-          <div className="flex-1 h-full overflow-y-auto bg-background">
+          <div className="flex-1 h-full overflow-y-auto">
             <InvoiceForm
               form={form}
               totals={totals}
@@ -311,7 +315,7 @@ export function InvoicePageLayout({
         {(viewMode === "both" || viewMode === "preview") && (
           <div
             ref={previewRef}
-            className="w-[420px] shrink-0 h-full overflow-hidden bg-white"
+            className="w-[420px] shrink-0 h-full overflow-hidden bg-white border-l border-border"
           >
             <InvoiceLivePreview
               formData={formValues}

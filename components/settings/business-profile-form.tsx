@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateBusinessProfile } from "@/app/(dashboard)/settings/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface BusinessProfile {
   businessName: string | null;
@@ -48,7 +49,7 @@ export function BusinessProfileForm({ profile }: BusinessProfileFormProps) {
     postalCode: profile?.postalCode || "",
     country: profile?.country || "",
     taxId: profile?.taxId || "",
-    defaultPaymentTerms: profile?.defaultPaymentTerms || 30,
+    defaultPaymentTerms: profile?.defaultPaymentTerms ?? 30,
     invoicePrefix: profile?.invoicePrefix || "INV",
     invoiceNotes: profile?.invoiceNotes || "",
     invoiceFooter: profile?.invoiceFooter || "",
@@ -64,6 +65,7 @@ export function BusinessProfileForm({ profile }: BusinessProfileFormProps) {
         toast.success("Profile updated successfully");
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to update profile");
       }
     } catch {
@@ -195,7 +197,10 @@ export function BusinessProfileForm({ profile }: BusinessProfileFormProps) {
                 type="number"
                 min="0"
                 value={formData.defaultPaymentTerms}
-                onChange={(e) => setFormData({ ...formData, defaultPaymentTerms: parseInt(e.target.value) || 30 })}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  setFormData({ ...formData, defaultPaymentTerms: Number.isNaN(v) ? 30 : v });
+                }}
               />
             </div>
           </div>

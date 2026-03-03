@@ -13,6 +13,7 @@ import {
 import { Send, CheckCircle, XCircle, MoreHorizontal, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface Invoice {
   id: string;
@@ -35,6 +36,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
         toast.success(`Invoice marked as ${status}`);
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to update status");
       }
     } catch {
@@ -44,7 +46,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
     }
   };
 
-  if (invoice.status === "paid" || invoice.status === "cancelled") {
+  if (invoice.status === "paid" || invoice.status === "void") {
     return null;
   }
 
@@ -67,7 +69,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
             Mark as Sent
           </DropdownMenuItem>
         )}
-        {(invoice.status === "sent" || invoice.status === "viewed" || invoice.status === "overdue") && (
+        {invoice.status === "sent" && (
           <DropdownMenuItem onClick={() => handleStatusChange("paid")}>
             <CheckCircle className="mr-2 h-4 w-4" />
             Mark as Paid
@@ -75,11 +77,11 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => handleStatusChange("cancelled")}
+          onClick={() => handleStatusChange("void")}
           className="text-destructive"
         >
           <XCircle className="mr-2 h-4 w-4" />
-          Cancel Invoice
+          Void Invoice
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

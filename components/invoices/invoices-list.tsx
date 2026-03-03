@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
 import { toast } from "sonner";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 import { cn } from "@/lib/utils";
 
 interface Invoice {
@@ -61,10 +62,8 @@ function getStatusBadge(status: string) {
   const statusConfig: Record<string, { className: string; label: string }> = {
     draft: { className: "bg-secondary text-muted-foreground", label: "Draft" },
     sent: { className: "bg-primary/20 text-primary", label: "Sent" },
-    viewed: { className: "bg-muted text-foreground", label: "Viewed" },
     paid: { className: "bg-emerald-500/10 text-emerald-500", label: "Paid" },
-    overdue: { className: "bg-red-500/10 text-red-500", label: "Overdue" },
-    cancelled: { className: "bg-secondary text-muted-foreground", label: "Cancelled" },
+    void: { className: "bg-secondary text-muted-foreground line-through", label: "Void" },
   };
 
   const config = statusConfig[status] || { className: "bg-secondary text-muted-foreground", label: status };
@@ -94,6 +93,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     if (result.success) {
       toast.success(`Invoice marked as ${status}`);
     } else {
+      if (isSessionExpired(result)) return;
       toast.error(result.error || "Failed to update status");
     }
   };
@@ -139,9 +139,8 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
             <SelectItem value="all" className="text-foreground hover:bg-secondary">All Status</SelectItem>
             <SelectItem value="draft" className="text-foreground hover:bg-secondary">Draft</SelectItem>
             <SelectItem value="sent" className="text-foreground hover:bg-secondary">Sent</SelectItem>
-            <SelectItem value="viewed" className="text-foreground hover:bg-secondary">Viewed</SelectItem>
             <SelectItem value="paid" className="text-foreground hover:bg-secondary">Paid</SelectItem>
-            <SelectItem value="overdue" className="text-foreground hover:bg-secondary">Overdue</SelectItem>
+            <SelectItem value="void" className="text-foreground hover:bg-secondary">Void</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -228,7 +227,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                           Mark as Sent
                         </DropdownMenuItem>
                       )}
-                      {(invoice.status === "sent" || invoice.status === "viewed") && (
+                      {invoice.status === "sent" && (
                         <DropdownMenuItem
                           onClick={() => handleStatusChange(invoice.id, "paid")}
                           className="text-foreground hover:bg-secondary"
@@ -237,13 +236,13 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                           Mark as Paid
                         </DropdownMenuItem>
                       )}
-                      {invoice.status !== "cancelled" && invoice.status !== "paid" && (
+                      {invoice.status !== "void" && invoice.status !== "paid" && (
                         <DropdownMenuItem
-                          onClick={() => handleStatusChange(invoice.id, "cancelled")}
+                          onClick={() => handleStatusChange(invoice.id, "void")}
                           className="text-red-500 hover:bg-red-500/10"
                         >
                           <XCircle className="mr-2 h-4 w-4" />
-                          Cancel
+                          Void
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>

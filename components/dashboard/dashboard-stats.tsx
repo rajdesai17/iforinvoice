@@ -1,16 +1,16 @@
 "use client";
 
-import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
+import { DollarSign, Clock, TrendingUp, FileEdit } from "lucide-react";
 
 interface DashboardStatsProps {
   stats: {
     totalRevenue: number;
     outstanding: number;
-    overdue: number;
+    collectedThisMonth: number;
     totalInvoices: number;
     paidCount: number;
     sentCount: number;
-    overdueCount: number;
+    draftCount: number;
   };
   clientCount: number;
 }
@@ -24,34 +24,34 @@ function formatCurrency(amount: number) {
   }).format(amount);
 }
 
-export function DashboardStats({ stats, clientCount }: DashboardStatsProps) {
+export function DashboardStats({ stats }: DashboardStatsProps) {
   const statCards = [
-    {
-      title: "Total Revenue",
-      value: formatCurrency(stats.totalRevenue),
-      description: `${stats.paidCount} paid invoices`,
-      icon: DollarSign,
-      iconClass: "text-emerald-400 bg-emerald-400/10",
-    },
     {
       title: "Outstanding",
       value: formatCurrency(stats.outstanding),
-      description: `${stats.sentCount} pending invoices`,
+      description: `${stats.sentCount} sent invoices`,
       icon: Clock,
       iconClass: "text-blue-400 bg-blue-400/10",
     },
     {
-      title: "Overdue",
-      value: formatCurrency(stats.overdue),
-      description: `${stats.overdueCount} overdue invoices`,
-      icon: AlertTriangle,
+      title: "Collected This Month",
+      value: formatCurrency(stats.collectedThisMonth),
+      description: "Paid this month",
+      icon: TrendingUp,
+      iconClass: "text-emerald-400 bg-emerald-400/10",
+    },
+    {
+      title: "Paid All Time",
+      value: formatCurrency(stats.totalRevenue),
+      description: `${stats.paidCount} paid invoices`,
+      icon: DollarSign,
       iconClass: "text-amber-400 bg-amber-400/10",
     },
     {
-      title: "Active Clients",
-      value: clientCount.toString(),
+      title: "Drafts",
+      value: stats.draftCount.toString(),
       description: `${stats.totalInvoices} total invoices`,
-      icon: Users,
+      icon: FileEdit,
       iconClass: "text-primary bg-primary/10",
     },
   ];

@@ -1,32 +1,19 @@
 import Link from "next/link";
 import { ArrowRight, FileText, Users, Zap, CheckCircle2, Clock, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/layout/navbar";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <FileText className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-lg text-foreground">iforinvoice</span>
-          </div>
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              Sign In
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      {/* Shared Navigation */}
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none" />
-        
+
         <div className="max-w-6xl mx-auto px-6 pt-20 pb-24">
           <div className="max-w-3xl mx-auto text-center">
             {/* Badge */}
@@ -34,18 +21,18 @@ export default function LandingPage() {
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="text-xs font-medium text-muted-foreground">Simple invoicing for freelancers</span>
             </div>
-            
+
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight text-balance mb-6">
               Create professional invoices in{" "}
               <span className="text-primary">seconds</span>
             </h1>
-            
+
             {/* Subheadline */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-pretty">
               Fast, beautiful invoicing designed for freelancers. Manage clients, track payments, and get paid faster with our intuitive platform.
             </p>
-            
+
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/dashboard">
@@ -57,7 +44,7 @@ export default function LandingPage() {
               <p className="text-sm text-muted-foreground">Free to use. No credit card required.</p>
             </div>
           </div>
-          
+
           {/* Hero Visual */}
           <div className="mt-16 relative">
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 pointer-events-none" />
@@ -76,7 +63,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Mock Dashboard Preview */}
                 <div className="p-6 bg-background/50">
                   <div className="grid grid-cols-3 gap-4 mb-6">
@@ -119,7 +106,7 @@ export default function LandingPage() {
               Powerful features wrapped in a simple, intuitive interface that gets out of your way.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -135,7 +122,7 @@ export default function LandingPage() {
               {
                 icon: TrendingUp,
                 title: "Track Everything",
-                description: "Monitor payments, overdue invoices, and revenue trends with beautiful dashboards.",
+                description: "Monitor payments, outstanding invoices, and revenue trends with beautiful dashboards.",
               },
               {
                 icon: FileText,
@@ -145,7 +132,7 @@ export default function LandingPage() {
               {
                 icon: Clock,
                 title: "Status Tracking",
-                description: "Know exactly where each invoice stands. Draft, sent, viewed, paid, or overdue at a glance.",
+                description: "Know exactly where each invoice stands. Draft, sent, paid, or void — you control every status change.",
               },
               {
                 icon: CheckCircle2,
@@ -174,7 +161,7 @@ export default function LandingPage() {
           <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
-            
+
             <div className="relative px-8 py-16 text-center">
               <h2 className="text-3xl font-bold text-foreground mb-4">
                 Ready to simplify your invoicing?

@@ -74,9 +74,9 @@ export function InvoiceForm({
       <div className="flex items-center justify-between">
         <Label className="text-sm text-foreground">Invoice Template</Label>
         <Select defaultValue="default">
-          <SelectTrigger className="w-[160px] bg-card border-border">
+          <SelectTrigger className="w-[160px] bg-card border border-border rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <FileText className="h-4 w-4 text-primary" />
               <SelectValue placeholder="Select template" />
             </div>
           </SelectTrigger>
@@ -97,7 +97,7 @@ export function InvoiceForm({
             value={companyName}
             onChange={(e) => onCompanyNameChange?.(e.target.value)}
             placeholder="iforinvoice"
-            className="bg-card border-border"
+            className="bg-background border border-border rounded-lg h-10 focus:ring-2 focus:ring-primary focus:border-primary"
           />
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             <Info className="w-3 h-3" />
@@ -112,7 +112,7 @@ export function InvoiceForm({
             value={companyAddress}
             onChange={(e) => onCompanyAddressChange?.(e.target.value)}
             placeholder="123 Main St, Anytown, USA"
-            className="bg-card border-border min-h-[80px] resize-none"
+            className="bg-background border border-border rounded-lg min-h-[80px] resize-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 

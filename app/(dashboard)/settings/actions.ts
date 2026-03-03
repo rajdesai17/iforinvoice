@@ -41,7 +41,7 @@ export async function updateBusinessProfile(
       postalCode: payload.postalCode || null,
       country: payload.country || null,
       taxId: payload.taxId || null,
-      defaultPaymentTerms: payload.defaultPaymentTerms || 30,
+      defaultPaymentTerms: payload.defaultPaymentTerms ?? 30,
       invoicePrefix: payload.invoicePrefix || "INV",
       invoiceNotes: payload.invoiceNotes || null,
       invoiceFooter: payload.invoiceFooter || null,

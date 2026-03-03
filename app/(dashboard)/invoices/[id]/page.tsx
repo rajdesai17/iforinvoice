@@ -4,13 +4,12 @@ import { db } from "@/lib/db";
 import { invoices, invoiceLineItems, clients, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { format } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Download } from "lucide-react";
 import { InvoiceStatusActions } from "@/components/invoices/invoice-status-actions";
 import { requireCurrentUserId } from "@/lib/auth/current-user";
+import { formatCurrency } from "@/lib/currencies";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -46,21 +45,12 @@ async function getInvoice(userId: string, invoiceId: string) {
   return { invoice, client, lineItems, profile };
 }
 
-function formatCurrency(amount: string | number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(typeof amount === "string" ? parseFloat(amount) : amount);
-}
-
 function getStatusBadge(status: string) {
   const statusConfig: Record<string, { className: string; label: string }> = {
     draft: { className: "bg-secondary text-secondary-foreground", label: "Draft" },
     sent: { className: "bg-blue-100 text-blue-700", label: "Sent" },
-    viewed: { className: "bg-amber-100 text-amber-700", label: "Viewed" },
     paid: { className: "bg-emerald-100 text-emerald-700", label: "Paid" },
-    overdue: { className: "bg-red-100 text-red-700", label: "Overdue" },
-    cancelled: { className: "bg-secondary text-muted-foreground", label: "Cancelled" },
+    void: { className: "bg-secondary text-muted-foreground line-through", label: "Void" },
   };
   const config = statusConfig[status] || { className: "bg-secondary", label: status };
   return <Badge variant="secondary" className={config.className}>{config.label}</Badge>;
@@ -76,10 +66,21 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   }
 
   const { invoice, client, lineItems, profile } = data;
+  const currency = invoice.currency || "USD";
+
+  const displayCompanyName = profile?.businessName || "Your Business";
+  const displayCompanyAddress = [profile?.addressLine1, profile?.city, profile?.state, profile?.postalCode]
+    .filter(Boolean)
+    .join(", ");
+
+  const fmtCurrency = (amount: string | number) => {
+    const num = typeof amount === "string" ? parseFloat(amount) : amount;
+    return formatCurrency(isNaN(num) ? 0 : num, currency);
+  };
 
   return (
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
-      {/* Header */}
+      {/* Action Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
@@ -108,80 +109,90 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      {/* Invoice Card */}
-      <Card>
-        <CardContent className="p-8">
-          {/* Header */}
-          <div className="flex justify-between items-start mb-8">
+      {/* A4 Invoice Document */}
+      <div className="mx-auto bg-white shadow-lg border border-gray-200 rounded-sm" style={{ maxWidth: "794px", minHeight: "1123px" }}>
+        <div className="flex flex-col p-10 sm:p-14">
+          {/* Header - Invoice Title */}
+          <div className="mb-6">
+            <h2 className="text-3xl font-semibold text-primary font-mono tracking-tight">
+              Invoice {invoice.invoiceNumber}
+            </h2>
+          </div>
+
+          {/* Metadata Grid */}
+          <div className="flex gap-10 text-sm mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-primary mb-1">INVOICE</h2>
-              <p className="text-lg text-muted-foreground">{invoice.invoiceNumber}</p>
+              <p className="text-gray-400 mb-1">Serial Number</p>
+              <p className="text-gray-700 font-medium">{invoice.invoiceNumber.replace("INV-", "")}</p>
             </div>
-            <div className="text-right">
-              <p className="font-semibold text-lg">{profile?.businessName || "Your Business"}</p>
-              {profile?.email && <p className="text-muted-foreground">{profile.email}</p>}
-              {profile?.addressLine1 && <p className="text-muted-foreground">{profile.addressLine1}</p>}
-              {(profile?.city || profile?.state) && (
-                <p className="text-muted-foreground">
-                  {[profile?.city, profile?.state, profile?.postalCode].filter(Boolean).join(", ")}
+            <div>
+              <p className="text-gray-400 mb-1">Issue Date</p>
+              <p className="text-gray-700 font-medium">{format(new Date(invoice.issueDate), "dd/MM/yyyy")}</p>
+            </div>
+            <div>
+              <p className="text-gray-400 mb-1">Due Date</p>
+              <p className="text-gray-700 font-medium">{format(new Date(invoice.dueDate), "dd/MM/yyyy")}</p>
+            </div>
+            <div>
+              <p className="text-gray-400 mb-1">Currency</p>
+              <p className="text-gray-700 font-medium">{currency}</p>
+            </div>
+            {invoice.paidAt && (
+              <div>
+                <p className="text-gray-400 mb-1">Paid</p>
+                <p className="text-emerald-600 font-medium">{format(new Date(invoice.paidAt), "dd/MM/yyyy")}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Billing Cards */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-gray-50 rounded-lg p-5 border border-gray-100">
+              <h3 className="text-primary font-medium text-xs mb-2">Billed By</h3>
+              <p className="font-semibold text-gray-900">{displayCompanyName}</p>
+              {profile?.email && (
+                <p className="text-gray-500 text-sm mt-1">{profile.email}</p>
+              )}
+              {displayCompanyAddress && (
+                <p className="text-gray-500 text-sm mt-1 leading-relaxed">{displayCompanyAddress}</p>
+              )}
+            </div>
+            <div className="bg-gray-50 rounded-lg p-5 border border-gray-100">
+              <h3 className="text-primary font-medium text-xs mb-2">Billed To</h3>
+              <p className="font-semibold text-gray-900">{client?.company || client?.name || "Unknown"}</p>
+              {client?.company && client?.name && (
+                <p className="text-gray-500 text-sm mt-1">{client.name}</p>
+              )}
+              {client?.email && (
+                <p className="text-gray-500 text-sm mt-1">{client.email}</p>
+              )}
+              {(client?.addressLine1 || client?.city) && (
+                <p className="text-gray-500 text-sm mt-1 leading-relaxed">
+                  {[client?.addressLine1, client?.city, client?.state, client?.postalCode]
+                    .filter(Boolean)
+                    .join(", ")}
                 </p>
               )}
             </div>
           </div>
 
-          <Separator className="mb-8" />
-
-          {/* Billing Info */}
-          <div className="grid sm:grid-cols-2 gap-8 mb-8">
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Bill To</p>
-              <p className="font-semibold">{client?.company || client?.name}</p>
-              {client?.company && client?.name && <p>{client.name}</p>}
-              {client?.email && <p className="text-muted-foreground">{client.email}</p>}
-              {client?.addressLine1 && <p className="text-muted-foreground">{client.addressLine1}</p>}
-              {(client?.city || client?.state) && (
-                <p className="text-muted-foreground">
-                  {[client?.city, client?.state, client?.postalCode].filter(Boolean).join(", ")}
-                </p>
-              )}
-            </div>
-            <div className="sm:text-right">
-              <div className="space-y-2">
-                <div className="flex sm:justify-end gap-8">
-                  <span className="text-muted-foreground">Issue Date:</span>
-                  <span className="font-medium">{format(new Date(invoice.issueDate), "MMM d, yyyy")}</span>
-                </div>
-                <div className="flex sm:justify-end gap-8">
-                  <span className="text-muted-foreground">Due Date:</span>
-                  <span className="font-medium">{format(new Date(invoice.dueDate), "MMM d, yyyy")}</span>
-                </div>
-                {invoice.paidAt && (
-                  <div className="flex sm:justify-end gap-8">
-                    <span className="text-muted-foreground">Paid:</span>
-                    <span className="font-medium text-emerald-600">
-                      {format(new Date(invoice.paidAt), "MMM d, yyyy")}
-                    </span>
-                  </div>
-                )}
+          {/* Line Items Table */}
+          <div className="rounded-lg overflow-hidden border border-gray-200 mb-8">
+            <div className="bg-primary text-white text-sm font-semibold">
+              <div className="grid grid-cols-12 gap-3 px-5 py-3">
+                <div className="col-span-5">Item</div>
+                <div className="col-span-2 text-center">Qty</div>
+                <div className="col-span-2 text-right">Price</div>
+                <div className="col-span-3 text-right">Total</div>
               </div>
             </div>
-          </div>
-
-          {/* Line Items */}
-          <div className="border rounded-lg overflow-hidden mb-8">
-            <div className="grid grid-cols-12 gap-4 p-4 bg-muted text-sm font-medium">
-              <div className="col-span-6">Description</div>
-              <div className="col-span-2 text-right">Qty</div>
-              <div className="col-span-2 text-right">Price</div>
-              <div className="col-span-2 text-right">Amount</div>
-            </div>
-            <div className="divide-y">
+            <div className="bg-white divide-y divide-gray-100">
               {lineItems.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 gap-4 p-4">
-                  <div className="col-span-6">{item.description}</div>
-                  <div className="col-span-2 text-right">{item.quantity}</div>
-                  <div className="col-span-2 text-right">{formatCurrency(item.unitPrice || 0)}</div>
-                  <div className="col-span-2 text-right">{formatCurrency(item.amount || 0)}</div>
+                <div key={item.id} className="grid grid-cols-12 gap-3 px-5 py-3 text-sm">
+                  <div className="col-span-5 text-gray-900">{item.description}</div>
+                  <div className="col-span-2 text-center text-gray-600">{item.quantity}</div>
+                  <div className="col-span-2 text-right text-gray-600">{fmtCurrency(item.unitPrice || 0)}</div>
+                  <div className="col-span-3 text-right text-gray-900 font-medium">{fmtCurrency(item.amount || 0)}</div>
                 </div>
               ))}
             </div>
@@ -189,47 +200,50 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
           {/* Totals */}
           <div className="flex justify-end mb-8">
-            <div className="w-72 space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>{formatCurrency(invoice.subtotal || 0)}</span>
+            <div className="w-64 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Subtotal</span>
+                <span className="text-gray-900">{fmtCurrency(invoice.subtotal || 0)}</span>
               </div>
               {parseFloat(String(invoice.taxRate || 0)) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax ({invoice.taxRate}%)</span>
-                  <span>{formatCurrency(invoice.taxAmount || 0)}</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Tax ({invoice.taxRate}%)</span>
+                  <span className="text-gray-900">{fmtCurrency(invoice.taxAmount || 0)}</span>
                 </div>
               )}
               {parseFloat(String(invoice.discountAmount || 0)) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Discount</span>
-                  <span className="text-destructive">-{formatCurrency(invoice.discountAmount || 0)}</span>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Discount</span>
+                  <span className="text-green-600">-{fmtCurrency(invoice.discountAmount || 0)}</span>
                 </div>
               )}
-              <Separator />
-              <div className="flex justify-between text-xl font-semibold">
-                <span>Total</span>
-                <span>{formatCurrency(invoice.total || 0)}</span>
+              <div className="flex justify-between text-base font-semibold pt-3 border-t border-gray-200">
+                <span className="text-gray-900">Total</span>
+                <span className="text-primary">{fmtCurrency(invoice.total || 0)}</span>
               </div>
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Notes & Terms */}
           {invoice.notes && (
-            <div className="border-t pt-6">
-              <p className="font-medium mb-2">Notes</p>
-              <p className="text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>
+            <div className="border-t border-gray-200 pt-6 mb-4">
+              <p className="font-medium text-sm text-gray-900 mb-2">Notes</p>
+              <p className="text-gray-500 text-sm whitespace-pre-wrap leading-relaxed">{invoice.notes}</p>
+            </div>
+          )}
+          {invoice.terms && (
+            <div className="border-t border-gray-200 pt-6 mb-4">
+              <p className="font-medium text-sm text-gray-900 mb-2">Terms & Conditions</p>
+              <p className="text-gray-500 text-sm whitespace-pre-wrap leading-relaxed">{invoice.terms}</p>
             </div>
           )}
 
-          {invoice.terms && (
-            <div className="border-t pt-6 mt-6">
-              <p className="font-medium mb-2">Terms & Conditions</p>
-              <p className="text-muted-foreground whitespace-pre-wrap">{invoice.terms}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          {/* Footer */}
+          <div className="mt-auto pt-8 text-center">
+            <p className="text-gray-300 text-xs">Generated by iforinvoice</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

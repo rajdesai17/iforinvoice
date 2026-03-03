@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__neon__list_docs_resources",
+      "mcp__neon__get_doc_resource",
+      "mcp__neon__list_projects",
+      "mcp__neon__provision_neon_auth",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(openssl rand:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm add:*)",
+      "mcp__neon__get_database_tables",
+      "mcp__neon__prepare_database_migration",
+      "mcp__neon__run_sql",
+      "mcp__neon__complete_database_migration",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm info:*)",
+      "Bash(mv:*)",
+      "Bash(pnpm outdated:*)",
+      "Bash(pnpm view:*)"
+    ]
+  }
+}

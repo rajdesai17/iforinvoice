@@ -25,8 +25,8 @@ export function SectionCard({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="rounded-lg bg-card border border-border overflow-hidden">
-        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3.5 text-left hover:bg-secondary/20 transition-colors duration-150">
-          <h3 className="text-sm font-medium text-primary">{title}</h3>
+        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3.5 text-left hover:bg-secondary/30 transition-colors duration-150">
+          <h3 className="text-sm font-semibold text-primary">{title}</h3>
           <ChevronUp
             className={cn(
               "h-4 w-4 text-primary transition-transform duration-200",

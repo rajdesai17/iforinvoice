@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient, updateClient } from "@/app/(dashboard)/clients/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface ClientDialogProps {
   open: boolean;
@@ -27,6 +28,13 @@ interface ClientDialogProps {
     email: string | null;
     phone: string | null;
     company: string | null;
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+    notes?: string | null;
   };
 }
 
@@ -54,13 +62,13 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
         email: client.email || "",
         phone: client.phone || "",
         company: client.company || "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "",
-        notes: "",
+        addressLine1: client.addressLine1 ?? "",
+        addressLine2: client.addressLine2 ?? "",
+        city: client.city ?? "",
+        state: client.state ?? "",
+        postalCode: client.postalCode ?? "",
+        country: client.country ?? "",
+        notes: client.notes ?? "",
       });
     } else {
       setFormData({
@@ -93,6 +101,7 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
         onOpenChange(false);
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Something went wrong");
       }
     } catch {
