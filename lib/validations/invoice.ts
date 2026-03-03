@@ -4,7 +4,7 @@ import { CURRENCY_CODES } from "@/lib/currencies";
 // Line item schema
 export const lineItemSchema = z.object({
   id: z.string(),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().trim().min(1, "Description is required"),
   quantity: z.number().min(0.01, "Quantity must be greater than 0"),
   unitPrice: z.number().min(0, "Price cannot be negative"),
   amount: z.number(),

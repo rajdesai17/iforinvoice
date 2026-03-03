@@ -9,6 +9,7 @@ import {
   pgEnum,
   jsonb,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -93,31 +94,37 @@ export const items = pgTable("items", {
 
 // ─── Invoices ────────────────────────────────────────────
 
-export const invoices = pgTable("invoices", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull(),
-  clientId: uuid("client_id")
-    .notNull()
-    .references(() => clients.id, { onDelete: "restrict" }),
-  invoiceNumber: text("invoice_number").notNull(),
-  status: invoiceStatusEnum("status").default("draft"),
-  issueDate: timestamp("issue_date").notNull(),
-  dueDate: timestamp("due_date").notNull(),
-  currency: text("currency").default("USD"),
-  subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0"),
-  taxRate: decimal("tax_rate", { precision: 5, scale: 2 }).default("0"),
-  taxAmount: decimal("tax_amount", { precision: 12, scale: 2 }).default("0"),
-  discountType: discountTypeEnum("discount_type").default("percentage"),
-  discountValue: decimal("discount_value", { precision: 12, scale: 2 }).default("0"),
-  discountAmount: decimal("discount_amount", { precision: 12, scale: 2 }).default("0"),
-  total: decimal("total", { precision: 12, scale: 2 }).default("0"),
-  notes: text("notes"),
-  terms: text("terms"),
-  paymentInstructions: text("payment_instructions"),
-  paidAt: timestamp("paid_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull(),
+    clientId: uuid("client_id")
+      .notNull()
+      .references(() => clients.id, { onDelete: "restrict" }),
+    invoiceNumber: text("invoice_number").notNull(),
+    status: invoiceStatusEnum("status").default("draft"),
+    issueDate: timestamp("issue_date").notNull(),
+    dueDate: timestamp("due_date").notNull(),
+    currency: text("currency").default("USD"),
+    subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0"),
+    taxRate: decimal("tax_rate", { precision: 5, scale: 2 }).default("0"),
+    taxAmount: decimal("tax_amount", { precision: 12, scale: 2 }).default("0"),
+    discountType: discountTypeEnum("discount_type").default("percentage"),
+    discountValue: decimal("discount_value", { precision: 12, scale: 2 }).default("0"),
+    discountAmount: decimal("discount_amount", { precision: 12, scale: 2 }).default("0"),
+    total: decimal("total", { precision: 12, scale: 2 }).default("0"),
+    notes: text("notes"),
+    terms: text("terms"),
+    paymentInstructions: text("payment_instructions"),
+    paidAt: timestamp("paid_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("idx_invoices_user_invoice_number").on(table.userId, table.invoiceNumber),
+  ]
+);
 
 // ─── Invoice Line Items ──────────────────────────────────
 

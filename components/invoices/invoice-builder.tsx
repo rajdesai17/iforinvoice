@@ -58,6 +58,7 @@ interface BusinessProfile {
   city: string | null;
   state: string | null;
   postalCode: string | null;
+  defaultCurrency?: string | null;
 }
 
 interface InvoiceBuilderProps {
@@ -122,6 +123,7 @@ export function InvoiceBuilder({
   const [discountValue, setDiscountValue] = useState<number>(0);
   const [notes, setNotes] = useState("");
   const [terms, setTerms] = useState("");
+  const [currency, setCurrency] = useState<string>(businessProfile?.defaultCurrency ?? "USD");
 
   const selectedClient = clients.find((c) => c.id === clientId);
 
@@ -195,6 +197,7 @@ export function InvoiceBuilder({
         issueDate: issueDate.toISOString(),
         dueDate: dueDate.toISOString(),
         status,
+        currency,
         lineItems: lineItems.filter((item) => item.description && item.amount > 0),
         taxRate,
         discountType,

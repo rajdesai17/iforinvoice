@@ -25,6 +25,13 @@ interface Client {
   email: string | null;
   phone: string | null;
   company: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+  notes?: string | null;
   isArchived: boolean | null;
   createdAt: Date;
   invoiceCount: number;

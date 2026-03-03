@@ -28,6 +28,13 @@ interface ClientDialogProps {
     email: string | null;
     phone: string | null;
     company: string | null;
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+    notes?: string | null;
   };
 }
 
@@ -55,13 +62,13 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
         email: client.email || "",
         phone: client.phone || "",
         company: client.company || "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "",
-        notes: "",
+        addressLine1: client.addressLine1 ?? "",
+        addressLine2: client.addressLine2 ?? "",
+        city: client.city ?? "",
+        state: client.state ?? "",
+        postalCode: client.postalCode ?? "",
+        country: client.country ?? "",
+        notes: client.notes ?? "",
       });
     } else {
       setFormData({
