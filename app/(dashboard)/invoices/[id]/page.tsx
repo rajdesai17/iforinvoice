@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Download } from "lucide-react";
 import { InvoiceStatusActions } from "@/components/invoices/invoice-status-actions";
-import { DEMO_USER_ID } from "../../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -68,7 +68,8 @@ function getStatusBadge(status: string) {
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const data = await getInvoice(DEMO_USER_ID, id);
+  const userId = await requireCurrentUserId();
+  const data = await getInvoice(userId, id);
 
   if (!data) {
     notFound();

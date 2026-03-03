@@ -3,7 +3,7 @@ import { items } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { ItemsHeader } from "@/components/items/items-header";
 import { ItemsList } from "@/components/items/items-list";
-import { DEMO_USER_ID } from "../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "Items",
@@ -18,7 +18,8 @@ async function getItems(userId: string) {
 }
 
 export default async function ItemsPage() {
-  const itemsData = await getItems(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const itemsData = await getItems(userId);
 
   return (
     <div className="p-6 space-y-6">

@@ -1,5 +1,13 @@
+interface CurrencyMeta {
+  code: string;
+  symbol: string;
+  name: string;
+  locale: string;
+  decimals?: number;
+}
+
 // Top 30 currencies with proper locale and formatting support
-export const CURRENCIES = [
+export const CURRENCIES: readonly CurrencyMeta[] = [
   { code: "USD", symbol: "$", name: "US Dollar", locale: "en-US" },
   { code: "EUR", symbol: "€", name: "Euro", locale: "de-DE" },
   { code: "GBP", symbol: "£", name: "British Pound", locale: "en-GB" },

@@ -47,15 +47,15 @@ export function LineItemsSection({
             const item = items.find((i) => i.id === value);
             if (item) onAddFromLibrary(item);
           }}>
-            <SelectTrigger className="w-[180px] bg-[#1a1a1e] border-0 rounded-lg text-sm text-muted-foreground">
+            <SelectTrigger className="w-[180px] bg-secondary border-0 rounded-lg text-sm text-muted-foreground">
               <SelectValue placeholder="Add from library" />
             </SelectTrigger>
-            <SelectContent className="bg-[#111113] border-[#1e1e21]">
+            <SelectContent className="bg-card border-border">
               {items.map((item) => (
                 <SelectItem 
                   key={item.id} 
                   value={item.id}
-                  className="hover:bg-[#1a1a1e]"
+                  className="hover:bg-secondary"
                 >
                   <span className="flex items-center justify-between w-full gap-2">
                     <span className="truncate">{item.name}</span>

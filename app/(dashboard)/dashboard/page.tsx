@@ -5,7 +5,7 @@ import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { RecentInvoices } from "@/components/dashboard/recent-invoices";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { QuickActions } from "@/components/dashboard/quick-actions";
-import { DEMO_USER_ID } from "../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "Dashboard",
@@ -86,7 +86,8 @@ async function getDashboardData(userId: string) {
 }
 
 export default async function DashboardPage() {
-  const data = await getDashboardData(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const data = await getDashboardData(userId);
 
   return (
     <div className="p-6 space-y-6">

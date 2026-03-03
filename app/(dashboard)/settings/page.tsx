@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { businessProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { BusinessProfileForm } from "@/components/settings/business-profile-form";
-import { DEMO_USER_ID } from "../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "Settings",
@@ -17,7 +17,8 @@ async function getProfile(userId: string) {
 }
 
 export default async function SettingsPage() {
-  const profile = await getProfile(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const profile = await getProfile(userId);
 
   return (
     <div className="p-6 max-w-2xl">

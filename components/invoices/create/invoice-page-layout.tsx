@@ -114,12 +114,15 @@ export function InvoicePageLayout({
   const handleAutoSave = useCallback(async (data: InvoiceFormData) => {
     if (!data.clientId) return;
     try {
-      await saveDraft({
+      const result = await saveDraft({
         ...data,
         ...totals,
         issueDate: data.issueDate.toISOString(),
         dueDate: data.dueDate.toISOString(),
       });
+      if (!result.success) {
+        throw new Error(result.error);
+      }
     } catch (error) {
       console.error("Auto-save failed:", error);
       throw error;
@@ -163,7 +166,7 @@ export function InvoicePageLayout({
 
       if (result.success) {
         toast.success("Invoice saved as draft");
-        router.push(`/invoices/${result.invoice?.id}`);
+        router.push(`/invoices/${result.data.invoice.id}`);
       } else {
         toast.error(result.error || "Failed to save invoice");
       }
@@ -209,7 +212,7 @@ export function InvoicePageLayout({
 
       if (result.success) {
         toast.success("Invoice created and ready to send");
-        router.push(`/invoices/${result.invoice?.id}`);
+        router.push(`/invoices/${result.data.invoice.id}`);
       } else {
         toast.error(result.error || "Failed to create invoice");
       }

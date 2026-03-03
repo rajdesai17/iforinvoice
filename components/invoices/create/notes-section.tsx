@@ -10,7 +10,8 @@ interface NotesSectionProps {
   form: UseFormReturn<InvoiceFormData>;
 }
 
-const textareaClassName = "bg-[#1a1a1e] border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary min-h-[60px] resize-none";
+const textareaClassName =
+  "bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary min-h-[60px] resize-none";
 const labelClassName = "text-xs text-muted-foreground";
 
 export function NotesSection({ form }: NotesSectionProps) {

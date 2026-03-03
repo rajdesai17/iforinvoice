@@ -58,6 +58,7 @@ export function InvoiceActionsBar({
             variant="secondary"
             size="sm"
             className="gap-1.5"
+            disabled
           >
             <AlertTriangle className="h-3.5 w-3.5" />
             Errors
@@ -89,6 +90,37 @@ export function InvoiceActionsBar({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={onSaveDraft}
+            disabled={isSubmitting || !isDirty}
+            className="gap-1.5"
+          >
+            {isSubmitting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Check className="h-3.5 w-3.5" />
+            )}
+            Save Draft
+          </Button>
+
+          <Button
+            type="button"
+            size="sm"
+            onClick={onSaveAndSend}
+            disabled={isSubmitting}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+          >
+            {isSubmitting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <FilePlus className="h-3.5 w-3.5" />
+            )}
+            Save & Send
+          </Button>
 
           {/* Download Button */}
           <Button

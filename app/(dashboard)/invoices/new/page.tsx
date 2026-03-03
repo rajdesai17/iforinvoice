@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { clients, items, businessProfiles } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { InvoicePageLayout } from "@/components/invoices/create/invoice-page-layout";
-import { DEMO_USER_ID } from "../../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "New Invoice",
@@ -48,7 +48,8 @@ async function getData(userId: string) {
 }
 
 export default async function NewInvoicePage() {
-  const data = await getData(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const data = await getData(userId);
 
   // Generate next invoice number
   const prefix = data.profile?.invoicePrefix || "INV";

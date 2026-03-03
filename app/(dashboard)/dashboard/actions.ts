@@ -4,10 +4,10 @@ import { db } from '@/lib/db'
 import { invoices, clients } from '@/lib/db/schema'
 import { eq, and, sql, desc, gte } from 'drizzle-orm'
 import type { DashboardStats, InvoiceWithRelations } from '@/lib/types'
-import { DEMO_USER_ID } from '../layout'
+import { requireCurrentUserId } from '@/lib/auth/current-user'
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const userId = DEMO_USER_ID
+  const userId = await requireCurrentUserId()
 
   // Get total revenue (paid invoices)
   const revenueResult = await db
@@ -57,7 +57,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 }
 
 export async function getRecentInvoices(limit: number = 5): Promise<InvoiceWithRelations[]> {
-  const userId = DEMO_USER_ID
+  const userId = await requireCurrentUserId()
 
   const results = await db
     .select()
@@ -75,7 +75,7 @@ export async function getRecentInvoices(limit: number = 5): Promise<InvoiceWithR
 }
 
 export async function getMonthlyRevenue(): Promise<{ month: string; revenue: number }[]> {
-  const userId = DEMO_USER_ID
+  const userId = await requireCurrentUserId()
 
   const sixMonthsAgo = new Date()
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5)

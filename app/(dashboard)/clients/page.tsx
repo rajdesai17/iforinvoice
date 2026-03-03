@@ -5,7 +5,7 @@ import { eq, and, sql, desc } from "drizzle-orm";
 import { ClientsList } from "@/components/clients/clients-list";
 import { ClientsHeader } from "@/components/clients/clients-header";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DEMO_USER_ID } from "../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "Clients",
@@ -44,7 +44,8 @@ function ClientsLoading() {
 }
 
 export default async function ClientsPage() {
-  const clientsData = await getClients(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const clientsData = await getClients(userId);
 
   return (
     <div className="p-6 space-y-6">

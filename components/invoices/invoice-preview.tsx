@@ -84,7 +84,7 @@ export function InvoicePreview({
         </div>
 
         {/* Meta Row */}
-        <div className="grid grid-cols-3 gap-2 mb-2 pb-2 border-b border-[#E4E4E7]">
+        <div className="grid grid-cols-4 gap-2 mb-2 pb-2 border-b border-[#E4E4E7]">
           <div>
             <p className="text-[7px] text-[#A1A1AA] uppercase">Serial Number</p>
             <p className="text-[#09090B] font-medium">{invoiceNumber.replace("INV-", "")}</p>
@@ -96,6 +96,10 @@ export function InvoicePreview({
           <div>
             <p className="text-[7px] text-[#A1A1AA] uppercase">Currency</p>
             <p className="text-[#09090B] font-medium">USD</p>
+          </div>
+          <div>
+            <p className="text-[7px] text-[#A1A1AA] uppercase">Due Date</p>
+            <p className="text-[#09090B] font-medium">{format(dueDate, "dd/MM/yyyy")}</p>
           </div>
         </div>
 
@@ -176,6 +180,12 @@ export function InvoicePreview({
             </div>
           </div>
         </div>
+
+        {notes && (
+          <div className="mt-2 border-t border-[#E4E4E7] pt-1.5">
+            <p className="text-[8px] text-[#71717A] leading-relaxed line-clamp-2">{notes}</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4,89 +4,125 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { items } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { DEMO_USER_ID } from "../layout";
+import {
+  AuthenticationError,
+  requireCurrentUserId,
+} from "@/lib/auth/current-user";
+import { fail, ok, type ActionResult } from "@/lib/server/action-response";
+import { logServerError } from "@/lib/server/logger";
+import { idSchema, itemInputSchema } from "@/lib/validations/actions";
 
-interface ItemData {
-  name: string;
-  description: string;
-  rate: string;
-  unit: string;
-  isTaxable: boolean;
-}
+export async function createItem(
+  data: unknown,
+): Promise<ActionResult<{ item: typeof items.$inferSelect }>> {
+  const parsedInput = itemInputSchema.safeParse(data);
+  if (!parsedInput.success) {
+    return fail("VALIDATION_ERROR", parsedInput.error.issues[0]?.message ?? "Invalid item input");
+  }
 
-export async function createItem(data: ItemData) {
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
+    const payload = parsedInput.data;
 
     const [item] = await db
       .insert(items)
       .values({
         userId,
-        name: data.name,
-        description: data.description || null,
-        rate: data.rate,
-        unit: data.unit as "hour" | "day" | "item" | "project",
-        isTaxable: data.isTaxable,
+        name: payload.name,
+        description: payload.description || null,
+        rate: payload.rate,
+        unit: payload.unit,
+        isTaxable: payload.isTaxable,
       })
       .returning();
 
     revalidatePath("/items");
-    
-    return { success: true, item };
+
+    return ok("Item created", { item });
   } catch (error) {
-    console.error("Failed to create item:", error);
-    return { success: false, error: "Failed to create item" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("items.createItem", error);
+    return fail("INTERNAL_ERROR", "Failed to create item");
   }
 }
 
-export async function updateItem(itemId: string, data: ItemData) {
+export async function updateItem(
+  itemId: string,
+  data: unknown,
+): Promise<ActionResult<{ item: typeof items.$inferSelect }>> {
+  const parsedId = idSchema.safeParse(itemId);
+  if (!parsedId.success) {
+    return fail("VALIDATION_ERROR", "Invalid item id");
+  }
+
+  const parsedInput = itemInputSchema.safeParse(data);
+  if (!parsedInput.success) {
+    return fail("VALIDATION_ERROR", parsedInput.error.issues[0]?.message ?? "Invalid item input");
+  }
+
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
+    const payload = parsedInput.data;
 
     const [item] = await db
       .update(items)
       .set({
-        name: data.name,
-        description: data.description || null,
-        rate: data.rate,
-        unit: data.unit as "hour" | "day" | "item" | "project",
-        isTaxable: data.isTaxable,
+        name: payload.name,
+        description: payload.description || null,
+        rate: payload.rate,
+        unit: payload.unit,
+        isTaxable: payload.isTaxable,
         updatedAt: new Date(),
       })
-      .where(and(eq(items.id, itemId), eq(items.userId, userId)))
+      .where(and(eq(items.id, parsedId.data), eq(items.userId, userId)))
       .returning();
 
     if (!item) {
-      return { success: false, error: "Item not found" };
+      return fail("NOT_FOUND", "Item not found");
     }
 
     revalidatePath("/items");
-    
-    return { success: true, item };
+
+    return ok("Item updated", { item });
   } catch (error) {
-    console.error("Failed to update item:", error);
-    return { success: false, error: "Failed to update item" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("items.updateItem", error, { itemId });
+    return fail("INTERNAL_ERROR", "Failed to update item");
   }
 }
 
-export async function deleteItem(itemId: string) {
+export async function deleteItem(
+  itemId: string,
+): Promise<ActionResult<{ itemId: string }>> {
+  const parsedId = idSchema.safeParse(itemId);
+  if (!parsedId.success) {
+    return fail("VALIDATION_ERROR", "Invalid item id");
+  }
+
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
 
     const [item] = await db
       .delete(items)
-      .where(and(eq(items.id, itemId), eq(items.userId, userId)))
-      .returning();
+      .where(and(eq(items.id, parsedId.data), eq(items.userId, userId)))
+      .returning({ id: items.id });
 
     if (!item) {
-      return { success: false, error: "Item not found" };
+      return fail("NOT_FOUND", "Item not found");
     }
 
     revalidatePath("/items");
-    
-    return { success: true };
+
+    return ok("Item deleted", { itemId: item.id });
   } catch (error) {
-    console.error("Failed to delete item:", error);
-    return { success: false, error: "Failed to delete item" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("items.deleteItem", error, { itemId });
+    return fail("INTERNAL_ERROR", "Failed to delete item");
   }
 }

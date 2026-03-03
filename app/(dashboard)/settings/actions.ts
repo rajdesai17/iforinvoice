@@ -4,50 +4,47 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { businessProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { DEMO_USER_ID } from "../layout";
+import {
+  AuthenticationError,
+  requireCurrentUserId,
+} from "@/lib/auth/current-user";
+import { fail, ok, type ActionResult } from "@/lib/server/action-response";
+import { logServerError } from "@/lib/server/logger";
+import { profileInputSchema } from "@/lib/validations/actions";
 
-interface ProfileData {
-  businessName: string;
-  email: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  taxId: string;
-  defaultPaymentTerms: number;
-  invoicePrefix: string;
-  invoiceNotes: string;
-  invoiceFooter: string;
-}
+export async function updateBusinessProfile(
+  data: unknown,
+): Promise<ActionResult<{ profileUpdated: true }>> {
+  const parsedInput = profileInputSchema.safeParse(data);
+  if (!parsedInput.success) {
+    return fail("VALIDATION_ERROR", parsedInput.error.issues[0]?.message ?? "Invalid profile input");
+  }
 
-export async function updateBusinessProfile(data: ProfileData) {
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
+    const payload = parsedInput.data;
 
-    // Check if profile exists
     const [existing] = await db
-      .select()
+      .select({ id: businessProfiles.id })
       .from(businessProfiles)
-      .where(eq(businessProfiles.userId, userId));
+      .where(eq(businessProfiles.userId, userId))
+      .limit(1);
 
     const profileData = {
-      businessName: data.businessName || null,
-      email: data.email || null,
-      phone: data.phone || null,
-      addressLine1: data.addressLine1 || null,
-      addressLine2: data.addressLine2 || null,
-      city: data.city || null,
-      state: data.state || null,
-      postalCode: data.postalCode || null,
-      country: data.country || null,
-      taxId: data.taxId || null,
-      defaultPaymentTerms: data.defaultPaymentTerms || 30,
-      invoicePrefix: data.invoicePrefix || "INV",
-      invoiceNotes: data.invoiceNotes || null,
-      invoiceFooter: data.invoiceFooter || null,
+      businessName: payload.businessName || null,
+      email: payload.email || null,
+      phone: payload.phone || null,
+      addressLine1: payload.addressLine1 || null,
+      addressLine2: payload.addressLine2 || null,
+      city: payload.city || null,
+      state: payload.state || null,
+      postalCode: payload.postalCode || null,
+      country: payload.country || null,
+      taxId: payload.taxId || null,
+      defaultPaymentTerms: payload.defaultPaymentTerms || 30,
+      invoicePrefix: payload.invoicePrefix || "INV",
+      invoiceNotes: payload.invoiceNotes || null,
+      invoiceFooter: payload.invoiceFooter || null,
       updatedAt: new Date(),
     };
 
@@ -66,9 +63,12 @@ export async function updateBusinessProfile(data: ProfileData) {
     revalidatePath("/settings");
     revalidatePath("/invoices/new");
 
-    return { success: true };
+    return ok("Profile updated", { profileUpdated: true });
   } catch (error) {
-    console.error("Failed to update profile:", error);
-    return { success: false, error: "Failed to update profile" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("settings.updateBusinessProfile", error);
+    return fail("INTERNAL_ERROR", "Failed to update profile");
   }
 }

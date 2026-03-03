@@ -4,94 +4,121 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { DEMO_USER_ID } from "../layout";
+import {
+  AuthenticationError,
+  requireCurrentUserId,
+} from "@/lib/auth/current-user";
+import { fail, ok, type ActionResult } from "@/lib/server/action-response";
+import { logServerError } from "@/lib/server/logger";
+import { clientInputSchema, idSchema } from "@/lib/validations/actions";
 
-interface ClientData {
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  notes: string;
-}
+export async function createClient(
+  data: unknown,
+): Promise<ActionResult<{ client: typeof clients.$inferSelect }>> {
+  const parsedInput = clientInputSchema.safeParse(data);
+  if (!parsedInput.success) {
+    return fail("VALIDATION_ERROR", parsedInput.error.issues[0]?.message ?? "Invalid client input");
+  }
 
-export async function createClient(data: ClientData) {
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
+    const payload = parsedInput.data;
 
     const [client] = await db
       .insert(clients)
       .values({
         userId,
-        name: data.name,
-        email: data.email || null,
-        phone: data.phone || null,
-        company: data.company || null,
-        addressLine1: data.addressLine1 || null,
-        addressLine2: data.addressLine2 || null,
-        city: data.city || null,
-        state: data.state || null,
-        postalCode: data.postalCode || null,
-        country: data.country || null,
-        notes: data.notes || null,
+        name: payload.name,
+        email: payload.email || null,
+        phone: payload.phone || null,
+        company: payload.company || null,
+        addressLine1: payload.addressLine1 || null,
+        addressLine2: payload.addressLine2 || null,
+        city: payload.city || null,
+        state: payload.state || null,
+        postalCode: payload.postalCode || null,
+        country: payload.country || null,
+        notes: payload.notes || null,
       })
       .returning();
 
     revalidatePath("/clients");
     revalidatePath("/invoices");
-    
-    return { success: true, client };
+
+    return ok("Client created", { client });
   } catch (error) {
-    console.error("Failed to create client:", error);
-    return { success: false, error: "Failed to create client" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("clients.createClient", error);
+    return fail("INTERNAL_ERROR", "Failed to create client");
   }
 }
 
-export async function updateClient(clientId: string, data: ClientData) {
+export async function updateClient(
+  clientId: string,
+  data: unknown,
+): Promise<ActionResult<{ client: typeof clients.$inferSelect }>> {
+  const parsedId = idSchema.safeParse(clientId);
+  if (!parsedId.success) {
+    return fail("VALIDATION_ERROR", "Invalid client id");
+  }
+
+  const parsedInput = clientInputSchema.safeParse(data);
+  if (!parsedInput.success) {
+    return fail("VALIDATION_ERROR", parsedInput.error.issues[0]?.message ?? "Invalid client input");
+  }
+
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
+    const payload = parsedInput.data;
 
     const [client] = await db
       .update(clients)
       .set({
-        name: data.name,
-        email: data.email || null,
-        phone: data.phone || null,
-        company: data.company || null,
-        addressLine1: data.addressLine1 || null,
-        addressLine2: data.addressLine2 || null,
-        city: data.city || null,
-        state: data.state || null,
-        postalCode: data.postalCode || null,
-        country: data.country || null,
-        notes: data.notes || null,
+        name: payload.name,
+        email: payload.email || null,
+        phone: payload.phone || null,
+        company: payload.company || null,
+        addressLine1: payload.addressLine1 || null,
+        addressLine2: payload.addressLine2 || null,
+        city: payload.city || null,
+        state: payload.state || null,
+        postalCode: payload.postalCode || null,
+        country: payload.country || null,
+        notes: payload.notes || null,
         updatedAt: new Date(),
       })
-      .where(and(eq(clients.id, clientId), eq(clients.userId, userId)))
+      .where(and(eq(clients.id, parsedId.data), eq(clients.userId, userId)))
       .returning();
 
     if (!client) {
-      return { success: false, error: "Client not found" };
+      return fail("NOT_FOUND", "Client not found");
     }
 
     revalidatePath("/clients");
     revalidatePath("/invoices");
-    
-    return { success: true, client };
+
+    return ok("Client updated", { client });
   } catch (error) {
-    console.error("Failed to update client:", error);
-    return { success: false, error: "Failed to update client" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("clients.updateClient", error, { clientId });
+    return fail("INTERNAL_ERROR", "Failed to update client");
   }
 }
 
-export async function archiveClient(clientId: string) {
+export async function archiveClient(
+  clientId: string,
+): Promise<ActionResult<{ clientId: string }>> {
+  const parsedId = idSchema.safeParse(clientId);
+  if (!parsedId.success) {
+    return fail("VALIDATION_ERROR", "Invalid client id");
+  }
+
   try {
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
 
     const [client] = await db
       .update(clients)
@@ -99,18 +126,21 @@ export async function archiveClient(clientId: string) {
         isArchived: true,
         updatedAt: new Date(),
       })
-      .where(and(eq(clients.id, clientId), eq(clients.userId, userId)))
-      .returning();
+      .where(and(eq(clients.id, parsedId.data), eq(clients.userId, userId)))
+      .returning({ id: clients.id });
 
     if (!client) {
-      return { success: false, error: "Client not found" };
+      return fail("NOT_FOUND", "Client not found");
     }
 
     revalidatePath("/clients");
-    
-    return { success: true };
+
+    return ok("Client archived", { clientId: client.id });
   } catch (error) {
-    console.error("Failed to archive client:", error);
-    return { success: false, error: "Failed to archive client" };
+    if (error instanceof AuthenticationError) {
+      return fail("UNAUTHORIZED", "You must be signed in");
+    }
+    logServerError("clients.archiveClient", error, { clientId });
+    return fail("INTERNAL_ERROR", "Failed to archive client");
   }
 }

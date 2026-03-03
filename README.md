@@ -103,33 +103,40 @@ lib/
 ### Installation
 
 1. Clone the repository:
-```bash
+```powershell
 git clone https://github.com/rajdesai17/iforinvoice.git
 cd iforinvoice
 ```
 
 2. Install dependencies:
-```bash
+```powershell
 pnpm install
 ```
 
 3. Set up environment variables:
-```bash
-cp .env.example .env.local
+```powershell
+Copy-Item .env.example .env
 ```
 
 Required environment variables:
-```
+```env
 DATABASE_URL=your_neon_database_url
+BETTER_AUTH_SECRET=your_strong_secret
+BETTER_AUTH_URL=http://localhost:3000
+DEMO_USER_ID=00000000-0000-0000-0000-000000000001
 ```
 
+Notes:
+- `DEMO_USER_ID` is a local-development fallback when no session token is present.
+- Remove `DEMO_USER_ID` in production to enforce session-based access.
+
 4. Run database migrations:
-```bash
+```powershell
 pnpm drizzle-kit push
 ```
 
 5. Start the development server:
-```bash
+```powershell
 pnpm dev
 ```
 

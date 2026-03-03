@@ -4,17 +4,19 @@ import { invoices, invoiceLineItems, clients, businessProfiles } from "@/lib/db/
 import { eq, and } from "drizzle-orm";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoicePDF } from "@/components/invoices/invoice-pdf";
-
-// Demo user ID (no auth)
-const DEMO_USER_ID = "00000000-0000-0000-0000-000000000001";
+import {
+  AuthenticationError,
+  requireCurrentUserId,
+} from "@/lib/auth/current-user";
+import { logServerError } from "@/lib/server/logger";
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const userId = DEMO_USER_ID;
+    const userId = await requireCurrentUserId();
 
     // Get invoice data
     const [invoice] = await db
@@ -60,7 +62,10 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("PDF generation error:", error);
+    if (error instanceof AuthenticationError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    logServerError("api.invoices.pdf", error);
     return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 });
   }
 }

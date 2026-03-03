@@ -208,7 +208,7 @@ export function InvoiceBuilder({
 
       if (result.success) {
         toast.success(status === "draft" ? "Invoice saved as draft" : "Invoice created and ready to send");
-        router.push(`/invoices/${result.invoice?.id}`);
+        router.push(`/invoices/${result.data.invoice.id}`);
       } else {
         toast.error(result.error || "Failed to create invoice");
       }

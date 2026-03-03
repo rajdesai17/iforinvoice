@@ -37,7 +37,8 @@ interface InvoiceDetailsSectionProps {
   onAddNewClient?: () => void;
 }
 
-const inputClassName = "bg-[#1a1a1e] border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
+const inputClassName =
+  "bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
 const labelClassName = "text-xs text-muted-foreground";
 
 export function InvoiceDetailsSection({
@@ -95,13 +96,13 @@ export function InvoiceDetailsSection({
                 {issueDate ? format(issueDate, "MMM d, yyyy") : "Pick a date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#111113] border-[#1e1e21]">
+            <PopoverContent className="w-auto p-0 bg-card border-border">
               <Calendar
                 mode="single"
                 selected={issueDate}
                 onSelect={(date) => date && setValue("issueDate", date)}
                 initialFocus
-                className="bg-[#111113]"
+                className="bg-card"
               />
             </PopoverContent>
           </Popover>
@@ -121,13 +122,13 @@ export function InvoiceDetailsSection({
                 {dueDate ? format(dueDate, "MMM d, yyyy") : "Pick a date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#111113] border-[#1e1e21]">
+            <PopoverContent className="w-auto p-0 bg-card border-border">
               <Calendar
                 mode="single"
                 selected={dueDate}
                 onSelect={(date) => date && setValue("dueDate", date)}
                 initialFocus
-                className="bg-[#111113]"
+                className="bg-card"
               />
             </PopoverContent>
           </Popover>
@@ -144,12 +145,12 @@ export function InvoiceDetailsSection({
           <SelectTrigger className={inputClassName}>
             <SelectValue placeholder="Select currency" />
           </SelectTrigger>
-          <SelectContent className="bg-[#111113] border-[#1e1e21] max-h-[300px]">
+          <SelectContent className="bg-card border-border max-h-[300px]">
             {CURRENCIES.map((curr) => (
               <SelectItem 
                 key={curr.code} 
                 value={curr.code}
-                className="hover:bg-[#1a1a1e]"
+                className="hover:bg-secondary"
               >
                 <span className="flex items-center gap-2">
                   <span className="font-mono text-muted-foreground">{curr.code}</span>

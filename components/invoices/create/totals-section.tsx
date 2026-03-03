@@ -20,7 +20,8 @@ interface TotalsSectionProps {
   currency: string;
 }
 
-const inputClassName = "bg-[#1a1a1e] border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
+const inputClassName =
+  "bg-secondary border-0 rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary h-10";
 const labelClassName = "text-xs text-muted-foreground";
 
 export function TotalsSection({ form, totals, currency }: TotalsSectionProps) {
@@ -55,9 +56,9 @@ export function TotalsSection({ form, totals, currency }: TotalsSectionProps) {
               <SelectTrigger className={cn(inputClassName, "w-[80px]")}>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-[#111113] border-[#1e1e21]">
-                <SelectItem value="percentage" className="hover:bg-[#1a1a1e]">%</SelectItem>
-                <SelectItem value="fixed" className="hover:bg-[#1a1a1e]">$</SelectItem>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="percentage" className="hover:bg-secondary">%</SelectItem>
+                <SelectItem value="fixed" className="hover:bg-secondary">$</SelectItem>
               </SelectContent>
             </Select>
             <Input

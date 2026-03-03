@@ -35,7 +35,6 @@ const createNavigation = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const isCreateInvoice = pathname === "/invoices/new";
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-60 bg-sidebar border-r border-sidebar-border flex flex-col">

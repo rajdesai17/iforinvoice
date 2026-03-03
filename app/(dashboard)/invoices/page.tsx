@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { InvoicesList } from "@/components/invoices/invoices-list";
-import { DEMO_USER_ID } from "../layout";
+import { requireCurrentUserId } from "@/lib/auth/current-user";
 
 export const metadata = {
   title: "Invoices",
@@ -31,7 +31,8 @@ async function getInvoices(userId: string) {
 }
 
 export default async function InvoicesPage() {
-  const invoicesData = await getInvoices(DEMO_USER_ID);
+  const userId = await requireCurrentUserId();
+  const invoicesData = await getInvoices(userId);
 
   return (
     <div className="p-6 space-y-6">
