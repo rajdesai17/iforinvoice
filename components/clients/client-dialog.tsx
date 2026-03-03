@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient, updateClient } from "@/app/(dashboard)/clients/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface ClientDialogProps {
   open: boolean;
@@ -93,6 +94,7 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
         onOpenChange(false);
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Something went wrong");
       }
     } catch {

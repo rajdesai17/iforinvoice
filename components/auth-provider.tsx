@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { NeonAuthUIProvider } from "@neondatabase/auth/react/ui";
 import { authClient } from "@/lib/auth/client";
 import { useRouter } from "next/navigation";
@@ -8,9 +8,44 @@ import Link from "next/link";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const navigate = useCallback((url: string) => router.push(url), [router]);
-  const replace = useCallback((url: string) => router.replace(url), [router]);
-  const onSessionChange = useCallback(() => router.refresh(), [router]);
+  const isMountedRef = useRef(true);
+  const refreshQueuedRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const runAfterRender = useCallback((callback: () => void) => {
+    setTimeout(() => {
+      if (!isMountedRef.current) return;
+      callback();
+    }, 0);
+  }, []);
+
+  const navigate = useCallback(
+    (url: string) => {
+      runAfterRender(() => router.push(url));
+    },
+    [router, runAfterRender],
+  );
+
+  const replace = useCallback(
+    (url: string) => {
+      runAfterRender(() => router.replace(url));
+    },
+    [router, runAfterRender],
+  );
+
+  const onSessionChange = useCallback(() => {
+    if (refreshQueuedRef.current) return;
+    refreshQueuedRef.current = true;
+    runAfterRender(() => {
+      refreshQueuedRef.current = false;
+      router.refresh();
+    });
+  }, [router, runAfterRender]);
 
   return (
     <NeonAuthUIProvider

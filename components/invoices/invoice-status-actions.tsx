@@ -13,6 +13,7 @@ import {
 import { Send, CheckCircle, XCircle, MoreHorizontal, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface Invoice {
   id: string;
@@ -35,6 +36,7 @@ export function InvoiceStatusActions({ invoice }: InvoiceStatusActionsProps) {
         toast.success(`Invoice marked as ${status}`);
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to update status");
       }
     } catch {

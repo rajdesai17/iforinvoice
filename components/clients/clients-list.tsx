@@ -17,6 +17,7 @@ import { Users, Search, MoreHorizontal, Mail, Phone, FileText, Pencil, Archive }
 import { ClientDialog } from "@/components/clients/client-dialog";
 import { archiveClient } from "@/app/(dashboard)/clients/actions";
 import { toast } from "sonner";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface Client {
   id: string;
@@ -59,6 +60,7 @@ export function ClientsList({ clients }: ClientsListProps) {
     if (result.success) {
       toast.success("Client archived");
     } else {
+      if (isSessionExpired(result)) return;
       toast.error(result.error || "Failed to archive client");
     }
   };

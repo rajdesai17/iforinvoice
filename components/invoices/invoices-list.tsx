@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { updateInvoiceStatus } from "@/app/(dashboard)/invoices/actions";
 import { toast } from "sonner";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 import { cn } from "@/lib/utils";
 
 interface Invoice {
@@ -92,6 +93,7 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
     if (result.success) {
       toast.success(`Invoice marked as ${status}`);
     } else {
+      if (isSessionExpired(result)) return;
       toast.error(result.error || "Failed to update status");
     }
   };

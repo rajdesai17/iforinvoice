@@ -20,6 +20,7 @@ import { CalendarIcon, Plus, Trash2, Loader2, Save, ChevronDown, Download } from
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { createInvoice } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 import { InvoicePreview } from "@/components/invoices/invoice-preview";
 import {
   Collapsible,
@@ -210,6 +211,7 @@ export function InvoiceBuilder({
         toast.success(status === "draft" ? "Invoice saved as draft" : "Invoice created and ready to send");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to create invoice");
       }
     } catch {

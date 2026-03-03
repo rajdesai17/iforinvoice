@@ -174,7 +174,7 @@ export function AppSidebar() {
 
         {/* User Profile */}
         <div className="px-3 py-2 flex items-center gap-3">
-          <UserButton />
+          <UserButton size="icon" />
         </div>
       </div>
     </aside>

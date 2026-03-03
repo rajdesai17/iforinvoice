@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { updateBusinessProfile } from "@/app/(dashboard)/settings/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 interface BusinessProfile {
   businessName: string | null;
@@ -64,6 +65,7 @@ export function BusinessProfileForm({ profile }: BusinessProfileFormProps) {
         toast.success("Profile updated successfully");
         router.refresh();
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to update profile");
       }
     } catch {

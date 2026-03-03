@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { businessProfiles } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { requireCurrentUserId } from "@/lib/auth/current-user";
+import { auth } from "@/lib/auth/server";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
 export const metadata = {
@@ -10,7 +10,11 @@ export const metadata = {
 };
 
 export default async function OnboardingPage() {
-  const userId = await requireCurrentUserId();
+  const { data: session } = await auth.getSession();
+  const userId = session?.user?.id;
+  if (!userId) {
+    redirect("/auth/sign-in");
+  }
 
   // If profile exists, redirect to dashboard
   const [existing] = await db

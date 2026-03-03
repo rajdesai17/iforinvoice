@@ -73,9 +73,19 @@ export function OnboardingWizard() {
       const result = await completeOnboarding(form);
       if (result.success) {
         toast.success("You're all set!");
-        router.push("/dashboard");
-        router.refresh();
+        // Defer navigation so we don't update a component (e.g. Toaster/Dialog ForwardRef)
+        // while another is still rendering (avoids "setState in render" React error).
+        setTimeout(() => {
+          router.replace("/dashboard");
+        }, 0);
       } else {
+        if (result.code === "UNAUTHORIZED") {
+          toast.error("Session expired. Please sign in again.");
+          setTimeout(() => {
+            router.replace("/auth/sign-in");
+          }, 0);
+          return;
+        }
         toast.error(result.error || "Something went wrong");
       }
     } catch {

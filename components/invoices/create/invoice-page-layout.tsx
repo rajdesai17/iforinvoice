@@ -18,6 +18,7 @@ import { InvoiceActionsBar } from "./invoice-actions-bar";
 import { InvoiceForm } from "./invoice-form";
 import { InvoiceLivePreview } from "./invoice-live-preview";
 import { createInvoice, saveDraft } from "@/app/(dashboard)/invoices/actions";
+import { isSessionExpired } from "@/lib/client/action-helpers";
 
 
 type ViewMode = "both" | "form" | "preview";
@@ -121,6 +122,7 @@ export function InvoicePageLayout({
         dueDate: data.dueDate.toISOString(),
       });
       if (!result.success) {
+        if (isSessionExpired(result)) return;
         throw new Error(result.error);
       }
     } catch (error) {
@@ -168,6 +170,7 @@ export function InvoicePageLayout({
         toast.success("Invoice saved as draft");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to save invoice");
       }
     } catch {
@@ -214,6 +217,7 @@ export function InvoicePageLayout({
         toast.success("Invoice created and ready to send");
         router.push(`/invoices/${result.data.invoice.id}`);
       } else {
+        if (isSessionExpired(result)) return;
         toast.error(result.error || "Failed to create invoice");
       }
     } catch {
